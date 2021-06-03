@@ -1,7 +1,7 @@
 import React, { createRef } from 'react';
 import './App.css';
 import { Renderer } from './services/Renderer';
-import { Game } from './services/Game';
+import { ClientGame } from './services/ClientGame';
 import { Controller } from './services/Controller';
 import { WebsocketTransport } from './services/WebsocketTransport';
 import { Transport } from './services/Transport';
@@ -10,7 +10,7 @@ class App extends React.Component {
   canvasRef = createRef<HTMLCanvasElement>();
   WIDTH = 800;
   HEIGHT = 600;
-  game!: Game;
+  game!: ClientGame;
 
   componentDidMount() {
     if (!this.canvasRef.current) {
@@ -19,7 +19,7 @@ class App extends React.Component {
     const renderer = new Renderer(this.canvasRef.current)
     const controller: Controller = new Controller();
     const transport: Transport = new WebsocketTransport();
-    this.game = new Game(controller, transport, renderer);
+    this.game = new ClientGame(controller, transport, renderer);
     this.game.startGame();
   }
 

@@ -1,5 +1,5 @@
 import { Transport } from './Transport';
-import { Action } from '../../../shared/types/Action';
+import { Action } from '../types/Action';
 
 export class WebsocketTransport implements Transport {
   private URL = 'ws://localhost:8080';
@@ -20,7 +20,10 @@ export class WebsocketTransport implements Transport {
   }
 
   subscribe(callback: (action: Action) => void): void {
-    this.socket!.onmessage = (event) => callback(event.data);
+    this.socket!.onmessage = (event) => {
+      const action = JSON.parse(event.data);
+      callback(action);
+    }
   }
 
   send(action: Action) {

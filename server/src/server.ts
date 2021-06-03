@@ -1,6 +1,6 @@
 import express from 'express';
 import http from 'http';
-import { Game } from './Game';
+import { ServerGame } from './ServerGame';
 import { WS } from './ws';
 
 const WebSocket = require('ws');
@@ -12,7 +12,7 @@ const app = express();
 const server = http.createServer(app);
 const webSocketServer = new WebSocket.Server({ server });
 
-const game = new Game();
+const game = new ServerGame();
 game.startGame();
 
 webSocketServer.on('connection', (ws: WS) => {
