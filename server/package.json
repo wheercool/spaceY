@@ -1,10 +1,11 @@
 {
-  "name": "server",
+  "name": "evolution-project-server",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon"
+    "start": "ts-node  -r tsconfig-paths/register ./src/server.ts",
+    "dev": "nodemon"
   },
   "keywords": [],
   "author": "",
@@ -19,6 +20,7 @@
   },
   "devDependencies": {
     "@types/express": "^4.17.12",
-    "@types/node": "^15.6.2"
+    "@types/node": "^15.6.2",
+    "tsconfig-paths": "^3.9.0"
   }
 }

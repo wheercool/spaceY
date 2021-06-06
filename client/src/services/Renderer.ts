@@ -1,4 +1,4 @@
-import { GameState, Player } from '../types/GameState';
+import { GameState, Player } from '@shared/types/GameState';
 
 export class Renderer {
   private ctx: CanvasRenderingContext2D;

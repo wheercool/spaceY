@@ -1,4 +1,4 @@
-import { Action } from '../types/Action';
+import { Action } from '@shared/types/Action';
 
 export interface Transport {
   connect(): Promise<void>;

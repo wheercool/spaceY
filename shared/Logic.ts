@@ -1,5 +1,5 @@
-import { Action } from '../types/Action';
-import { GameState } from '../types/GameState';
+import { GameState } from './types/GameState';
+import { Action } from './types/Action';
 
 export class Logic {
   constructor() {

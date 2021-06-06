@@ -1,10 +1,9 @@
-import { GameState } from '../types/GameState';
 import { Controller } from './Controller';
 import { Renderer } from './Renderer';
-import { Action, GameFrame, gameFrameTypeGuard } from '../types/Action';
 import { Transport } from './Transport';
-import { Logic } from './Logic';
-
+import { Action, GameFrame, gameFrameTypeGuard } from '@shared/types/Action';
+import { GameState } from '@shared/types/GameState';
+import { Logic } from '@shared/Logic';
 
 export class ClientGame {
   private loading = true;
@@ -137,12 +136,12 @@ export class ClientGame {
   }
 
   private updateInfo() {
-    const info =document.getElementById('info')!;
+    const info = document.getElementById('info')!;
     info.innerHTML = `
       Frame: ${this.frame}<br/>
       Pending actions: ${this.pendingActions.length}<br/>
-      ClientPrediction: ${this.clientPredictionEnabled ? 'enabled': 'disabled'}<br/>
-      Reconciliation: ${this.reconciliationEnabled? 'enabled': 'disabled'}<br/>
+      ClientPrediction: ${this.clientPredictionEnabled ? 'enabled' : 'disabled'}<br/>
+      Reconciliation: ${this.reconciliationEnabled ? 'enabled' : 'disabled'}<br/>
       NetworkDelay: ${this.networkDelay} ms<br/>
       Position: ${this.state.player.position.x}x${this.state.player.position.y}<br/>
     `;

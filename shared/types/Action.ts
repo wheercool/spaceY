@@ -1,5 +1,4 @@
 import { GameState } from './GameState';
-import { access } from 'fs';
 
 export interface BasicAction {
   frame: number

@@ -1,5 +1,5 @@
 import { Transport } from './Transport';
-import { Action } from '../types/Action';
+import { Action } from '@shared/types/Action';
 
 export class WebsocketTransport implements Transport {
   private URL = 'ws://localhost:8080';

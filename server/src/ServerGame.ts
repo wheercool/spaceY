@@ -1,7 +1,7 @@
 import { WS } from './ws';
-import { Action, GameFrame } from '../../client/src/types/Action';
-import { GameState } from '../../client/src/types/GameState';
-import { Logic } from '../../client/src/services/Logic';
+import { Action, GameFrame } from '@shared/types/Action';
+import { GameState } from '@shared/types/GameState';
+import { Logic } from '@shared/Logic';
 
 export class ServerGame {
   private FREQUENCY = 1;
