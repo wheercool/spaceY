@@ -2,6 +2,8 @@ import { WS } from './ws';
 import { Action, GameFrame } from '@shared/types/Action';
 import { GameState } from '@shared/types/GameState';
 import { Logic } from '@shared/Logic';
+import { Clock } from '@shared/utils';
+import { SIMULATION_UPDATE_RATE } from '@shared/constants';
 
 export class ServerGame {
   private FREQUENCY = 1;
@@ -17,6 +19,8 @@ export class ServerGame {
   };
   private globalFrame = 0;
   private logic: Logic;
+  private lastCF = -1;
+  private clock = new Clock(SIMULATION_UPDATE_RATE);
 
   constructor() {
     this.logic = new Logic();
@@ -37,9 +41,13 @@ export class ServerGame {
 
     this.send(ws, action);
     ws.on('message', (message: string) => {
-      const action: Action = JSON.parse(message);
+      const action = JSON.parse(message);
       console.log(action);
-      this.clientActions.get(ws).push(action);
+      if (action === 'ping') {
+        ws.send(JSON.stringify('pong'));
+      } else {
+        this.clientActions.get(ws).push(action);
+      }
     });
 
     ws.on('error', (e) => ws.send(e));
@@ -63,6 +71,10 @@ export class ServerGame {
   }
 
   private notifyClients() {
+    const commandFrame = this.clock.currentFrame();
+    // if (commandFrame < this.lastCF) {
+    //   this.lastCF = commandFrame;
+    // }
     for (const [client, actions] of Array.from(this.clientActions.entries())) {
       const frame = Math.max(...actions.map(action => action.frame), -1);
       this.send(client, ({ type: 'frame', state: this.state, globalFrame: this.globalFrame, frame: frame }));
@@ -71,8 +83,6 @@ export class ServerGame {
   }
 
   private send(ws: WS, action: GameFrame) {
-    setTimeout(() => {
-      ws.send(JSON.stringify(action));
-    }, 240)
+    ws.send(JSON.stringify(action));
   }
 }

@@ -29,4 +29,6 @@ export class WebsocketTransport implements Transport {
   send(action: Action) {
     this.socket!.send(JSON.stringify(action));
   }
+
+  readonly rtt = -1;
 }

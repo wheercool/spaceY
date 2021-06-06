@@ -5,6 +5,7 @@ import { ClientGame } from './services/ClientGame';
 import { Controller } from './services/Controller';
 import { WebsocketTransport } from './services/WebsocketTransport';
 import { Transport } from './services/Transport';
+import { DebugWebsocketTransport } from './services/DebugWebsocketTransport';
 
 class App extends React.Component {
   canvasRef = createRef<HTMLCanvasElement>();
@@ -18,7 +19,8 @@ class App extends React.Component {
     }
     const renderer = new Renderer(this.canvasRef.current)
     const controller: Controller = new Controller();
-    const transport: Transport = new WebsocketTransport();
+    // const transport: Transport = new WebsocketTransport();
+    const transport: Transport = new DebugWebsocketTransport();
     this.game = new ClientGame(controller, transport, renderer);
     this.game.startGame();
   }

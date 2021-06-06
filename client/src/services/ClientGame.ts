@@ -4,6 +4,8 @@ import { Transport } from './Transport';
 import { Action, GameFrame, gameFrameTypeGuard } from '@shared/types/Action';
 import { GameState } from '@shared/types/GameState';
 import { Logic } from '@shared/Logic';
+import { Clock } from '@shared/utils';
+import { SIMULATION_UPDATE_RATE } from '@shared/constants';
 
 export class ClientGame {
   private loading = true;
@@ -14,23 +16,32 @@ export class ClientGame {
   private state!: GameState;
   private logic: Logic = new Logic();
   private serverActions: Action[] = [];
-  // for testing purpose only
-  private readonly networkDelay = 500;
+  private clock!: Clock;
+  private currentCF = -1;
 
   constructor(
     private controller: Controller,
     private transport: Transport,
     private renderer: Renderer) {
+    const params = new URLSearchParams(window.location.search);
+    this.clientPredictionEnabled = params.get('prediction') !== '0';
+    this.reconciliationEnabled = params.get('reconciliation') !== '0';
   }
 
   startGame() {
+    this.clock = new Clock(SIMULATION_UPDATE_RATE);
+    this.clock.start();
     this.connect();
     this.startLoop();
   }
 
   private update() {
     this.processServerActions();
-    this.processActions();
+    const commandFrame = this.clock.currentFrame();
+    if (this.currentCF < commandFrame) {
+      this.currentCF = commandFrame;
+      this.processActions();
+    }
     if (this.loading) {
       return;
     }
@@ -118,7 +129,7 @@ export class ClientGame {
   }
 
   private handleServerMessages = (action: Action) => {
-    setTimeout(() => this.serverActions.push(action), this.networkDelay);
+    this.serverActions.push(action);
   }
 
   private reconcile(action: GameFrame) {
@@ -139,12 +150,12 @@ export class ClientGame {
     const info = document.getElementById('info')!;
     info.innerHTML = `
       Frame: ${this.frame}<br/>
+      CF: ${this.clock.currentFrame()} <br/>
       Pending actions: ${this.pendingActions.length}<br/>
-      ClientPrediction: ${this.clientPredictionEnabled ? 'enabled' : 'disabled'}<br/>
-      Reconciliation: ${this.reconciliationEnabled ? 'enabled' : 'disabled'}<br/>
-      NetworkDelay: ${this.networkDelay} ms<br/>
+      prediction: ${this.clientPredictionEnabled ? 'enabled' : 'disabled'}<br/>
+      reconciliation: ${this.reconciliationEnabled ? 'enabled' : 'disabled'}<br/>
+      RTT: ${this.transport.rtt} ms<br/>
       Position: ${this.state.player.position.x}x${this.state.player.position.y}<br/>
     `;
-
   }
 }

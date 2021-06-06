@@ -1,7 +1,10 @@
 import { GameState } from './GameState';
 
+export type FrameId = number;
+export type TimeStamp = number;
+
 export interface BasicAction {
-  frame: number
+  frame: FrameId
 }
 
 export interface GoUpAction extends BasicAction {
