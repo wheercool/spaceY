@@ -1,12 +1,12 @@
 import { WS } from './ws';
-import { Action, GameFrame } from '@shared/types/Action';
+import { Action, createGameFrame, FrameId, GameFrame } from '@shared/types/Action';
 import { GameState } from '@shared/types/GameState';
 import { Logic } from '@shared/Logic';
 import { Clock } from '@shared/utils';
 import { SIMULATION_UPDATE_RATE } from '@shared/constants';
 
 export class ServerGame {
-  private FREQUENCY = 1;
+  private FREQUENCY = 10;
   private clientActions = new Map<WS, Action[]>();
   private state: GameState = {
     player: {
@@ -17,9 +17,9 @@ export class ServerGame {
       }
     }
   };
-  private globalFrame = 0;
+  private frame = 0;
   private logic: Logic;
-  private lastCF = -1;
+  private lastCF: FrameId = -1;
   private clock = new Clock(SIMULATION_UPDATE_RATE);
 
   constructor() {
@@ -27,19 +27,14 @@ export class ServerGame {
   }
 
   startGame() {
+    this.clock.start();
     setInterval(() => this.update(), 1000 / this.FREQUENCY)
   }
 
   addPlayer(ws: WS) {
     this.clientActions.set(ws, []);
-    const action: GameFrame = {
-      type: 'frame',
-      state: this.state,
-      globalFrame: this.globalFrame,
-      frame: -1
-    };
+    this.send(ws, createGameFrame(this.lastCF, this.state));
 
-    this.send(ws, action);
     ws.on('message', (message: string) => {
       const action = JSON.parse(message);
       console.log(action);
@@ -54,31 +49,25 @@ export class ServerGame {
   }
 
   private update() {
-    this.handleClientMessages();
-    this.updateLogic();
+    this.handleInputs();
     this.notifyClients();
-    this.globalFrame++;
   }
 
-  private handleClientMessages() {
-
-  }
-
-  private updateLogic() {
+  private handleInputs() {
     this.clientActions.forEach((actions, ws) => {
       actions.forEach(action => this.logic.handleMessage(this.state, action));
+      this.clientActions.set(ws, []);
     })
   }
 
   private notifyClients() {
     const commandFrame = this.clock.currentFrame();
-    // if (commandFrame < this.lastCF) {
-    //   this.lastCF = commandFrame;
-    // }
-    for (const [client, actions] of Array.from(this.clientActions.entries())) {
-      const frame = Math.max(...actions.map(action => action.frame), -1);
-      this.send(client, ({ type: 'frame', state: this.state, globalFrame: this.globalFrame, frame: frame }));
-      this.clientActions.get(client).splice(0, actions.length);
+    console.log(commandFrame);
+    if (this.lastCF < commandFrame) {
+      this.lastCF = commandFrame;
+      for (const client of Array.from(this.clientActions.keys())) {
+        this.send(client, (createGameFrame(this.lastCF, this.state)));
+      }
     }
   }
 

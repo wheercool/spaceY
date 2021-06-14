@@ -7,20 +7,12 @@ export interface BasicAction {
   frame: FrameId
 }
 
-export interface GoUpAction extends BasicAction {
-  type: 'GO_UP'
-}
-
-export interface GoDownAction extends BasicAction {
-  type: 'GO_DOWN'
-}
-
-export interface GoLeftAction extends BasicAction {
-  type: 'GO_LEFT'
-}
-
-export interface GoRightAction extends BasicAction {
-  type: 'GO_RIGHT'
+export interface InputAction extends BasicAction {
+  type: 'input',
+  left: boolean;
+  right: boolean;
+  top: boolean;
+  bottom: boolean;
 }
 
 export interface ConnectedAction extends BasicAction {
@@ -30,11 +22,18 @@ export interface ConnectedAction extends BasicAction {
 export interface GameFrame extends BasicAction {
   type: 'frame'
   state: GameState
-  globalFrame: number
+}
+
+export function createGameFrame(frame: FrameId, state: GameState): GameFrame {
+  return {
+    type: 'frame',
+    frame,
+    state
+  }
 }
 
 export function gameFrameTypeGuard(action: Action): action is GameFrame {
   return typeof (action as any)['globalFrame'] !== 'undefined';
 }
 
-export type Action = GoUpAction | GoDownAction | GoLeftAction | GoRightAction | ConnectedAction | GameFrame;
+export type Action = InputAction | ConnectedAction | GameFrame;

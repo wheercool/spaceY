@@ -1,8 +1,8 @@
 export class Controller {
-  upPressed = false;
-  downPressed = false;
-  leftPressed = false;
-  rightPressed = false;
+  top = false;
+  bottom = false;
+  left = false;
+  right = false;
 
   constructor() {
     window.addEventListener('keydown', this.onKeyDown)
@@ -12,32 +12,32 @@ export class Controller {
   private onKeyDown = (event: KeyboardEvent) => {
     const key = event.key.toLowerCase();
     if (key == 'arrowleft') {
-      this.leftPressed = true;
+      this.left = true;
     }
     if (key == 'arrowright') {
-      this.rightPressed = true;
+      this.right = true;
     }
     if (key == 'arrowup') {
-      this.upPressed = true;
+      this.top = true;
     }
     if (key === 'arrowdown') {
-      this.downPressed = true;
+      this.bottom = true;
     }
   }
 
   private onKeyUp = (event: KeyboardEvent) => {
     const key = event.key.toLowerCase();
     if (key == 'arrowleft') {
-      this.leftPressed = false;
+      this.left = false;
     }
     if (key == 'arrowright') {
-      this.rightPressed = false;
+      this.right = false;
     }
     if (key == 'arrowup') {
-      this.upPressed = false;
+      this.top = false;
     }
     if (key === 'arrowdown') {
-      this.downPressed = false;
+      this.bottom = false;
     }
   }
 }

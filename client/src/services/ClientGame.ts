@@ -1,7 +1,7 @@
 import { Controller } from './Controller';
 import { Renderer } from './Renderer';
 import { Transport } from './Transport';
-import { Action, GameFrame, gameFrameTypeGuard } from '@shared/types/Action';
+import { Action, GameFrame } from '@shared/types/Action';
 import { GameState } from '@shared/types/GameState';
 import { Logic } from '@shared/Logic';
 import { Clock } from '@shared/utils';
@@ -28,18 +28,18 @@ export class ClientGame {
     this.reconciliationEnabled = params.get('reconciliation') !== '0';
   }
 
-  startGame() {
+  async startGame() {
     this.clock = new Clock(SIMULATION_UPDATE_RATE);
     this.clock.start();
-    this.connect();
+    await this.connect();
     this.startLoop();
   }
 
   private update() {
     this.processServerActions();
     const commandFrame = this.clock.currentFrame();
-    if (this.currentCF < commandFrame) {
-      this.currentCF = commandFrame;
+    while (this.currentCF < commandFrame) {
+      this.currentCF++;
       this.processActions();
     }
     if (this.loading) {
@@ -56,37 +56,14 @@ export class ClientGame {
   }
 
   private processActions() {
-    let actions: Action[] = [];
-    if (this.controller.upPressed) {
-      actions.push({
-        type: 'GO_UP',
-        frame: this.frame
-      });
-    }
-    if (this.controller.downPressed) {
-      actions.push({
-        type: 'GO_DOWN',
-        frame: this.frame
-      });
-    }
-    if (this.controller.leftPressed) {
-      actions.push({
-        type: 'GO_LEFT',
-        frame: this.frame
-      })
-    }
-    if (this.controller.rightPressed) {
-      actions.push({
-        type: 'GO_RIGHT',
-        frame: this.frame
-      })
-    }
-
-    if (actions.length) {
-      this.sendActions(actions);
-      if (this.clientPredictionEnabled) {
-        actions.forEach(action => this.logic.handleMessage(this.state, action));
-      }
+    let action: Action = {
+      ...this.controller,
+      type: 'input',
+      frame: this.currentCF
+    };
+    this.sendAction(action);
+    if (this.clientPredictionEnabled) {
+      this.logic.handleMessage(this.state, action);
     }
   }
 
@@ -96,23 +73,19 @@ export class ClientGame {
 
   }
 
-  private sendActions(actions: Action[]) {
-    this.pendingActions = this.pendingActions.concat(actions);
-    actions.forEach(action => this.transport.send(action));
+  private sendAction(action: Action) {
+    this.pendingActions.push(action);
+    this.transport.send(action);
   }
 
   private processServerActions() {
     let lastAction: Action | undefined = undefined;
     let maxFrame = -1;
-    let maxGlobalFrame = -1;
 
     for (const action of this.serverActions) {
       if (action.frame > maxFrame) {
         lastAction = action;
         maxFrame = action.frame;
-      } else if (action.frame === maxFrame && gameFrameTypeGuard(action) && action.globalFrame > maxGlobalFrame) {
-        lastAction = action;
-        maxGlobalFrame = action.globalFrame;
       }
     }
     if (lastAction && lastAction.type === 'frame') {

@@ -22,19 +22,19 @@ export class Logic {
   }
 
   handleMessage(state: GameState, action: Action) {
-    switch (action.type) {
-      case 'GO_UP':
+    if (action.type === 'input') {
+      if (action.top) {
         this.playerGoUp(state);
-        break;
-      case 'GO_DOWN':
+      }
+      if (action.bottom) {
         this.playerGoDown(state);
-        break;
-      case 'GO_LEFT':
+      }
+      if (action.left) {
         this.playerGoLeft(state);
-        break;
-      case 'GO_RIGHT':
+      }
+      if (action.right) {
         this.playerGoRight(state);
-        break;
+      }
     }
   }
 }
