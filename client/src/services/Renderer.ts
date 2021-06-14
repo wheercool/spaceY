@@ -1,6 +1,6 @@
 import { GameState, Player } from '@shared/types/GameState';
 
-export class Renderer {
+export class Renderer  {
   private ctx: CanvasRenderingContext2D;
   private readonly width: number;
   private readonly height: number;

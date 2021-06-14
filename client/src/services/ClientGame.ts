@@ -1,4 +1,4 @@
-import { Controller } from './Controller';
+import { Controller } from '../systems/Controller';
 import { Renderer } from './Renderer';
 import { Transport } from './Transport';
 import { Action, GameFrame } from '@shared/types/Action';
@@ -9,6 +9,7 @@ import { SIMULATION_UPDATE_RATE } from '@shared/constants';
 
 export class ClientGame {
   private loading = true;
+  private clientOnly = true;
   private clientPredictionEnabled = true;
   private reconciliationEnabled = true;
   private frame = 0;
@@ -68,6 +69,10 @@ export class ClientGame {
   }
 
   private async connect() {
+    if (this.clientOnly) {
+      this.loading = false;
+      return;
+    }
     await this.transport.connect();
     this.transport.subscribe(this.handleServerMessages);
 
@@ -79,6 +84,9 @@ export class ClientGame {
   }
 
   private processServerActions() {
+    if (!this.clientOnly) {
+      return;
+    }
     let lastAction: Action | undefined = undefined;
     let maxFrame = -1;
 
