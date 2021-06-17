@@ -3,6 +3,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin')
 const {CleanWebpackPlugin} = require('clean-webpack-plugin');
+const CopyPlugin = require("copy-webpack-plugin");
 
 module.exports = {
   devServer: {
@@ -60,6 +61,11 @@ module.exports = {
       template: path.resolve(__dirname, './public/index.html'),
       filename: 'index.html'
     }),
-    new MiniCssExtractPlugin()
+    new MiniCssExtractPlugin(),
+    new CopyPlugin({
+      patterns: [
+        {from: 'public/assets', to: 'assets'}
+      ]
+    })
   ],
 }

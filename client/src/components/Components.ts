@@ -1,40 +1,22 @@
 import { Point2D } from '@shared/types/GameState';
+import { Model } from '../services/AssetsManager';
+import { InputComponent } from './InputComponent';
+import { TimeComponent } from './TimeComponent';
 
 export interface ComponentsRegistry {
-  position: Point2D
-  mass: number
-  acceleration: number;
+  rotation: number;
+  position: Point2D;
+  prevPosition: Point2D;
+  gravity: Point2D;
+  pullingForce: Point2D;
+  mass: number;
+  acceleration: Point2D;
   iteration: number;
-  sprite: SpriteComponent;
   input: InputComponent;
   player: boolean;
-}
-
-export interface InputComponent {
-  left: boolean;
-  right: boolean;
-  top: boolean;
-  bottom: boolean;
-}
-
-export type SpriteComponent = Circle | Rectangle | Image;
-
-export interface Image {
-  kind: 'image';
-  src: CanvasImageSource;
-  width: number;
-  height: number;
-}
-
-export interface Circle {
-  kind: 'circle';
-  radius: number;
-}
-
-export interface Rectangle {
-  kind: 'rectangle';
-  width: number;
-  height: number;
+  model: Model;
+  cameraAt: boolean;
+  time: TimeComponent;
 }
 
 export type ComponentValue<Cmp extends keyof CmpRegistry, CmpRegistry> = CmpRegistry[Cmp];

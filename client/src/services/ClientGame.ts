@@ -1,4 +1,4 @@
-import { Controller } from '../systems/Controller';
+import { Controller } from './Controller';
 import { Renderer } from './Renderer';
 import { Transport } from './Transport';
 import { Action, GameFrame } from '@shared/types/Action';

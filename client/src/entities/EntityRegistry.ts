@@ -15,7 +15,7 @@ export class EntityRegistry {
     }
   }
 
-  findEntitiesByComponents<Cmp extends keyof CmpRegistry, CmpRegistry = ComponentsRegistry>(components: Cmp[]): (Entity & Pick< CmpRegistry, Cmp>)[] {
+  findEntitiesByComponents<Cmp extends keyof CmpRegistry, CmpRegistry = ComponentsRegistry>(components: Cmp[]): (Entity & Pick<CmpRegistry, Cmp>)[] {
     const result: (Entity & Pick<CmpRegistry, Cmp>)[] = [];
     for (const entity of this.entities) {
       const entityProperties = Object.keys(entity);
@@ -24,5 +24,15 @@ export class EntityRegistry {
       }
     }
     return result;
+  }
+
+  findSingle<Cmp extends keyof CmpRegistry, CmpRegistry = ComponentsRegistry>(components: Cmp[]): (Entity & Pick<CmpRegistry, Cmp>) {
+    for (const entity of this.entities) {
+      const entityProperties = Object.keys(entity);
+      if (components.every(component => entityProperties.includes(component as string))) {
+        return entity as any;
+      }
+    }
+    throw new Error(`Cannot find entity with components: ${components.join(',')}`)
   }
 }

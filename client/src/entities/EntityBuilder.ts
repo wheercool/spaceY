@@ -12,7 +12,7 @@ export class EntityBuilder<CmpRegistry = ComponentsRegistry> {
     };
   }
 
-  static fromEntity<CmpRegistry>(entity: Entity): EntityBuilder<CmpRegistry> {
+  static fromEntity<CmpRegistry = ComponentsRegistry>(entity: Entity): EntityBuilder<CmpRegistry> {
     const builder = new EntityBuilder();
     builder.entity = entity;
     return builder;
@@ -26,6 +26,14 @@ export class EntityBuilder<CmpRegistry = ComponentsRegistry> {
   applyComponents(config: Partial<CmpRegistry>): EntityBuilder<CmpRegistry> {
     Object.assign(this.entity, config);
     return this;
+  }
+
+  getOrDefault<Cmp extends keyof CmpRegistry>(component: Cmp, value: ComponentValue<Cmp, CmpRegistry>): ComponentValue<Cmp, CmpRegistry> {
+    const entity = this.entity as any;
+    if (entity[component] !== undefined) {
+      return entity[component]
+    }
+    return value;
   }
 
   removeComponent<Cmp extends keyof CmpRegistry>(component: Cmp): EntityBuilder<CmpRegistry> {

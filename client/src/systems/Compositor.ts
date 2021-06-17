@@ -6,20 +6,19 @@ export class Compositor implements System {
   constructor(public readonly systems: System[]) {
   }
 
-  update(registry: EntityRegistry): void {
-    let iterations = registry.findEntitiesByComponents(['iteration']);
-    if (!iterations.length) {
-      const iterationEntity = new EntityBuilder()
-        .applyComponent('iteration', 1)
-        .build();
-      registry.addEntity(iterationEntity);
-    } else {
-      const iterationEntity = iterations[0];
-      iterationEntity.iteration++;
-    }
+  init(registry: EntityRegistry): void {
+    const iterationEntity = new EntityBuilder()
+      .applyComponent('iteration', 0)
+      .build();
+    registry.addEntity(iterationEntity);
+    this.systems.forEach(system => system.init(registry));
+  }
 
+  update(registry: EntityRegistry): void {
+    registry.findSingle(['iteration']).iteration++;
     for (const system of this.systems) {
       system.update(registry);
     }
   }
+
 }
