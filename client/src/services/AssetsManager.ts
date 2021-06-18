@@ -1,10 +1,46 @@
-import { Group, LoadingManager, Object3D } from 'three';
+import { Group, LoadingManager, Mesh, MeshStandardMaterial, Object3D } from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 
 export type Model = keyof AssetsManager['models'];
 
 export class AssetsManager {
   private models = {
+    'starship': {
+      url: 'assets/models/starship/scene.gltf',
+      mesh: new Object3D(),
+      postProcess: (scene: Group) => {
+        let result: Object3D = scene;
+        const wrapper = new Object3D();
+        result.position.set(0, 0, 0);
+        result.rotation.x = Math.PI / 2
+        result.rotation.y = 0
+        result.rotation.z = 0;
+        result.traverse(o => {
+          if (o instanceof Mesh) {
+            o.receiveShadow = true;
+            o.castShadow = true;
+          }
+        })
+        result.scale.multiplyScalar(2)
+        wrapper.add(result);
+        return wrapper;
+      }
+    },
+    'spaceship': {
+      url: 'assets/models/spaceship/scene.gltf',
+      mesh: new Object3D(),
+      postProcess: (scene: Group) => {
+        let result: Object3D = scene;
+        const wrapper = new Object3D();
+        result.position.set(0, 0, 0);
+        result.rotation.x = -Math.PI;
+        result.rotation.z = Math.PI;
+        result.rotation.y = Math.PI;
+        result.scale.multiplyScalar(10)
+        wrapper.add(result);
+        return wrapper;
+      }
+    },
     'spaceships': {
       url: 'assets/models/spaceships/scene.gltf',
       mesh: new Object3D(),
@@ -36,6 +72,12 @@ export class AssetsManager {
         result.rotation.x = -Math.PI;
         result.rotation.z = Math.PI;
         result.rotation.y = Math.PI;
+        result.traverse(o => {
+          if (o instanceof Mesh) {
+            o.receiveShadow = true;
+            o.castShadow = true;
+          }
+        })
         wrapper.add(result);
         return wrapper;
       }
@@ -91,7 +133,6 @@ export class AssetsManager {
   private async loadModels() {
     for (const [name, config] of Object.entries(this.models)) {
       this.loader.load(config.url, (gltf) => {
-        console.log(gltf.scene.children[0].children[0].children[0].children[0])
         config.mesh = config.postProcess(gltf.scene);
       })
     }

@@ -24,7 +24,6 @@ export class Gravity implements System {
         const F = Math.abs(distance) > eps
           ? G * e1.mass * e2.mass / (distance * distance)
           : 0;
-        console.log('distance: ', distance, 'F: ', F);
         const distNormalized = divByScalar(distVector, distance);
         forces[i] = add(forces[i], mulByScalar(distNormalized, -F));
         forces[j] = add(forces[j], mulByScalar(distNormalized, F));

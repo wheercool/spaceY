@@ -4,8 +4,8 @@ import { Point2D } from '@shared/types/GameState';
 import { InputComponent } from '../components/InputComponent';
 
 const STEP = Math.PI / 100;
-const PULLING_FORCE_VALUE = 1;
-const BACK_FORCE_VALUE = 1;
+const PULLING_FORCE_VALUE = 3;
+const BACK_FORCE_VALUE = PULLING_FORCE_VALUE;
 
 export class Player implements System {
   init(registry: EntityRegistry) {

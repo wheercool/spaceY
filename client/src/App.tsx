@@ -1,14 +1,13 @@
 import React, { createRef } from 'react';
 import './App.css';
 import { Game } from './systems/Game';
-import { WebGLRenderer } from './systems/WebGLRenderer';
 import { assetsManager } from './services/AssetsManager';
 import { WebGL3DRenderer } from './systems/WebGL3DRenderer';
 
 class App extends React.Component {
   canvasRef = createRef<HTMLCanvasElement>();
-  WIDTH = 800;
-  HEIGHT = 600;
+  WIDTH = window.innerWidth - 10;
+  HEIGHT = window.innerHeight - 100;
   game!: Game;
 
   // game!: ClientGame;
@@ -29,7 +28,7 @@ class App extends React.Component {
   render() {
     return <div className="app">
       <h1>Game</h1>
-      <canvas width={this.WIDTH} height={this.HEIGHT} ref={this.canvasRef}/>
+      <canvas style={{ padding: 5, width: this.WIDTH, height: this.HEIGHT }} width={this.WIDTH} height={this.HEIGHT} ref={this.canvasRef}/>
     </div>
   }
 }

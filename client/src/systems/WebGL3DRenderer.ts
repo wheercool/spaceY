@@ -21,7 +21,7 @@ import { Entity } from '../entities/Entity';
 export class WebGL3DRenderer implements System {
   private scene: Scene;
   private renderer: Renderer;
-  private camera: Camera;
+  private camera: PerspectiveCamera;
   private controls: OrbitControls;
   private models: Object3D;
   private pointLight: PointLight;
@@ -35,8 +35,8 @@ export class WebGL3DRenderer implements System {
     (this.renderer as any).antialias = true;
     this.renderer.setClearColor(new Color('#071015'))
 
-    this.camera = new PerspectiveCamera();
-    this.camera.position.set(0, 0, 1000);
+    this.camera = new PerspectiveCamera(50, canvas.width/ canvas.height);
+    this.camera.position.set(0, 0, 500);
     this.camera.rotation.x = Math.PI;
 
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);

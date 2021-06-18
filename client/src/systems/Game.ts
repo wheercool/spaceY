@@ -41,7 +41,7 @@ export class Game implements System {
         rotation: 0,
         position: { x: 0, y: 0 },
         pullingForce: { x: 0, y: 0 },
-        model: 'spaceships',
+        model: 'starship',
         mass: 1
       })
       .build()
