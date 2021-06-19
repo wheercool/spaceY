@@ -15,7 +15,7 @@ export function positionAbsolute(
   rotation: RotationComponent
 ): BoundariesComponent {
   return bounding.map(circle => {
-    let circlePosition = circle.position // rotate(circle.position, rotation);
+    let circlePosition = circle.position;
     circlePosition = rotate(circlePosition, rotation)
     circlePosition = add(circlePosition, position);
     return { ...circle, position: circlePosition };

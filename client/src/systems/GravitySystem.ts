@@ -7,11 +7,19 @@ import { GravityForceComponent } from '../components/GravityForceComponent';
 
 // Gravity constant
 const G = 1;
+const DISTANCE_TO_CHANGE_FORCE_DIRECTION = 250;
 
 /***
  * Calculates gravity forces between entities with mass
  */
 export class GravitySystem implements System {
+  private inverseGravityWhenClose: boolean;
+
+  constructor() {
+    const params = new URLSearchParams(window.location.search);
+    this.inverseGravityWhenClose = params.get('inverse_gravity') !== null;
+  }
+
   update(registry: EntityRegistry): void {
     const elements = registry.findEntitiesByComponents(['mass', 'position']);
 
@@ -25,9 +33,13 @@ export class GravitySystem implements System {
         const e2 = elements[j];
         const distVector = sub(e1.position, e2.position);
         const distance = length(distVector);
-        const F = Math.abs(distance) > EPS
+        let F = Math.abs(distance) > EPS
           ? G * e1.mass * e2.mass / (distance * distance)
           : 0;
+
+        if (this.inverseGravityWhenClose && distance < DISTANCE_TO_CHANGE_FORCE_DIRECTION) {
+          F *= -1;
+        }
         const distNormalized = divByScalar(distVector, distance);
         forces[i] = add(forces[i], mulByScalar(distNormalized, -F));
         forces[j] = add(forces[j], mulByScalar(distNormalized, F));

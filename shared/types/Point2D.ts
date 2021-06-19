@@ -23,8 +23,21 @@ export function mulByScalar(a: Point2D, scalar: number) {
   return { x: a.x * scalar, y: a.y * scalar };
 }
 
+export function negate(a: Point2D): Point2D {
+  return mulByScalar(a, -1);
+}
+
 export function divByScalar(a: Point2D, scalar: number) {
   return { x: a.x / scalar, y: a.y / scalar };
+}
+
+
+export function normalize(a: Point2D): Point2D {
+  return divByScalar(a, length(a));
+}
+
+export function dot(a: Point2D, b: Point2D): number {
+  return a.x * b.x + a.y * b.y;
 }
 
 export function copy(a: Point2D): Point2D {

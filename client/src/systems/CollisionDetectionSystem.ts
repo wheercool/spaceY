@@ -3,10 +3,10 @@ import { EntityRegistry } from '../entities/EntityRegistry';
 import { Entity } from '../entities/Entity';
 import { BoundariesComponent, BoundingCircle, positionAbsolute } from '../components/BoundariesComponent';
 import { PositionComponent } from '../components/PositionComponent';
-import { RotationComponent } from '../components/RotationComponent';
 import { distanceBetween } from '@shared/types/Point2D';
+import { EntityBuilder } from '../entities/EntityBuilder';
 
-type CollisionEntity = Entity & { boundaries: BoundariesComponent, position: PositionComponent, rotation: RotationComponent };
+type CollisionEntity = Entity & { boundaries: BoundariesComponent, position: PositionComponent };
 
 /***
  * Detects collisions between entities with boundins
@@ -16,12 +16,17 @@ export class CollisionDetectionSystem implements System {
   }
 
   update(registry: EntityRegistry): void {
-    const entities = registry.findEntitiesByComponents(['boundaries', 'position', 'rotation']);
+    const entities = registry.findEntitiesByComponents(['boundaries', 'position']);
     for (let i = 0; i < entities.length; i++) {
       for (let j = i + 1; j < entities.length; j++) {
         if (this.collides(entities[i], entities[j])) {
-          console.log('Detected');
-          // detected
+          const collisionEntity = new EntityBuilder()
+            .applyComponent('collision', {
+              entity1: entities[i].id,
+              entity2: entities[j].id
+            })
+            .build();
+          registry.addEntity(collisionEntity);
         }
       }
     }
@@ -29,8 +34,10 @@ export class CollisionDetectionSystem implements System {
 
   private collides(e1: CollisionEntity,
                    e2: CollisionEntity) {
-    const firstCircles = positionAbsolute(e1.boundaries, e1.position, e1.rotation);
-    const secondCircles = positionAbsolute(e2.boundaries, e2.position, e2.rotation);
+    const firstAngle = EntityBuilder.fromEntity(e1).getOrDefault('rotation', 0);
+    const secondAngle = EntityBuilder.fromEntity(e2).getOrDefault('rotation', 0);
+    const firstCircles = positionAbsolute(e1.boundaries, e1.position, firstAngle);
+    const secondCircles = positionAbsolute(e2.boundaries, e2.position, secondAngle);
     return firstCircles.some(bounding => secondCircles.some(
       bounding2 => CollisionDetectionSystem.isCirclesIntersected(bounding, bounding2))
     );

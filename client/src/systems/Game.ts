@@ -9,6 +9,7 @@ import { MovementSystem } from './MovementSystem';
 import { ClockSystem } from './ClockSystem';
 import { AccelerationSystem } from './AccelerationSystem';
 import { CollisionDetectionSystem } from './CollisionDetectionSystem';
+import { CollisionResolutionSystem } from './CollisionResolutionSystem';
 
 
 export class Game implements System {
@@ -27,6 +28,7 @@ export class Game implements System {
       new AccelerationSystem(),
       new MovementSystem(),
       new CollisionDetectionSystem(),
+      new CollisionResolutionSystem(),
       this.renderer,
     ]);
   }
@@ -81,7 +83,8 @@ export class Game implements System {
       .applyComponents({
         position: { x: 300, y: 100 },
         model: 'planet',
-        mass: 100000,
+        mass: 10000,
+        static: true,
         boundaries: [{
           radius: 100,
           position: { x: 0, y: 0 }
@@ -91,7 +94,7 @@ export class Game implements System {
 
     const kepler = new EntityBuilder()
       .applyComponents({
-        position: { x: -100, y: 100 },
+        position: { x: 0, y: 100 },
         model: 'kepler',
         boundaries: [
           {
@@ -105,9 +108,10 @@ export class Game implements System {
 
     const asteroid = new EntityBuilder()
       .applyComponents({
-        position: { x: 200, y: -200 },
+        position: { x: 200, y: 0 },
         model: 'asteroid',
-        // mass: 100
+        mass: 100,
+        asteroid: true,
         boundaries: [
           {
             position: {x: 0, y: 2},

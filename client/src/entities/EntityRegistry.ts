@@ -35,4 +35,12 @@ export class EntityRegistry {
     }
     throw new Error(`Cannot find entity with components: ${components.join(',')}`)
   }
+
+  findById(id: number) {
+    const entity = this.entities.find(entity => entity.id === id);
+    if (!entity) {
+      throw new Error(`Cannot find entity with id: ${id}`)
+    }
+    return entity;
+  }
 }

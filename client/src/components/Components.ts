@@ -12,6 +12,9 @@ import { PlayerComponent } from './PlayerComponent';
 import { ModelComponent } from './ModelComponent';
 import { CameraAtComponent } from './CameraAtComponent';
 import { BoundariesComponent } from './BoundariesComponent';
+import { CollisionComponent } from './CollisionComponent';
+import { StaticComponent } from './StaticComponent';
+import { AsteroidComponent } from './AsteroidComponent';
 
 export interface ComponentsRegistry {
   rotation: RotationComponent;
@@ -28,6 +31,9 @@ export interface ComponentsRegistry {
   cameraAt: CameraAtComponent;
   time: TimeComponent;
   boundaries: BoundariesComponent;
+  collision: CollisionComponent;
+  static: StaticComponent;
+  asteroid: AsteroidComponent;
 }
 
 export type ComponentValue<Cmp extends keyof CmpRegistry, CmpRegistry> = CmpRegistry[Cmp];

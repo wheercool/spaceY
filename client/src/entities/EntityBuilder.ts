@@ -28,7 +28,7 @@ export class EntityBuilder<CmpRegistry = ComponentsRegistry> {
     return this;
   }
 
-  getOrDefault<Cmp extends keyof CmpRegistry>(component: Cmp, value: ComponentValue<Cmp, CmpRegistry>): ComponentValue<Cmp, CmpRegistry> {
+  getOrDefault<Cmp extends keyof CmpRegistry, Value>(component: Cmp, value: Value): ComponentValue<Cmp, CmpRegistry> | Value {
     const entity = this.entity as any;
     if (entity[component] !== undefined) {
       return entity[component]
