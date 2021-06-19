@@ -1,6 +1,6 @@
 import { System } from './System';
 import { EntityRegistry } from '../entities/EntityRegistry';
-import { add, copy, mulByScalar } from '@shared/types/GameState';
+import { add, copy, mulByScalar } from '@shared/types/Point2D';
 import { EntityBuilder } from '../entities/EntityBuilder';
 
 /***

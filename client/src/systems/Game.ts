@@ -8,6 +8,7 @@ import { GravitySystem } from './GravitySystem';
 import { MovementSystem } from './MovementSystem';
 import { ClockSystem } from './ClockSystem';
 import { AccelerationSystem } from './AccelerationSystem';
+import { CollisionDetectionSystem } from './CollisionSystem';
 
 
 export class Game implements System {
@@ -25,6 +26,7 @@ export class Game implements System {
       new GravitySystem(),
       new AccelerationSystem(),
       new MovementSystem(),
+      new CollisionDetectionSystem(),
       this.renderer,
     ]);
   }
@@ -34,6 +36,21 @@ export class Game implements System {
   }
 
   startGame() {
+    this.initEntities();
+    this.compositor.init(this.registry);
+    this.update();
+  }
+
+  update() {
+    this.compositor.update(this.registry);
+    this.rafHandle = requestAnimationFrame(() => this.update());
+  }
+
+  private initEntities() {
+    const game = new EntityBuilder(-1)
+      .applyComponent('iteration', 0)
+      .build()
+
     const spaceship = new EntityBuilder()
       .applyComponents({
         player: true,
@@ -42,7 +59,21 @@ export class Game implements System {
         position: { x: 0, y: 0 },
         pullingForce: { x: 0, y: 0 },
         model: 'starship',
-        mass: 1
+        mass: 1,
+        boundaries: [
+          {
+            radius: 20,
+            position: { x: 0, y: 20 }
+          },
+          {
+            radius: 20,
+            position: { x: 18, y: -14 }
+          },
+          {
+            radius: 20,
+            position: { x: -18, y: -14 }
+          },
+        ]
       })
       .build()
 
@@ -50,7 +81,11 @@ export class Game implements System {
       .applyComponents({
         position: { x: 300, y: 100 },
         model: 'planet',
-        mass: 100000
+        mass: 100000,
+        boundaries: [{
+          radius: 100,
+          position: { x: 0, y: 0 }
+        }]
       })
       .build()
 
@@ -58,6 +93,12 @@ export class Game implements System {
       .applyComponents({
         position: { x: -100, y: 100 },
         model: 'kepler',
+        boundaries: [
+          {
+            position: {x: 0, y: 0},
+            radius: 33
+          }
+        ],
         mass: 10000
       })
       .build()
@@ -66,21 +107,21 @@ export class Game implements System {
       .applyComponents({
         position: { x: 200, y: -200 },
         model: 'asteroid',
-        mass: 100
+        // mass: 100
+        boundaries: [
+          {
+            position: {x: 0, y: 2},
+            radius: 19
+          }
+        ]
       })
       .build()
 
+    this.registry.addEntity(game);
     this.registry.addEntity(spaceship)
     this.registry.addEntity(planet);
     this.registry.addEntity(kepler);
     this.registry.addEntity(asteroid);
 
-    this.compositor.init(this.registry);
-    this.update();
-  }
-
-  update() {
-    this.compositor.update(this.registry);
-    this.rafHandle = requestAnimationFrame(() => this.update());
   }
 }

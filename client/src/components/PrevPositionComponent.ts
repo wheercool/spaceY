@@ -1,4 +1,4 @@
-import { Point2D } from '@shared/types/GameState';
+import { Point2D } from '@shared/types/Point2D';
 
 /***
  * Position of the entity in the previous iteration

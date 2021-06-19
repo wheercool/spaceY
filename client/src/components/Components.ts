@@ -1,5 +1,3 @@
-import { Point2D } from '@shared/types/GameState';
-import { Model } from '../services/AssetsManager';
 import { InputComponent } from './InputComponent';
 import { TimeComponent } from './TimeComponent';
 import { PositionComponent } from './PositionComponent';
@@ -13,7 +11,7 @@ import { IterationComponent } from './IterationComponent';
 import { PlayerComponent } from './PlayerComponent';
 import { ModelComponent } from './ModelComponent';
 import { CameraAtComponent } from './CameraAtComponent';
-import { BoundingComponent } from './BoundingComponent';
+import { BoundariesComponent } from './BoundariesComponent';
 
 export interface ComponentsRegistry {
   rotation: RotationComponent;
@@ -29,7 +27,7 @@ export interface ComponentsRegistry {
   model: ModelComponent;
   cameraAt: CameraAtComponent;
   time: TimeComponent;
-  bounding: BoundingComponent;
+  boundaries: BoundariesComponent;
 }
 
 export type ComponentValue<Cmp extends keyof CmpRegistry, CmpRegistry> = CmpRegistry[Cmp];

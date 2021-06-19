@@ -1,5 +1,5 @@
 /***
- * Describe game time.
+ * Describe time.
  * @current - current time
  * @dt - time delta between game iterations
  */

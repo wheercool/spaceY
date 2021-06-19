@@ -44,19 +44,4 @@ describe('Compositor', () => {
     expect(updateMock).toHaveBeenNthCalledWith(2, 'system2', registry);
     expect(updateMock).toHaveBeenNthCalledWith(3, 'system3', registry);
   })
-
-  it('should count iterations', () => {
-    const registry = new EntityRegistry();
-    const compositor = new CompositorSystem([]);
-    compositor.init(registry);
-    compositor.update(registry);
-
-    const iterations = registry.findEntitiesByComponents(['iteration']);
-    expect(iterations.length).toEqual(1);
-    const iteration = iterations[0];
-    expect(iteration.iteration).toEqual(1);
-
-    compositor.update(registry);
-    expect(iteration.iteration).toEqual(2);
-  })
 })

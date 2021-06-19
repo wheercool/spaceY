@@ -1,4 +1,4 @@
-import { Point2D } from '@shared/types/GameState';
+import { Point2D } from '@shared/types/Point2D';
 
 /***
  * Gravity force which is calculated based on the Newton`s Universal Gravitation formula.

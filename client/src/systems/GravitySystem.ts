@@ -1,8 +1,9 @@
 import { System } from './System';
 import { EntityRegistry } from '../entities/EntityRegistry';
-import { add, divByScalar, length, mulByScalar, Point2D, sub } from '@shared/types/GameState';
+import { add, divByScalar, length, mulByScalar, sub } from '@shared/types/Point2D';
 import { EntityBuilder } from '../entities/EntityBuilder';
 import { EPS } from '../utils';
+import { GravityForceComponent } from '../components/GravityForceComponent';
 
 // Gravity constant
 const G = 1;
@@ -14,7 +15,7 @@ export class GravitySystem implements System {
   update(registry: EntityRegistry): void {
     const elements = registry.findEntitiesByComponents(['mass', 'position']);
 
-    const forces: Point2D[] = [];
+    const forces: GravityForceComponent[] = [];
     for (let i = 0; i < elements.length; i++) {
       forces.push({ x: 0, y: 0 });
     }

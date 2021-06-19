@@ -1,7 +1,7 @@
 import { System } from './System';
 import { EntityRegistry } from '../entities/EntityRegistry';
 import { EntityBuilder } from '../entities/EntityBuilder';
-import { add, divByScalar } from '@shared/types/GameState';
+import { add, divByScalar } from '@shared/types/Point2D';
 
 
 // Entity with that mass or above will not move

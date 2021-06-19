@@ -1,4 +1,4 @@
-import { Point2D } from '@shared/types/GameState';
+import { Point2D } from '@shared/types/Point2D';
 
 /***
  * Force that can be applied to the entity in order to change it's position or movement.

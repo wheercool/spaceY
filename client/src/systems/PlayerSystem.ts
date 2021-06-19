@@ -1,7 +1,7 @@
 import { System } from './System';
 import { EntityRegistry } from '../entities/EntityRegistry';
-import { Point2D } from '@shared/types/GameState';
 import { InputComponent } from '../components/InputComponent';
+import { PullingForceComponent } from '../components/PullingForceComponent';
 
 const STEP = Math.PI / 100;
 const PULLING_FORCE_VALUE = 3;
@@ -26,7 +26,7 @@ export class PlayerSystem implements System {
     this.handleInput(inputEntity.input, player);
   }
 
-  private handleInput(input: InputComponent, player: { rotation: number, pullingForce: Point2D }) {
+  private handleInput(input: InputComponent, player: { rotation: number, pullingForce: PullingForceComponent }) {
     if (input.left) {
       player.rotation += STEP;
     }
