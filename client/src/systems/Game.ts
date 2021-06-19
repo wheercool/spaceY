@@ -8,7 +8,7 @@ import { GravitySystem } from './GravitySystem';
 import { MovementSystem } from './MovementSystem';
 import { ClockSystem } from './ClockSystem';
 import { AccelerationSystem } from './AccelerationSystem';
-import { CollisionDetectionSystem } from './CollisionSystem';
+import { CollisionDetectionSystem } from './CollisionDetectionSystem';
 
 
 export class Game implements System {
