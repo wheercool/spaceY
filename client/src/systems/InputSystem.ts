@@ -4,7 +4,10 @@ import { Controller } from '../services/Controller';
 import { EntityBuilder } from '../entities/EntityBuilder';
 import { InputComponent } from '../components/InputComponent';
 
-export class Input implements System {
+/***
+ * Updates inputs based on the user interaction
+ */
+export class InputSystem implements System {
   private controller: Controller;
 
   constructor() {

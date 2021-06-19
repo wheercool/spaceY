@@ -7,7 +7,11 @@ const STEP = Math.PI / 100;
 const PULLING_FORCE_VALUE = 3;
 const BACK_FORCE_VALUE = PULLING_FORCE_VALUE;
 
-export class Player implements System {
+/***
+ * Handles inputs.
+ * Changes player's rotation, pullingForce
+ */
+export class PlayerSystem implements System {
   init(registry: EntityRegistry) {
 
   }

@@ -2,7 +2,10 @@ import { System } from './System';
 import { EntityRegistry } from '../entities/EntityRegistry';
 import { EntityBuilder } from '../entities/EntityBuilder';
 
-export class Clock implements System {
+/***
+ * Counts game time
+ */
+export class ClockSystem implements System {
   init(registry: EntityRegistry): void {
     const clock = new EntityBuilder()
       .applyComponent('time', {

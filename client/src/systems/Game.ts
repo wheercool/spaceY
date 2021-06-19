@@ -1,30 +1,30 @@
-import { Compositor } from './Compositor';
+import { CompositorSystem } from './CompositorSystem';
 import { EntityRegistry } from '../entities/EntityRegistry';
 import { System } from './System';
 import { EntityBuilder } from '../entities/EntityBuilder';
-import { Input } from './Input';
-import { Player } from './Player';
-import { Gravity } from './Gravity';
-import { Movement } from './Movement';
-import { Clock } from './Clock';
-import { Acceleration } from './Acceleration';
+import { InputSystem } from './InputSystem';
+import { PlayerSystem } from './PlayerSystem';
+import { GravitySystem } from './GravitySystem';
+import { MovementSystem } from './MovementSystem';
+import { ClockSystem } from './ClockSystem';
+import { AccelerationSystem } from './AccelerationSystem';
 
 
 export class Game implements System {
-  private compositor!: Compositor;
+  private compositor!: CompositorSystem;
   private registry: EntityRegistry = new EntityRegistry();
   private rafHandle: number = -1;
 
   constructor(
     private readonly renderer: System
   ) {
-    this.compositor = new Compositor([
-      new Clock(),
-      new Input(),
-      new Player(),
-      new Gravity(),
-      new Acceleration(),
-      new Movement(),
+    this.compositor = new CompositorSystem([
+      new ClockSystem(),
+      new InputSystem(),
+      new PlayerSystem(),
+      new GravitySystem(),
+      new AccelerationSystem(),
+      new MovementSystem(),
       this.renderer,
     ]);
   }

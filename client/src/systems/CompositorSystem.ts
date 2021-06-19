@@ -2,7 +2,10 @@ import { System } from './System';
 import { EntityRegistry } from '../entities/EntityRegistry';
 import { EntityBuilder } from '../entities/EntityBuilder';
 
-export class Compositor implements System {
+/***
+ * Combines multiple systems together and controls the order
+ */
+export class CompositorSystem implements System {
   constructor(public readonly systems: System[]) {
   }
 
@@ -20,5 +23,4 @@ export class Compositor implements System {
       system.update(registry);
     }
   }
-
 }

@@ -18,7 +18,10 @@ import { System } from './System';
 import { EntityBuilder } from '../entities/EntityBuilder';
 import { Entity } from '../entities/Entity';
 
-export class WebGL3DRenderer implements System {
+/***
+ * Renders entities with model
+ */
+export class WebGL3DRendererSystem implements System {
   private scene: Scene;
   private renderer: Renderer;
   private camera: PerspectiveCamera;

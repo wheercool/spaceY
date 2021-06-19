@@ -2,12 +2,15 @@ import { System } from './System';
 import { EntityRegistry } from '../entities/EntityRegistry';
 import { add, divByScalar, length, mulByScalar, Point2D, sub } from '@shared/types/GameState';
 import { EntityBuilder } from '../entities/EntityBuilder';
+import { EPS } from '../utils';
 
 // Gravity constant
 const G = 1;
-const eps = 0.000001;
 
-export class Gravity implements System {
+/***
+ * Calculates gravity forces between entities with mass
+ */
+export class GravitySystem implements System {
   update(registry: EntityRegistry): void {
     const elements = registry.findEntitiesByComponents(['mass', 'position']);
 
@@ -21,7 +24,7 @@ export class Gravity implements System {
         const e2 = elements[j];
         const distVector = sub(e1.position, e2.position);
         const distance = length(distVector);
-        const F = Math.abs(distance) > eps
+        const F = Math.abs(distance) > EPS
           ? G * e1.mass * e2.mass / (distance * distance)
           : 0;
         const distNormalized = divByScalar(distVector, distance);
@@ -32,8 +35,7 @@ export class Gravity implements System {
 
     for (let i = 0; i < elements.length; i++) {
       EntityBuilder.fromEntity(elements[i])
-        .applyComponent('gravity', forces[i])
-        .build();
+        .applyComponent('gravityForce', forces[i])
     }
   }
 

@@ -2,7 +2,7 @@ import React, { createRef } from 'react';
 import './App.css';
 import { Game } from './systems/Game';
 import { assetsManager } from './services/AssetsManager';
-import { WebGL3DRenderer } from './systems/WebGL3DRenderer';
+import { WebGL3DRendererSystem } from './systems/WebGL3DRendererSystem';
 
 class App extends React.Component {
   canvasRef = createRef<HTMLCanvasElement>();
@@ -10,16 +10,11 @@ class App extends React.Component {
   HEIGHT = window.innerHeight - 100;
   game!: Game;
 
-  // game!: ClientGame;
-
   async componentDidMount() {
     if (!this.canvasRef.current) {
       return;
     }
-    const renderer = new WebGL3DRenderer(this.canvasRef.current)
-    // const controller: Controller = new Controller();
-    // // const transport: Transport = new WebsocketTransport();
-    // const transport: Transport = new DebugWebsocketTransport();
+    const renderer = new WebGL3DRendererSystem(this.canvasRef.current)
     await assetsManager.load();
     this.game = new Game(renderer);
     this.game.startGame();

@@ -3,7 +3,10 @@ import { EntityRegistry } from '../entities/EntityRegistry';
 import { add, copy, mulByScalar } from '@shared/types/GameState';
 import { EntityBuilder } from '../entities/EntityBuilder';
 
-export class Movement implements System {
+/***
+ * Calculates the next position of the entity based on the stermer-verle formula (by means of position, prevPosition and acceleration)
+ */
+export class MovementSystem implements System {
   update(registry: EntityRegistry): void {
     const elements = registry.findEntitiesByComponents(['position', 'acceleration']);
 
