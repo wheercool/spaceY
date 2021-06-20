@@ -20,13 +20,18 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { assetsManager, Model } from '../services/AssetsManager';
 import { EntityBuilder } from '../entities/EntityBuilder';
 import { Entity } from '../entities/Entity';
-import { BoundingCircle, positionAbsolute } from '../components/BoundariesComponent';
+import { BoundariesComponent, BoundingCircle, positionAbsolute } from '../components/BoundariesComponent';
 import { PositionComponent } from '../components/PositionComponent';
 import { System } from './System';
-import { dot, length, normalize, Point2D } from '@shared/types/Point2D';
+import { length, normalize, Point2D } from '@shared/types/Point2D';
+import { RotationComponent } from '../components/RotationComponent';
+import { AccelerationComponent } from '../components/AccelerationComponent';
+import { JumpComponent } from '../components/JumpComponent';
 
 type RendererEntity = Entity & { model: Model, position: PositionComponent };
 const CAMERA_HEIGHT = 600;
+const UP_JUMP = 100;
+const DOWN_JUMP = -100;
 
 /***
  * Renders entities with model
@@ -38,8 +43,9 @@ export class WebGL3DRendererSystem implements System {
   private controls: OrbitControls;
   private models: Object3D;
   private pointLight: PointLight;
-  private isBondariesVisible: boolean = false;
-  private isAccelerationVisible: boolean = false;
+  private isBondariesVisible = false;
+  private isAccelerationVisible = false;
+  private isAxesVisible = false;
 
   constructor(private canvas: HTMLCanvasElement) {
     this.initFlags();
@@ -56,11 +62,14 @@ export class WebGL3DRendererSystem implements System {
     this.camera.rotation.x = Math.PI;
 
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);
-    const axes = new AxesHelper();
-    axes.scale.multiplyScalar(1000);
+    if (this.isAxesVisible) {
+      const axes = new AxesHelper();
+      axes.scale.multiplyScalar(1000);
+      this.scene.add(axes);
+    }
+
     this.pointLight = new PointLight(new Color('#ffffff'));
     const ambient = new AmbientLight();
-    this.scene.add(axes);
     this.scene.add(ambient);
     this.scene.add(this.pointLight);
   }
@@ -71,7 +80,19 @@ export class WebGL3DRendererSystem implements System {
   update(registry: EntityRegistry): void {
     this.models.remove(...this.models.children);
     const models = registry.findEntitiesByComponents(['model', 'position']);
-    models.forEach(shape => this.renderEntity(shape));
+    models.forEach(model => {
+      const builder = EntityBuilder.fromEntity(model);
+      const jump = builder.getOrDefault('jump', false);
+      this.renderEntity(model, {
+        acceleration: builder.getOrDefault('acceleration', null),
+        rotation: builder.getOrDefault('rotation', 0),
+        boundaries: builder.getOrDefault('boundaries', []),
+        jump
+      });
+      if (jump === false) {
+        builder.removeComponent('jump');
+      }
+    });
 
     const cameraAt = registry.findEntitiesByComponents(['cameraAt', 'position']);
     if (cameraAt.length > 0) {
@@ -86,29 +107,32 @@ export class WebGL3DRendererSystem implements System {
     this.renderer.render(this.scene, this.camera);
   }
 
-  private renderEntity(entity: RendererEntity) {
+  private renderEntity(entity: RendererEntity, options: {
+    rotation: RotationComponent,
+    boundaries: BoundariesComponent,
+    acceleration: AccelerationComponent | null,
+    jump: JumpComponent | false
+  }) {
     const { model, position } = entity;
-
     const object = assetsManager.getModel(model);
+
     object.position.setX(position.x);
     object.position.setY(position.y)
-    const builder = EntityBuilder.fromEntity(entity);
-    const rotation = builder
-      .getOrDefault('rotation', 0);
-
+    if (options.jump === false) {
+      object.position.setZ(0);
+    } else {
+      object.position.setZ(options.jump === JumpComponent.Up ? UP_JUMP : DOWN_JUMP);
+    }
 
     if (this.isBondariesVisible) {
-      const boundaries = builder
-        .getOrDefault('boundaries', []);
-      const circles = positionAbsolute(boundaries, entity.position, rotation)
+      const circles = positionAbsolute(options.boundaries, entity.position, options.rotation)
       this.renderBoundaries(circles);
     }
-    object.rotation.set(0, 0, rotation);
+    object.rotation.set(0, 0, options.rotation);
 
     if (this.isAccelerationVisible) {
-      const acceleration = builder.getOrDefault('acceleration', null);
-      if (acceleration) {
-        this.renderAcceleration(position, acceleration);
+      if (options.acceleration) {
+        this.renderAcceleration(position, options.acceleration);
       }
     }
     this.models.add(object);
@@ -118,6 +142,7 @@ export class WebGL3DRendererSystem implements System {
     const params = new URLSearchParams(window.location.search);
     this.isBondariesVisible = params.get('boundaries') !== null;
     this.isAccelerationVisible = params.get('acceleration') !== null;
+    this.isAxesVisible = params.get('axes') !== null;
   }
 
   private renderBoundaries(circles: BoundingCircle[]) {

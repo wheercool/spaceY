@@ -1,8 +1,8 @@
 import React, { createRef } from 'react';
-import './App.css';
 import { Game } from './systems/Game';
 import { assetsManager } from './services/AssetsManager';
 import { WebGL3DRendererSystem } from './systems/WebGL3DRendererSystem';
+import { Router } from './ui/components/Router/Router';
 
 class App extends React.Component {
   canvasRef = createRef<HTMLCanvasElement>();

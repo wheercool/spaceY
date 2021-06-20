@@ -1,0 +1,23 @@
+.requirements {
+
+}
+.header {
+  font-size: 21px;
+  font-weight: normal;
+  margin-top: 0px;
+  margin-bottom: 30px;
+}
+.requirement {
+  font-size: 18px;
+  font-weight: normal;
+  display: flex;
+  margin-bottom: 10px;
+  align-items: center;
+}
+.requirementName {
+
+}
+.requirementMet {
+  margin-left: auto;
+  width: 24px;
+}

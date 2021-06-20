@@ -1,0 +1,31 @@
+:global(body.stationPage) {
+  background-image: url('public/assets/images/station.png');
+  background-repeat: no-repeat;
+  background-size: 100% auto;
+}
+
+.wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+
+.buttons {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.header {
+  color: #FFFFFF;
+  text-align: center;
+  margin: 0 0 20px;
+  font-size: 21px;
+  font-weight: normal;
+}
+
+.buttons button + button {
+  margin-top: 20px;
+}

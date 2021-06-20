@@ -15,6 +15,7 @@ import { BoundariesComponent } from './BoundariesComponent';
 import { CollisionComponent } from './CollisionComponent';
 import { StaticComponent } from './StaticComponent';
 import { AsteroidComponent } from './AsteroidComponent';
+import { JumpComponent } from './JumpComponent';
 
 export interface ComponentsRegistry {
   rotation: RotationComponent;
@@ -34,6 +35,7 @@ export interface ComponentsRegistry {
   collision: CollisionComponent;
   static: StaticComponent;
   asteroid: AsteroidComponent;
+  jump: JumpComponent;
 }
 
 export type ComponentValue<Cmp extends keyof CmpRegistry, CmpRegistry> = CmpRegistry[Cmp];

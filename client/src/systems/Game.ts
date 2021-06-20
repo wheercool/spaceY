@@ -94,7 +94,7 @@ export class Game implements System {
 
     const kepler = new EntityBuilder()
       .applyComponents({
-        position: { x: 0, y: 100 },
+        position: { x: 200, y: 100 },
         model: 'kepler',
         boundaries: [
           {
@@ -108,7 +108,7 @@ export class Game implements System {
 
     const asteroid = new EntityBuilder()
       .applyComponents({
-        position: { x: 200, y: 0 },
+        position: { x: 0, y: 100 },
         model: 'asteroid',
         mass: 100,
         asteroid: true,

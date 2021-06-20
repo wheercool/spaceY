@@ -1,0 +1,32 @@
+.mainContainer {
+  margin: auto;
+  max-height: calc(100vh - 40px);
+  display: flex;
+  flex-direction: column;
+}
+
+.mainContainerNormal {
+  width: 90%;
+}
+.mainContainerSmall {
+  max-width: 800px;
+}
+.header {
+  flex: 0;
+  text-align: center;
+  color: #E5E5E5;
+  /*color: #484848;*/
+  font-size: 21px;
+  background: rgba(196, 196, 196, 0.67);
+  /*background: #5b608b;*/
+  padding: 10px;
+}
+
+.main {
+  flex: 1;
+  overflow: auto;
+  padding: 20px;
+  border: 1px solid #9BE0F6;
+  border-top: none;
+  background: rgba(76, 88, 140, 0.41);
+}

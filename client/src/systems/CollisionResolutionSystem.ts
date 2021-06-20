@@ -1,8 +1,7 @@
 import { System } from './System';
 import { EntityRegistry } from '../entities/EntityRegistry';
 import { EntityBuilder } from '../entities/EntityBuilder';
-import { negate } from '@shared/types/Point2D';
-import { Entity, hasEntityComponent } from '../entities/Entity';
+import { JumpComponent } from '../components/JumpComponent';
 
 export class CollisionResolutionSystem implements System {
   init(registry: EntityRegistry): void {
@@ -12,22 +11,33 @@ export class CollisionResolutionSystem implements System {
     const entities = registry.findEntitiesByComponents(['collision']);
 
     for (const { collision, id: collisionId } of entities) {
-      const first = registry.findById(collision.entity1);
-      const second = registry.findById(collision.entity1);
-      const collided = [first, second];
-      let player: Entity | undefined,
-          asteroid: Entity | undefined;
-      for (let entity of collided) {
-        if (hasEntityComponent(entity, 'player')) {
-          player = entity;
+      try {
+        const first = EntityBuilder.fromEntity(registry.findById(collision.entity1));
+        const second = EntityBuilder.fromEntity(registry.findById(collision.entity2));
+        const collided = [first, second];
+        let player: EntityBuilder | undefined,
+            asteroid: EntityBuilder | undefined;
+        for (let entity of collided) {
+          if (entity.getOrDefault('player', false)) {
+            player = entity;
+          }
+          if (entity.getOrDefault('asteroid', false)) {
+            asteroid = entity;
+          }
         }
-        if (hasEntityComponent(entity, 'asteroid')) {
-          asteroid = entity;
-        }
-      }
 
-      if (asteroid && player) {
-        registry.removeEntity(asteroid.id);
+        if (asteroid && player) {
+          registry.removeEntity(asteroid.build().id);
+        } else {
+          if (player) {
+            player.applyComponent('jump', JumpComponent.Up);
+          }
+        }
+        if (!player) {
+          first.applyComponent('jump', JumpComponent.Down);
+        }
+      } catch (e) {
+        console.error(e);
       }
       registry.removeEntity(collisionId);
     }

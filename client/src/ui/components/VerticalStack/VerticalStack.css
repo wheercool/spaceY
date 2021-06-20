@@ -1,0 +1,12 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+.content {
+
+}
+.rest {
+  flex: 1;
+  overflow: auto;
+}
