@@ -10,7 +10,12 @@
 .buttonFixed {
   min-width: 200px;
 }
-
+.buttonSmall {
+  padding: 7px 20px;
+}
+.buttonFixed.buttonSmall {
+ min-width: 100px;
+}
 .button:hover {
   background-color: rgba(76, 88, 140, 1);
   border: 2px solid rgba(155, 224, 246, 1);

@@ -1,0 +1,19 @@
+.spaceshipFacts {
+}
+
+.spaceshipFact {
+  display: flex;
+  font-size: 18px;
+  font-weight: normal;
+  margin-bottom: 10px;
+  align-items: center;
+}
+
+.factName {
+
+}
+
+.factValue {
+  margin-left: auto;
+}
+

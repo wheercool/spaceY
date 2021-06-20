@@ -2,13 +2,14 @@ import * as React from 'react';
 import style from './Grid.css';
 
 interface Size {
-  size?: 'medium' | 'big' | 'small'
+  size?: 'medium' | 'big' | 'small' | 'auto'
 }
 
 const sizeWidth = {
   'medium': '50%',
   'small': '25%',
-  'big': '75%'
+  'big': '75%',
+  'auto': 'auto'
 }
 
 const Container: React.FC = (

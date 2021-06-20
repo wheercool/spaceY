@@ -1,0 +1,76 @@
+.spaceshipEquipment {
+}
+
+.spaceshipEquipmentItem {
+  font-size: 18px;
+}
+
+.spaceshipEquipmentItem {
+  margin: 20px 0;
+}
+
+.spaceshipEquipmentItem header {
+  display: flex;
+  align-items: baseline;
+  background: #4C588C;
+  padding: 10px;
+}
+
+.equipmentName {
+  margin: 0;
+}
+
+.equipmentLevel {
+  margin: 0;
+  margin-left: 10px;
+}
+
+.upgradeContainer {
+  margin-left: auto;
+}
+
+.equipmentBodyContainer {
+  background-color: rgba(196, 196, 196, 0.4);
+}
+
+.equipmentImage {
+  width: 128px;
+  height: auto;
+}
+
+.mainColumnWrapper {
+  padding-left: 40px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.columnWrapper {
+  padding-top: 20px;
+  padding-left: 20px;
+}
+
+.facts {
+  margin-right: 20px;
+  min-width: 200px;
+}
+
+.fact {
+  font-weight: normal;
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.factName {
+  margin-right: auto;
+}
+
+.arrowRight {
+  margin: 0 5px;
+}
+
+.buttonWrapper {
+  text-align: right;
+  padding: 15px;
+}
