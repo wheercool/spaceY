@@ -1,23 +1,37 @@
 import * as React from 'react';
 import style from './Grid.css';
 
-export const Container: React.FC = (
+interface Size {
+  size?: 'medium' | 'big' | 'small'
+}
+
+const sizeWidth = {
+  'medium': '50%',
+  'small': '25%',
+  'big': '75%'
+}
+
+const Container: React.FC = (
   {
     children
   }) => {
   return <div className={style.grid}>{children}</div>
 }
-export const MainColumn: React.FC = (
+
+const MainColumn: React.FC<Size> = (
   {
+    size = 'big',
     children,
   }) => {
-  return <div className={style.mainColumn}>{children}</div>
+  return <div className={style.mainColumn} style={{ width: sizeWidth[size] }}>{children}</div>
 }
-export const SecondColumn: React.FC = (
+const SecondColumn: React.FC<Size> = (
   {
+    size = 'small',
     children
   }) => {
-  return <div className={style.secondColumn}>{children}</div>
+
+  return <div className={style.secondColumn} style={{ width: sizeWidth[size] }}>{children}</div>
 }
 
 export const Grid = {

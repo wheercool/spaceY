@@ -1,0 +1,28 @@
+:global(body.dockPage)  {
+  background-image: url('public/assets/images/dock_screen.png');
+  background-repeat: no-repeat;
+  background-size: 100% auto;
+}
+.carouselWrapper {
+  margin-bottom: 15px;
+}
+.buttons {
+  margin-top: auto;
+  display: flex;
+}
+
+.buttons button + button {
+  margin-left: auto;
+}
+
+.cost {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 21px;
+  font-weight: normal;
+  margin-bottom: 40px;
+}
+
+.spaceshipWrapper {
+  margin: auto;
+}

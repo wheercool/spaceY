@@ -5,11 +5,14 @@
 }
 
 .mainColumn {
-  width: 75%;
   padding-bottom: 20px;
 }
 
 .secondColumn {
-  width: 25%;
   padding: 0 20px;
+}
+
+.mediumColumn {
+  width: 50%;
+  padding-bottom: 20px;
 }
