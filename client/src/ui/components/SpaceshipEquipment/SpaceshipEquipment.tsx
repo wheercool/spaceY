@@ -4,33 +4,27 @@ import rocket from '/public/assets/images/rocket.png';
 import energyShield from '/public/assets/images/energy_shield.png';
 import gravityGun from '/public/assets/images/gravity_gun.png';
 import turret from '/public/assets/images/turret.png';
-import { Equipment, EquipmentItem, Fact, mergeFacts } from '../../../types';
+import { EquipmentName, Fact, mergeFacts } from '../../../types';
 import { Grid } from '../Grid/Grid';
 import { UpgradeButton } from '../UpgradeButton/UpgradeButton';
 import arrowRight from '/public/assets/images/arrow-right.svg';
 import { Button } from '../Button/Button';
 import classNames from 'classnames';
+import { observer } from 'mobx-react';
+import { useStore } from '../../../stores/store';
+import { Weapon } from '../../../stores/Weapon';
 
-const equipmentImages = {
+const equipmentImages: Record<EquipmentName, string> = {
   'rocket': rocket,
   'energy_shield': energyShield,
   'gravity_gun': gravityGun,
   'turret': turret
 }
 
-
 export type EquipmentImage = keyof typeof equipmentImages;
 
-interface SpaceshipEquipment {
-  equipment: Equipment;
-
-  onUpgrade(): void;
-}
-
 interface SpaceshipEquipmentItem {
-  equipment: EquipmentItem;
-
-  onUpgrade(): void;
+  equipment: Weapon;
 }
 
 interface SpaceshipFacts {
@@ -73,7 +67,6 @@ export const SpaceshipFactsWithUpgrades: React.FC<SpaceshipFactsWithUpgrades> = 
 export const SpaceshipEquipmentItem: React.FC<SpaceshipEquipmentItem> = (
   {
     equipment,
-    onUpgrade
   }
 ) => {
   return <div className={style.spaceshipEquipmentItem}>
@@ -81,7 +74,7 @@ export const SpaceshipEquipmentItem: React.FC<SpaceshipEquipmentItem> = (
       <p className={style.equipmentName}>{equipment.name}</p>
       <p className={style.equipmentLevel}>level {equipment.level}</p>
       {equipment.canUpgrade && <div className={style.upgradeContainer}>
-        <UpgradeButton onClick={onUpgrade}/>
+        <UpgradeButton onClick={equipment.upgrade}/>
         +{equipment.cost}$
       </div>}
     </header>
@@ -89,7 +82,7 @@ export const SpaceshipEquipmentItem: React.FC<SpaceshipEquipmentItem> = (
       <Grid.Container>
         <Grid.MainColumn>
           <div className={classNames(style.mainColumnWrapper)} style={{ opacity: equipment.bought ? 1 : 0.3 }}>
-            <img className={style.equipmentImage} src={equipmentImages[equipment.image]} alt={equipment.name}/>
+            <img className={style.equipmentImage} src={equipmentImages[equipment.name]} alt={equipment.name}/>
           </div>
         </Grid.MainColumn>
         <Grid.SecondColumn size={'auto'}>
@@ -110,12 +103,13 @@ export const SpaceshipEquipmentItem: React.FC<SpaceshipEquipmentItem> = (
     </div>
   </div>
 }
-export const SpaceshipEquipment: React.FC<SpaceshipEquipment> = (
-  { equipment, onUpgrade }
+export const SpaceshipEquipment: React.FC = observer((
 ) => {
+  const spaceships = useStore('Spaceships');
+
   return <div className={style.spaceshipEquipment}>
-    {equipment.map(item => <SpaceshipEquipmentItem key={item.name}
-                                                   equipment={item} onUpgrade={onUpgrade}/>)}
+    {spaceships.currentSpaceship.weapons.map(item => <SpaceshipEquipmentItem key={item.name}
+                                                   equipment={item}/>)}
   </div>
-}
+})
 

@@ -10,10 +10,13 @@ export enum SpaceshipName {
   Storm    = 'Storm',
   Valkiria = 'Valkiria'
 }
-
-
+export enum EquipmentName {
+  Rocket = 'rocket',
+  Turret = 'turret',
+  EnergyShield = 'energy_shield',
+  GravityGun = 'gravity_gun'
+}
 export type SpaceshipFacts = Fact[];
-
 export interface Fact {
   name: string;
   value: string;

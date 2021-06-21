@@ -8,64 +8,52 @@ import { Page } from '../Page';
 import { ContentContainer } from '../../components/ContentContainer/ContentContainer';
 import { Grid } from '../../components/Grid/Grid';
 import { VerticalStack } from 'src/ui/components/VerticalStack/VerticalStack';
-import { Equipment, QuestRequirement, SpaceshipFacts, SpaceshipName } from '../../../types';
+import { Equipment } from '../../../types';
 import { Spaceship } from '../../components/Spaceship/Spaceship';
 import { SpaceshipInfo } from '../../components/SpaceshipInfo/SpaceshipInfo';
 import { SpaceshipEquipment } from '../../components/SpaceshipEquipment/SpaceshipEquipment';
 import { useStore } from '../../../stores/store';
+import { observer } from 'mobx-react';
 
-function noop() {
-
-}
-
-const requirements: QuestRequirement[] = [
-  { name: 'Gravity gun', met: true },
-  { name: 'Quest #1', met: false },
-  { name: 'Turret', met: false },
-]
-const spaceshipInfo: SpaceshipFacts = [
-  { name: 'Speed', value: 'fast' },
-  { name: 'Weight', value: 'light' },
-]
-
-const spaceshipEquipment: Equipment = [
-  {
-    bought: true,
-    name: 'Rockets',
-    level: 1,
-    canUpgrade: true,
-    canBuy: false,
-    image: 'rocket',
-    cost: 200,
-    facts: [
-      { name: 'speed', value: '1' },
-      { name: 'power', value: '1' },
-      { name: 'coldown', value: '1' },
-    ],
-    upgradedFacts: [
-      { name: 'speed', value: '2' },
-      { name: 'power', value: '3' },
-      { name: 'coldown', value: '4' },
-    ]
-  },
-  {
-    bought: false,
-    name: 'Energy shield',
-    level: 1,
-    canUpgrade: false,
-    canBuy: true,
-    image: 'energy_shield',
-    cost: 200,
-    facts: [
-      { name: 'consumption', value: '1' },
-      { name: 'test', value: '100' },
-    ],
-    upgradedFacts: []
-  }
-]
-
-export function DockPage() {
+// const spaceshipEquipment: Equipment = [
+//   {
+//     bought: true,
+//     name: 'Rockets',
+//     level: 1,
+//     canUpgrade: true,
+//     canBuy: false,
+//     image: 'rocket',
+//     cost: 200,
+//     facts: [
+//       { name: 'speed', value: '1' },
+//       { name: 'power', value: '1' },
+//       { name: 'coldown', value: '1' },
+//     ],
+//     upgradedFacts: [
+//       { name: 'speed', value: '2' },
+//       { name: 'power', value: '3' },
+//       { name: 'coldown', value: '4' },
+//     ]
+//   },
+//   {
+//     bought: false,
+//     name: 'Energy shield',
+//     level: 1,
+//     canUpgrade: false,
+//     canBuy: true,
+//     image: 'energy_shield',
+//     cost: 200,
+//     facts: [
+//       { name: 'consumption', value: '1' },
+//       { name: 'test', value: '100' },
+//     ],
+//     upgradedFacts: []
+//   }
+// ]
+//
+export const DockPage = observer(() => {
   const router = useStore('Router');
+  const spaceships = useStore('Spaceships');
 
   return <Page page="dockPage">
     <MainContainer title='Dock' size={MainContainerSize.Normal}>
@@ -77,18 +65,18 @@ export function DockPage() {
                 <VerticalStack.Content>
                   <div className={style.carouselWrapper}>
                     <Carousel
-                      title="Valkiria"
-                      onNext={noop}
-                      onPrev={noop}
-                      hasNext={true}
-                      hasPrev={true}
+                      title={spaceships.currentSpaceship.name}
+                      onNext={spaceships.nextSpaceship}
+                      onPrev={spaceships.prevSpaceship}
+                      hasNext={spaceships.hasNextSpaceship}
+                      hasPrev={spaceships.hasPrevSpaceship}
                     />
                   </div>
                 </VerticalStack.Content>
                 <VerticalStack.Rest>
                   <ContentContainer>
                     <div className={style.spaceshipWrapper}>
-                      <Spaceship name={SpaceshipName.Rabbit} locked/>
+                      <Spaceship name={spaceships.currentSpaceship.name} locked/>
                     </div>
                   </ContentContainer>
                 </VerticalStack.Rest>
@@ -96,8 +84,8 @@ export function DockPage() {
             </Grid.MainColumn>
             <Grid.SecondColumn size={'medium'}>
               <p className={style.cost}>Cost: 200$</p>
-              <SpaceshipInfo info={spaceshipInfo}/>
-              <SpaceshipEquipment equipment={spaceshipEquipment} onUpgrade={noop}/>
+              <SpaceshipInfo info={spaceships.currentSpaceship.info}/>
+              <SpaceshipEquipment/>
             </Grid.SecondColumn>
           </Grid.Container>
         </VerticalStack.Rest>
@@ -110,4 +98,4 @@ export function DockPage() {
       </VerticalStack.Container>
     </MainContainer>
   </Page>
-}
+})
