@@ -10,6 +10,8 @@ import { Grid } from '../../components/Grid/Grid';
 import { VerticalStack } from 'src/ui/components/VerticalStack/VerticalStack';
 import { QuestRequirements } from '../../components/QuestRequirements/QuestRequirements';
 import { QuestRequirement } from '../../../types';
+import {observer} from 'mobx-react';
+import { useStore } from '../../../stores/store';
 
 function noop() {
 
@@ -21,7 +23,9 @@ const requirements: QuestRequirement[] = [
   { name: 'Turret', met: false },
 ]
 
-export function QuestPage() {
+export const QuestPage = observer(() => {
+  const store = useStore('RootStore');
+
   return <Page page="questPage">
     <MainContainer title='Tavern' size={MainContainerSize.Normal}>
       <VerticalStack.Container>
@@ -32,8 +36,8 @@ export function QuestPage() {
                 <VerticalStack.Content>
                   <div className={style.carouselWrapper}>
                     <Carousel
-                      title="Quest #1"
-                      onNext={noop}
+                      title={store.quest}
+                      onNext={store.onNext}
                       onPrev={noop}
                       hasNext={true}
                       hasPrev={true}
@@ -176,3 +180,4 @@ export function QuestPage() {
     </MainContainer>
   </Page>
 }
+)
