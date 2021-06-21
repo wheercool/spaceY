@@ -16,5 +16,7 @@ export const Button: React.FC<Button> = (
     small,
     children
   }) => {
-  return <button className={classNames(style.button, { [style.buttonFixed]: !!fixed, [style.buttonSmall]: !!small })}>{children}</button>
+  return <button className={classNames(style.button, { [style.buttonFixed]: !!fixed, [style.buttonSmall]: !!small })}
+                 onClick={onClick}
+  >{children}</button>
 }

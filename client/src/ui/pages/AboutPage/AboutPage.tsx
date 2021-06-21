@@ -5,8 +5,11 @@ import { MainContainer, MainContainerSize } from '../../components/MainContainer
 
 import style from './AboutPage.css';
 import { Page } from '../Page';
+import { useStore } from '../../../stores/store';
 
 export function AboutPage() {
+  const router = useStore('Router');
+
   return <Page page="startPage">
     <div className={style.wrapper}>
       <MainContainer title='About' size={MainContainerSize.Small}>
@@ -21,7 +24,7 @@ export function AboutPage() {
         <p className={style.center}>wheercool@gmail.com</p>
 
         <div className={style.buttons}>
-          <Button fixed onClick={() => alert('Back')}>Back</Button>
+          <Button fixed onClick={router.goToStart}>Back</Button>
         </div>
       </MainContainer>
     </div>

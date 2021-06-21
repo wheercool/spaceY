@@ -25,6 +25,7 @@ const requirements: QuestRequirement[] = [
 
 export const QuestPage = observer(() => {
   const store = useStore('RootStore');
+  const router = useStore('Router');
 
   return <Page page="questPage">
     <MainContainer title='Tavern' size={MainContainerSize.Normal}>
@@ -172,7 +173,7 @@ export const QuestPage = observer(() => {
         </VerticalStack.Rest>
         <VerticalStack.Content>
           <div className={style.buttons}>
-            <Button fixed onClick={() => alert('Hello')}>Back</Button>
+            <Button fixed onClick={router.gotoStation}>Back</Button>
             <Button fixed onClick={() => alert('Hello')}>Accept</Button>
           </div>
         </VerticalStack.Content>

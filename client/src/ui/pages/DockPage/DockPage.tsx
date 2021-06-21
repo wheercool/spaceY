@@ -12,6 +12,7 @@ import { Equipment, QuestRequirement, SpaceshipFacts, SpaceshipName } from '../.
 import { Spaceship } from '../../components/Spaceship/Spaceship';
 import { SpaceshipInfo } from '../../components/SpaceshipInfo/SpaceshipInfo';
 import { SpaceshipEquipment } from '../../components/SpaceshipEquipment/SpaceshipEquipment';
+import { useStore } from '../../../stores/store';
 
 function noop() {
 
@@ -64,6 +65,8 @@ const spaceshipEquipment: Equipment = [
 ]
 
 export function DockPage() {
+  const router = useStore('Router');
+
   return <Page page="dockPage">
     <MainContainer title='Dock' size={MainContainerSize.Normal}>
       <VerticalStack.Container>
@@ -100,7 +103,7 @@ export function DockPage() {
         </VerticalStack.Rest>
         <VerticalStack.Content>
           <div className={style.buttons}>
-            <Button fixed onClick={() => alert('Hello')}>Back</Button>
+            <Button fixed onClick={router.gotoStation}>Back</Button>
             <Button fixed onClick={() => alert('Hello')}>Buy</Button>
           </div>
         </VerticalStack.Content>

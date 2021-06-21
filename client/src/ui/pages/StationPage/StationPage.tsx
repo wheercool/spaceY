@@ -8,20 +8,19 @@ import { Page } from '../Page';
 import { Card } from '../../components/Card/Card';
 import dockImage from '/public/assets/images/dock_screen.png';
 import tavernScreen from '/public/assets/images/quest_screen.png';
+import { useStore } from '../../../stores/store';
 
 
 export function StationPage() {
+  const router = useStore('Router');
   return <Page page="stationPage">
-    {/*<div className={style.wrapper}>*/}
-    <MainContainer title='Station' size={MainContainerSize.Small}>
-      <Card title="Dock" image={dockImage} onEnter={() => {
-      }}>
+    <MainContainer title="Station" size={MainContainerSize.Small}>
+      <Card title="Dock" image={dockImage} onEnter={router.goToDock}>
         <p>Dock - a place where you can buy, or improve your equipment. </p>
         <p>Collect money to buy stronger spaceships.
           Spend money to improve your weapons</p>
       </Card>
-      <Card title="Tavern" image={tavernScreen} onEnter={() => {
-      }}>
+      <Card title="Tavern" image={tavernScreen} onEnter={router.goToTavern}>
         <p>Here you can pick a quest.</p>
         <p>There are 3 different types of quests:</p>
         <ul>
@@ -32,9 +31,8 @@ export function StationPage() {
 
       </Card>
       <div className={style.buttonWrapper}>
-        <Button fixed onClick={() => alert('Hello')}>Exit</Button>
+        <Button fixed onClick={router.goToStart}>Exit</Button>
       </div>
     </MainContainer>
-    {/*</div>*/}
   </Page>
 }
