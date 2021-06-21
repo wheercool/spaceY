@@ -1,0 +1,34 @@
+.card {
+ color: #FFFFFF;
+}
+.cardHeader {
+  background: rgba(196, 196, 196, 0.67);
+  padding: 7px 10px;
+}
+
+.container {
+  display: flex;
+}
+.imageWrapper {
+  width: 50%;
+  height: 100%;
+  object-fit: cover;
+}
+.cardImage {
+  width: 100%;
+  height: 100%;
+}
+
+.contentWrapper {
+  padding-left: 20px;
+  padding-right: 20px;
+}
+.contentWrapper p {
+  margin: 0;
+  margin-bottom: 15px;
+}
+
+.buttonWrapper {
+  text-align: right;
+  margin: 15px;
+}

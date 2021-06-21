@@ -17,7 +17,9 @@
   color: #E5E5E5;
   /*color: #484848;*/
   font-size: 21px;
-  background: rgba(196, 196, 196, 0.67);
+  /*background: rgba(196, 196, 196, 0.67);*/
+  background: rgba(149, 171, 224, 0.6797);
+;
   /*background: #5b608b;*/
   padding: 10px;
 }
@@ -26,7 +28,7 @@
   flex: 1;
   overflow: auto;
   padding: 20px;
-  border: 1px solid #9BE0F6;
+  border: 1px solid rgba(149, 171, 224, 0.6797);
   border-top: none;
   background: rgba(76, 88, 140, 0.41);
 }

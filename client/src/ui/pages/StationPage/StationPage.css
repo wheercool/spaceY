@@ -26,6 +26,7 @@
   font-weight: normal;
 }
 
-.buttons button + button {
-  margin-top: 20px;
+.buttonWrapper {
+  text-align: right;
+  margin-top: 15px;
 }

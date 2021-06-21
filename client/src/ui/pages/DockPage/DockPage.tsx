@@ -94,7 +94,7 @@ export function DockPage() {
             <Grid.SecondColumn size={'medium'}>
               <p className={style.cost}>Cost: 200$</p>
               <SpaceshipInfo info={spaceshipInfo}/>
-              <SpaceshipEquipment equipment={spaceshipEquipment}/>
+              <SpaceshipEquipment equipment={spaceshipEquipment} onUpgrade={noop}/>
             </Grid.SecondColumn>
           </Grid.Container>
         </VerticalStack.Rest>

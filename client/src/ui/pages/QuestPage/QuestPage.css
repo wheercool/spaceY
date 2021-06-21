@@ -1,11 +1,13 @@
-:global(body.questPage)  {
+:global(body.questPage) {
   background-image: url('public/assets/images/quest_screen.png');
   background-repeat: no-repeat;
   background-size: 100% auto;
 }
+
 .carouselWrapper {
   margin-bottom: 15px;
 }
+
 .buttons {
   margin-top: auto;
   display: flex;
@@ -17,8 +19,11 @@
 
 .reward {
   text-align: center;
-  margin-top: 20px;
+  margin-top: 15px;
   font-size: 21px;
   font-weight: normal;
   margin-bottom: 40px;
+  background: #525f90;
+  padding: 7px;
+  border-radius: 2px;
 }

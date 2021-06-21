@@ -1,22 +1,32 @@
 .requirements {
-
+  background: #8997acad;
+  padding: 0 15px 15px;
 }
+
 .header {
   font-size: 21px;
   font-weight: normal;
-  margin-top: 0px;
-  margin-bottom: 30px;
+  background: #87a0cb;
+  padding: 10px;
+  margin: -15px -15px 15px;
 }
+
 .requirement {
-  font-size: 18px;
+  font-size: 16px;
   font-weight: normal;
   display: flex;
-  margin-bottom: 10px;
   align-items: center;
+  margin-bottom: 15px;
 }
-.requirementName {
 
+.requirement + .requirement {
+  border-top: 1px solid #525f90;
+  padding-top: 15px;
 }
+
+.requirementName {
+}
+
 .requirementMet {
   margin-left: auto;
   width: 24px;

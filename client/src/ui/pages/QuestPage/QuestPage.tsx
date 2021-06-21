@@ -23,7 +23,7 @@ const requirements: QuestRequirement[] = [
 
 export function QuestPage() {
   return <Page page="questPage">
-    <MainContainer title='Quest' size={MainContainerSize.Normal}>
+    <MainContainer title='Tavern' size={MainContainerSize.Normal}>
       <VerticalStack.Container>
         <VerticalStack.Rest>
           <Grid.Container>
@@ -32,7 +32,7 @@ export function QuestPage() {
                 <VerticalStack.Content>
                   <div className={style.carouselWrapper}>
                     <Carousel
-                      title="Quest"
+                      title="Quest #1"
                       onNext={noop}
                       onPrev={noop}
                       hasNext={true}

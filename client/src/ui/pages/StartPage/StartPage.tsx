@@ -9,8 +9,7 @@ import { Page } from '../Page';
 export function StartPage() {
   return <Page page="startPage">
     <div className={style.wrapper}>
-      <MainContainer title='SPACEY' size={MainContainerSize.Small}>
-        <h1 className={style.header}>Main menu</h1>
+      <MainContainer title='SPACEY' size={MainContainerSize.Normal}>
         <div className={style.buttons}>
           <Button fixed onClick={() => alert('Hello')}>Start</Button>
           <Button fixed onClick={() => alert('Hello')}>About</Button>
