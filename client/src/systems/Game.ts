@@ -10,6 +10,7 @@ import { ClockSystem } from './ClockSystem';
 import { AccelerationSystem } from './AccelerationSystem';
 import { CollisionDetectionSystem } from './CollisionDetectionSystem';
 import { CollisionResolutionSystem } from './CollisionResolutionSystem';
+import { WorldBoundarySystem } from './WorldBoundarySystem';
 
 
 export class Game implements System {
@@ -21,6 +22,7 @@ export class Game implements System {
     private readonly renderer: System
   ) {
     this.compositor = new CompositorSystem([
+      new WorldBoundarySystem(),
       new ClockSystem(),
       new InputSystem(),
       new PlayerSystem(),
@@ -92,6 +94,33 @@ export class Game implements System {
       })
       .build()
 
+
+        const planet2 = new EntityBuilder()
+      .applyComponents({
+        position: { x: 450, y: 200 },
+        model: 'planet',
+        mass: 10000,
+        static: true,
+        boundaries: [{
+          radius: 100,
+          position: { x: 0, y: 0 }
+        }]
+      })
+      .build()
+
+        const planet3 = new EntityBuilder()
+      .applyComponents({
+        position: { x: 300, y: 500 },
+        model: 'planet',
+        mass: 10000,
+        static: true,
+        boundaries: [{
+          radius: 100,
+          position: { x: 0, y: 0 }
+        }]
+      })
+      .build()
+
     const kepler = new EntityBuilder()
       .applyComponents({
         position: { x: 200, y: 100 },
@@ -124,6 +153,8 @@ export class Game implements System {
     this.registry.addEntity(game);
     this.registry.addEntity(spaceship)
     this.registry.addEntity(planet);
+    this.registry.addEntity(planet2);
+    this.registry.addEntity(planet3);
     this.registry.addEntity(kepler);
     this.registry.addEntity(asteroid);
 

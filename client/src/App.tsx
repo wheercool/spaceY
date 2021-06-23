@@ -1,31 +1,26 @@
-import React, { createRef } from 'react';
+import React, { createRef, useEffect } from 'react';
 import { Game } from './systems/Game';
 import { assetsManager } from './services/AssetsManager';
 import { WebGL3DRendererSystem } from './systems/WebGL3DRendererSystem';
-import { Router } from './ui/components/Router/Router';
 
-class App extends React.Component {
-  canvasRef = createRef<HTMLCanvasElement>();
-  WIDTH = window.innerWidth - 10;
-  HEIGHT = window.innerHeight - 100;
-  game!: Game;
+function App() {
+  const canvasRef = createRef<HTMLCanvasElement>();
+  const WIDTH = window.innerWidth - 10;
+  const HEIGHT = window.innerHeight - 100;
 
-  async componentDidMount() {
-    if (!this.canvasRef.current) {
+  useEffect(() => {
+    if (!canvasRef.current) {
       return;
     }
-    const renderer = new WebGL3DRendererSystem(this.canvasRef.current)
-    await assetsManager.load();
-    this.game = new Game(renderer);
-    this.game.startGame();
-  }
+    const renderer = new WebGL3DRendererSystem(canvasRef.current)
+    assetsManager.load().then(() => {
+      new Game(renderer).startGame();
+    })
+  }, []);
 
-  render() {
-    return <div className="app">
-      <h1>Game</h1>
-      <canvas style={{ padding: 5, width: this.WIDTH, height: this.HEIGHT }} width={this.WIDTH} height={this.HEIGHT} ref={this.canvasRef}/>
-    </div>
-  }
+  return <div className="app">
+    <canvas style={{ padding: 5, width: WIDTH, height: HEIGHT }} width={WIDTH} height={HEIGHT} ref={canvasRef}/>
+  </div>
 }
 
 

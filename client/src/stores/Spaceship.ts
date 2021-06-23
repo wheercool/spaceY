@@ -4,6 +4,7 @@ import { Weapon } from './Weapon';
 
 export class Spaceship {
   @observable weapons: Weapon[] = [];
+  @observable cost = 0;
 
   constructor(
     public readonly name: SpaceshipName,

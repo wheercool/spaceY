@@ -11,10 +11,10 @@ export enum SpaceshipName {
   Valkiria = 'Valkiria'
 }
 export enum EquipmentName {
-  Rocket = 'rocket',
-  Turret = 'turret',
-  EnergyShield = 'energy_shield',
-  GravityGun = 'gravity_gun'
+  Rocket = 'Rocket',
+  Turret = 'Turret',
+  EnergyShield = 'Energy shield',
+  GravityGun = 'Gravity Gun'
 }
 export type SpaceshipFacts = Fact[];
 export interface Fact {

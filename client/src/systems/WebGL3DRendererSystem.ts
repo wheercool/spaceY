@@ -79,6 +79,7 @@ export class WebGL3DRendererSystem implements System {
 
   update(registry: EntityRegistry): void {
     this.models.remove(...this.models.children);
+    console.log(this.models.children.length);
     const models = registry.findEntitiesByComponents(['model', 'position']);
     models.forEach(model => {
       const builder = EntityBuilder.fromEntity(model);
@@ -89,9 +90,8 @@ export class WebGL3DRendererSystem implements System {
         boundaries: builder.getOrDefault('boundaries', []),
         jump
       });
-      if (jump === false) {
-        builder.removeComponent('jump');
-      }
+      //TODO: Put in separate system
+      builder.removeComponent('jump');
     });
 
     const cameraAt = registry.findEntitiesByComponents(['cameraAt', 'position']);

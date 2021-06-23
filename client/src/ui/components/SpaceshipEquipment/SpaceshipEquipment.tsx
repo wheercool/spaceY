@@ -15,10 +15,10 @@ import { useStore } from '../../../stores/store';
 import { Weapon } from '../../../stores/Weapon';
 
 const equipmentImages: Record<EquipmentName, string> = {
-  'rocket': rocket,
-  'energy_shield': energyShield,
-  'gravity_gun': gravityGun,
-  'turret': turret
+  [EquipmentName.Rocket]: rocket,
+  [EquipmentName.EnergyShield]: energyShield,
+  [EquipmentName.GravityGun]: gravityGun,
+  [EquipmentName.Turret]: turret
 }
 
 export type EquipmentImage = keyof typeof equipmentImages;
@@ -36,7 +36,7 @@ interface SpaceshipFactsWithUpgrades {
   upgradedFacts: Fact[];
 }
 
-export const SpaceshipFacts: React.FC<SpaceshipFacts> = (
+export const SpaceshipFacts: React.FC<SpaceshipFacts> = observer((
   {
     facts
   }) => {
@@ -47,24 +47,25 @@ export const SpaceshipFacts: React.FC<SpaceshipFacts> = (
         <div className={style.factValue}>{fact.value}</div>
       </div>)}
   </div>
-}
-export const SpaceshipFactsWithUpgrades: React.FC<SpaceshipFactsWithUpgrades> = (
+})
+
+export const SpaceshipFactsWithUpgrades: React.FC<SpaceshipFactsWithUpgrades> = observer((
   {
     facts,
     upgradedFacts
   }) => {
   const mergedFacts = mergeFacts(facts, upgradedFacts);
   return <div className={style.facts}>
-    {mergedFacts.map(fact => <div className={style.fact}>
+    {mergedFacts.map(fact => <div className={style.fact} key={fact.name}>
       <div className={style.factName}>{fact.name}</div>
       <div className={style.factOldValue}>{fact.value}</div>
       {fact.newValue !== '' && <img className={style.arrowRight} src={arrowRight} alt="arrow right"/>}
       <div className={style.factNewValue}>{fact.newValue}</div>
     </div>)}
   </div>
-}
+})
 
-export const SpaceshipEquipmentItem: React.FC<SpaceshipEquipmentItem> = (
+export const SpaceshipEquipmentItem: React.FC<SpaceshipEquipmentItem> = observer((
   {
     equipment,
   }
@@ -102,7 +103,8 @@ export const SpaceshipEquipmentItem: React.FC<SpaceshipEquipmentItem> = (
 
     </div>
   </div>
-}
+})
+
 export const SpaceshipEquipment: React.FC = observer((
 ) => {
   const spaceships = useStore('Spaceships');

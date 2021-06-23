@@ -83,7 +83,7 @@ export const DockPage = observer(() => {
               </VerticalStack.Container>
             </Grid.MainColumn>
             <Grid.SecondColumn size={'medium'}>
-              <p className={style.cost}>Cost: 200$</p>
+              <p className={style.cost}>Cost: {spaceships.currentSpaceship.cost}$</p>
               <SpaceshipInfo info={spaceships.currentSpaceship.info}/>
               <SpaceshipEquipment/>
             </Grid.SecondColumn>

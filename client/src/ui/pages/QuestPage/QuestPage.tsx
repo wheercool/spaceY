@@ -174,7 +174,7 @@ export const QuestPage = observer(() => {
         <VerticalStack.Content>
           <div className={style.buttons}>
             <Button fixed onClick={router.gotoStation}>Back</Button>
-            <Button fixed onClick={() => alert('Hello')}>Accept</Button>
+            <Button fixed onClick={router.goToPlay}>Accept</Button>
           </div>
         </VerticalStack.Content>
       </VerticalStack.Container>

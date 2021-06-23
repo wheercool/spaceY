@@ -5,19 +5,33 @@ export class Weapon {
   @observable bought: boolean = false;
   @observable level: number = 1;
 
-  @computed get canUpgrade(): boolean {
-    return false;
+  private get index() {
+    return this.level - 1;
   }
 
-  @computed get canBuy(): false {
+  @computed get canUpgrade(): boolean {
+    return (this.index + 1) < this.allFacts.length;
+  }
+
+  @computed get canBuy(): boolean {
     return false;
   }
 
   @observable cost: number = 0;
 
-  @observable facts: Fact[] = []
+  @computed get facts(): Fact[] {
+    return this.index < this.allFacts.length
+      ? this.allFacts[this.index]
+      : [];
+  }
 
-  @observable upgradedFacts: Fact[] = []
+  @computed get upgradedFacts(): Fact[] {
+    return (this.index + 1) < this.allFacts.length
+      ? this.allFacts[this.index + 1]
+      : [];
+  }
+
+  @observable allFacts: Fact[][] = [];
 
   constructor(
     public readonly name: EquipmentName
@@ -26,7 +40,7 @@ export class Weapon {
   }
 
   @action.bound upgrade() {
-
+    this.level++;
   }
 
   update(config: Partial<Weapon>) {

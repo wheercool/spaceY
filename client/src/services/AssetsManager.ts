@@ -115,7 +115,7 @@ export class AssetsManager {
   }
 
   getModel(model: Model): Object3D {
-    return this.models[model].mesh;
+    return this.models[model].mesh.clone(true);
   }
 
   private manager: LoadingManager;
