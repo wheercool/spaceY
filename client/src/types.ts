@@ -1,5 +1,3 @@
-import { EquipmentImage } from './ui/components/SpaceshipEquipment/SpaceshipEquipment';
-
 export enum Brand {
   EntityId,
   TimeSpan,
@@ -44,20 +42,8 @@ export enum EquipmentName {
   GravityGun   = 'Gravity Gun'
 }
 
-export enum FactId {
-  Consumption,
-  Power,
-  Text,
-  Cooldown,
-  Speed,
-}
-export type SpaceshipFacts = Fact[];
 
-// export interface Fact {
-//   id: FactId,
-//   name: string;
-//   displayValue: string;
-// }
+export type SpaceshipFacts = Fact[];
 
 export interface ConsumptionFact {
   name: 'consumption';
@@ -88,20 +74,6 @@ export interface WeightFact {
   value: number;
 }
 export type Fact = ConsumptionFact | PowerFact | CooldownFact | SpeedFact | WeightFact;
-
-export type Equipment = EquipmentItem[];
-
-export interface EquipmentItem {
-  name: string;
-  image: EquipmentImage;
-  level: number;
-  cost: number;
-  canUpgrade: boolean;
-  canBuy: boolean;
-  facts: Fact[];
-  upgradedFacts: Fact[];
-  bought: boolean;
-}
 
 export interface MergedFact {
   name: Fact['name'];

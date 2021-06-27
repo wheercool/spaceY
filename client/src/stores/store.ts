@@ -6,6 +6,7 @@ import { WalletStore } from './WalletStore';
 import { MinimapStore } from './MinimapStore';
 import { SpaceshipPanelStore } from './SpaceshipPanelStore/SpaceshipPanelStore';
 import { SpaceStore } from './SpaceStore';
+import { QuestStore } from './QuestStore';
 
 const rootStore = new RootStore();
 const walletStore = new WalletStore();
@@ -18,5 +19,6 @@ export const { StoreProvider, useStore } = createContext({
   Wallet: walletStore,
   Minimap: new MinimapStore(),
   SpaceshipPanel: new SpaceshipPanelStore(),
-  Space: new SpaceStore(routerStore, dockStore)
+  Space: new SpaceStore(routerStore, dockStore),
+  Quest: new QuestStore()
 });

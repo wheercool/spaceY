@@ -4,7 +4,7 @@ import { EntityBuilder } from '../entities/EntityBuilder';
 import { createGravityBehaviour, GravityTagName } from '../components/GravityBehaviourComponent';
 import { Point2D } from '@shared/types/Point2D';
 import { Entity } from '../entities/Entity';
-import { EquipmentName, Fact, FactId, makeSeconds, SpaceshipName } from '../types';
+import { EquipmentName, Fact, makeSeconds, SpaceshipName } from '../types';
 import { createGravityGun, GravityGunComponent } from '../components/GravityGunComponent';
 import { RouterStore } from './RouterStore';
 import { Spaceship } from './Spaceship';
