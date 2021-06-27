@@ -16,7 +16,7 @@ const SpaceshipInfoItem: React.FC<SpaceshipInfoItem> = (
 ) => {
   return <div className={style.spaceshipFact}>
     <div className={style.factName}>{fact.name}</div>
-    <div className={style.factValue}>{fact.value}</div>
+    <div className={style.factValue}>{fact.displayValue}</div>
   </div>;
 }
 

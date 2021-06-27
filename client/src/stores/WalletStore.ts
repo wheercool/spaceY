@@ -2,7 +2,7 @@ import { action, makeObservable, observable } from 'mobx';
 
 export class WalletStore {
   @observable money: number = 0;
-  @observable ownedSpaceships = new Set<number>()
+  @observable ownedSpaceships = new Set<number>([0])
 
   constructor() {
     makeObservable(this);

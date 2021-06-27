@@ -1,7 +1,6 @@
 import { CompositorSystem } from './CompositorSystem';
 import { EntityRegistry } from '../entities/EntityRegistry';
 import { System } from './System';
-import { EntityBuilder } from '../entities/EntityBuilder';
 import { InputSystem } from './InputSystem';
 import { PlayerSystem } from './PlayerSystem';
 import { GravitySystem } from './GravitySystem';
@@ -12,21 +11,15 @@ import { CollisionDetectionSystem } from './CollisionDetectionSystem';
 import { CollisionResolutionSystem } from './CollisionResolutionSystem';
 import { WorldBoundarySystem } from './WorldBoundarySystem';
 import { TurretSystem } from './TurretSystem';
-import { makeSeconds, SpaceshipName } from '../types';
-import { createGravityBehaviour, GravityTagName } from '../components/GravityBehaviourComponent';
 import { MaxSpeedSystem } from './MaxSpeedSystem';
-import { Point2D } from '@shared/types/Point2D';
 import { UiNotificationSystem } from './UiNotificationSystem';
-import { createGravityGun } from '../components/GravityGunComponent';
 import { GravityGunSystem } from './GravityGunSystem';
-import { Entity } from '../entities/Entity';
 
 
 export class Game implements System {
   private compositor!: CompositorSystem;
   private registry: EntityRegistry = new EntityRegistry();
   private rafHandle: number = -1;
-  private player: Entity;
 
   constructor(
     private readonly renderer: System,

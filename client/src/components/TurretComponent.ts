@@ -11,4 +11,5 @@ export interface TurretComponent {
   position: Point2D;
   triggered: boolean;
   cooldown: number;
+  power: number;
 }

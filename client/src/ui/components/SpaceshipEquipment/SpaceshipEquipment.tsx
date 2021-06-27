@@ -45,7 +45,7 @@ export const SpaceshipFacts: React.FC<SpaceshipFacts> = observer((
     {facts.map(fact =>
       <div className={style.fact}>
         <div className={style.factName}>{fact.name}</div>
-        <div className={style.factValue}>{fact.value}</div>
+        <div className={style.factValue}>{fact.displayValue}</div>
       </div>)}
   </div>
 })

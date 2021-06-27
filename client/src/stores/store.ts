@@ -9,13 +9,14 @@ import { SpaceStore } from './SpaceStore';
 
 const rootStore = new RootStore();
 const walletStore = new WalletStore();
-
+const routerStore = new RouterStore();
+const dockStore = new DockStore(walletStore);
 export const { StoreProvider, useStore } = createContext({
   RootStore: rootStore,
-  Router: new RouterStore(),
-  Dock: new DockStore(walletStore),
+  Router: routerStore,
+  Dock: dockStore,
   Wallet: walletStore,
   Minimap: new MinimapStore(),
   SpaceshipPanel: new SpaceshipPanelStore(),
-  Space: new SpaceStore()
+  Space: new SpaceStore(routerStore, dockStore)
 });

@@ -9,19 +9,20 @@ const createEnergyShield = () => {
     cost: 300,
     allFacts: [
       [
-        { name: 'consumption', value: '1' },
+        { name: 'consumption', displayValue: '1', value: 1},
       ],
       [
-        { name: 'consumption', value: '1.5' },
+        { name: 'consumption', displayValue: '1.5', value: 1.5},
       ]
     ]
   });
 }
 
 const rabbit = new Spaceship(SpaceshipName.Rabbit, [
-  { name: 'Speed', value: 'very fast' },
-  { name: 'Weight', value: 'light' },
+  { name: 'speed', displayValue: 'very fast', value: 8},
+  { name: 'weight', displayValue: 'light', value: 0.5},
 ]);
+
 rabbit.cost = 0;
 
 rabbit.weapons = [
@@ -29,17 +30,17 @@ rabbit.weapons = [
     .update({
       cost: 100,
       allFacts: [
-        [{ name: 'consumption', value: '1' }],
-        [{ name: 'consumption', value: '0.9' }],
-        [{ name: 'consumption', value: '0.8' }]
+        [{ name: 'consumption', displayValue: '1' , value: 1}, { name: 'power', displayValue: 'low', value: 100000}],
+        [{ name: 'consumption', displayValue: '0.9', value: 0.9}, { name: 'power', displayValue: 'medium', value: 400000}],
+        [{ name: 'consumption', displayValue: '0.8', value: 0.8}, { name: 'power', displayValue: 'high', value: 1000000}]
       ]
     }),
   createEnergyShield()
 ]
 
 const storm = new Spaceship(SpaceshipName.Storm, [
-  { name: 'Speed', value: 'fast' },
-  { name: 'Weight', value: 'medium' },
+  { name: 'speed', displayValue: 'fast', value: 4 },
+  { name: 'weight', displayValue: 'medium', value: 1},
 ]);
 storm.cost = 1000;
 storm.weapons = [
@@ -48,16 +49,16 @@ storm.weapons = [
       cost: 400,
       allFacts: [
         [
-          { name: 'power', value: '1' },
-          { name: 'coldown', value: '2' }
+          { name: 'power', displayValue: '1', value: 1 },
+          { name: 'cooldown', displayValue: '2', value: 2}
         ],
         [
-          { name: 'power', value: '1.5' },
-          { name: 'coldown', value: '1.8' }
+          { name: 'power', displayValue: '1.5', value: 1.5},
+          { name: 'cooldown', displayValue: '1.8', value: 1.8 }
         ],
         [
-          { name: 'power', value: '2' },
-          { name: 'coldown', value: '1.5' }
+          { name: 'power', displayValue: '2', value: 2},
+          { name: 'cooldown', displayValue: '1.5', value: 1.5}
         ]
       ]
     }),
@@ -65,8 +66,8 @@ storm.weapons = [
 ]
 
 const valkiria = new Spaceship(SpaceshipName.Valkiria, [
-  { name: 'Speed', value: 'medium' },
-  { name: 'Weight', value: 'heavy' },
+  { name: 'speed', displayValue: 'medium', value: 3 },
+  { name: 'weight', displayValue: 'heavy', value: 1.5 },
 ]);
 valkiria.cost = 10000;
 
@@ -75,13 +76,13 @@ valkiria.weapons = [
     cost: 1000,
     allFacts: [
       [
-        { name: 'speed', value: '1' },
-        { name: 'power', value: '1' },
-        { name: 'coldown', value: '1' },
+        { name: 'speed', displayValue: '1', value: 1},
+        { name: 'power', displayValue: '1', value: 1},
+        { name: 'cooldown', displayValue: '1', value: 1}
       ], [
-        { name: 'speed', value: '2' },
-        { name: 'power', value: '3' },
-        { name: 'coldown', value: '4' },
+        { name: 'speed', displayValue: '2', value: 2},
+        { name: 'power', displayValue: '3', value: 3},
+        { name: 'cooldown', displayValue: '4', value: 4},
       ]]
   }),
   createEnergyShield()
@@ -89,14 +90,14 @@ valkiria.weapons = [
 
 export class DockStore {
   @observable spaceships = [rabbit, storm, valkiria];
-  @observable spaceshipInUseIndex = -1;
+  @observable spaceshipInUseIndex = 0;
   @observable currentSpaceshipIndex = 0;
 
   @computed get spaceshipInUse() {
     return this.spaceships[this.spaceshipInUseIndex];
   }
 
-  @computed get currentSpaceship() {
+  @computed get currentSpaceship(): Spaceship {
     return this.spaceships[this.currentSpaceshipIndex];
   }
 
@@ -143,7 +144,9 @@ export class DockStore {
   }
 
   @action.bound upgradeWeapon(weapon: Weapon) {
-    this.walletStore.money -= weapon.cost;
-    weapon.upgrade();
+    if (this.walletStore.money - weapon.cost >= 0) {
+      this.walletStore.money -= weapon.cost;
+      weapon.upgrade();
+    }
   }
 }

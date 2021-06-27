@@ -5,14 +5,11 @@ import { PullingForceComponent } from '../components/PullingForceComponent';
 import { Entity } from '../entities/Entity';
 import { EntityBuilder } from '../entities/EntityBuilder';
 import { TurretComponent } from '../components/TurretComponent';
-import { startTimer } from '../components/TimerComponent';
-import { makeEntityId, makeSeconds } from '../types';
-import { createGravityBehaviour, GravityTagName } from '../components/GravityBehaviourComponent';
 import { GravityGunTrigger } from '../components/GravityGunComponent';
 
 const STEP = Math.PI / 100;
-const PULLING_FORCE_VALUE = 3;
-const BACK_FORCE_VALUE = PULLING_FORCE_VALUE;
+// const PULLING_FORCE_VALUE = 3;
+// const BACK_FORCE_VALUE = PULLING_FORCE_VALUE;
 
 /***
  * Handles inputs.
@@ -30,15 +27,18 @@ export class PlayerSystem implements System {
     if (!player) {
       throw new Error('No player of input')
     }
-    this.handleInput(inputEntity.input, player);
+    this.handleMoving(inputEntity.input, player, registry);
     const turret = EntityBuilder.fromEntity(player).getOrDefault('turret', null);
     if (turret) {
-      this.handleFire(turret, inputEntity.input);
+      this.handleTurretFire(turret, inputEntity.input);
     }
     this.handleGravityGun(inputEntity.input, player, registry);
   }
 
-  private handleInput(input: InputComponent, player: { rotation: number, pullingForce: PullingForceComponent }) {
+  private handleMoving(input: InputComponent, player: Entity & { rotation: number, pullingForce: PullingForceComponent }, registry: EntityRegistry) {
+    const speed = EntityBuilder.fromEntity(player)
+      .getOrDefault('spaceship', {speed: 0}).speed;
+
     if (input.left) {
       player.rotation += STEP;
     }
@@ -47,13 +47,13 @@ export class PlayerSystem implements System {
     }
     if (input.top) {
       const angle = player.rotation + Math.PI / 2;
-      player.pullingForce.x = Math.cos(angle) * PULLING_FORCE_VALUE;
-      player.pullingForce.y = Math.sin(angle) * PULLING_FORCE_VALUE;
+      player.pullingForce.x = Math.cos(angle) * speed;
+      player.pullingForce.y = Math.sin(angle) * speed;
     }
     if (input.bottom) {
       const angle = player.rotation + Math.PI / 2 + Math.PI;
-      player.pullingForce.x = Math.cos(angle) * BACK_FORCE_VALUE;
-      player.pullingForce.y = Math.sin(angle) * BACK_FORCE_VALUE;
+      player.pullingForce.x = Math.cos(angle) * speed;
+      player.pullingForce.y = Math.sin(angle) * speed;
     }
     if (!input.top && !input.bottom) {
       player.pullingForce.x = 0;
@@ -61,7 +61,7 @@ export class PlayerSystem implements System {
     }
   }
 
-  private handleFire(turret: TurretComponent, input: InputComponent) {
+  private handleTurretFire(turret: TurretComponent, input: InputComponent) {
     if (input.e) {
       turret.triggered = true;
     } else {
