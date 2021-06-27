@@ -17,6 +17,10 @@ export class QuestStore {
     return this.currentQuestIndex > 0;
   }
 
+  @computed get canStartCurrentQuest(): boolean {
+    return this.currentQuest.requirements.every(requirement => requirement.met);
+  }
+
   constructor() {
     makeObservable(this);
   }
@@ -52,6 +56,9 @@ export class QuestStore {
     const result = new Quest();
     result.title = 'Quest #2';
     result.description = QuestDescription.SecondQuest;
+    result.requirements = [
+      { name: 'hello, world', met: false}
+    ]
     result.reward = 300;
     return result;
   }
