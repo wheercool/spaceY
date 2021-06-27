@@ -40,7 +40,51 @@ export class AssetsManager {
         return wrapper;
       }
     },
-    'spaceship': {
+    'valkiria': {
+      kind: 'external',
+      url: 'assets/models/valkiria/valkiria.glb',
+      mesh: new Object3D(),
+      postProcess: (scene: Group) => {
+        let result: Object3D = scene;
+        const wrapper = new Object3D();
+        result.position.set(0, 0, 0);
+        result.rotation.x = Math.PI / 2
+        result.rotation.y = 0
+        result.rotation.z = 0;
+        result.traverse(o => {
+          if (o instanceof Mesh) {
+            o.receiveShadow = true;
+            o.castShadow = true;
+          }
+        })
+        result.scale.multiplyScalar(0.8)
+        wrapper.add(result);
+        return wrapper;
+      }
+    },
+    'rabbit': {
+      kind: 'external',
+      url: 'assets/models/rabbit/rabbit.glb',
+      mesh: new Object3D(),
+      postProcess: (scene: Group) => {
+        let result: Object3D = scene;
+        const wrapper = new Object3D();
+        result.position.set(0, 0, 0);
+        result.rotation.x = Math.PI / 2
+        result.rotation.y = 0
+        result.rotation.z = 0;
+        result.traverse(o => {
+          if (o instanceof Mesh) {
+            o.receiveShadow = true;
+            o.castShadow = true;
+          }
+        })
+        result.scale.multiplyScalar(0.8)
+        wrapper.add(result);
+        return wrapper;
+      }
+    },
+    'storm': {
       kind: 'external',
       url: 'assets/models/spaceship/scene.gltf',
       mesh: new Object3D(),
@@ -48,8 +92,7 @@ export class AssetsManager {
         let result: Object3D = scene;
         const wrapper = new Object3D();
         result.position.set(0, 0, 0);
-        result.rotation.x = -Math.PI;
-        result.rotation.z = Math.PI;
+        result.rotation.x = Math.PI / 2;
         result.rotation.y = Math.PI;
         result.scale.multiplyScalar(10)
         wrapper.add(result);

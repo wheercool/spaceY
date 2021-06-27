@@ -12,6 +12,7 @@ import { observer } from 'mobx-react';
 
 export const GamePage = observer(() => {
   const miniMap = useStore('Minimap');
+  const spaceshipPanel = useStore('SpaceshipPanel');
   const canvasRef = createRef<HTMLCanvasElement>();
   const WIDTH = window.innerWidth;
   const HEIGHT = window.innerHeight;
@@ -21,14 +22,14 @@ export const GamePage = observer(() => {
       return;
     }
     const renderer = new WebGL3DRendererSystem(canvasRef.current)
-    const uiNotificator = new UiNotificationSystem(miniMap);
+    const uiNotificator = new UiNotificationSystem(miniMap, spaceshipPanel);
     assetsManager.load().then(() => {
       new Game(renderer, uiNotificator).startGame();
     })
   }, []);
 
   return <div className="gamePage" style={{ width: WIDTH, height: HEIGHT }}>
-    <canvas width={WIDTH} height={HEIGHT} ref={canvasRef}/>
+    <canvas width={WIDTH} height={HEIGHT} ref={canvasRef} style={{width: WIDTH, height: HEIGHT}}/>
     <div className={style.overlay}>
       <div className={style.miniMapWrapper}>
         <MiniMap player={miniMap.player} rotation={miniMap.rotation}/>

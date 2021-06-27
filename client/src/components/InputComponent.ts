@@ -6,7 +6,9 @@ export interface InputComponent {
   right: boolean;
   top: boolean;
   bottom: boolean;
-  space: boolean;
-  g: boolean;
-  f: boolean;
+  q: boolean;
+  w: boolean;
+  e: boolean;
+  r: boolean;
+  t: boolean;
 }

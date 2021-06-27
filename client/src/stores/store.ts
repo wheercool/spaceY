@@ -4,6 +4,7 @@ import { RouterStore } from './RouterStore';
 import { DockStore } from './DockStore';
 import { WalletStore } from './WalletStore';
 import { MinimapStore } from './MinimapStore';
+import { SpaceshipPanelStore } from './SpaceshipPanelStore/SpaceshipPanelStore';
 
 const rootStore = new RootStore();
 const walletStore = new WalletStore();
@@ -13,5 +14,6 @@ export const { StoreProvider, useStore } = createContext({
   Router: new RouterStore(),
   Dock: new DockStore(walletStore),
   Wallet: walletStore,
-  Minimap: new MinimapStore()
+  Minimap: new MinimapStore(),
+  SpaceshipPanel: new SpaceshipPanelStore()
 });

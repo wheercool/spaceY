@@ -1,0 +1,60 @@
+.equipmentButton {
+
+}
+.activeEquipmentButton .body {
+  box-shadow: 0px 0px 17px 4px #e91e63;
+}
+
+.title {
+  text-align: center;
+  font-size: 14px;
+  font-weight: normal;
+  color: white;
+  margin: 0;
+  margin-bottom: 5px;
+}
+.body {
+  position: relative;
+  width: 64px;
+  height: 64px;
+}
+
+.wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  background: rgba(196, 196, 196, 0.4);
+  border: 1px solid white;
+  border-radius: 4px;
+}
+
+.buttonKey {
+  position: absolute;
+  margin: 5px;
+  top: 0;
+  color: white;
+  font-size: 16px;
+}
+
+.imageWrapper {
+  margin: auto auto 5px;
+  width: 80%;
+  height: 50%;
+  object-fit: contain;
+  text-align: center;
+}
+.imageWrapper img {
+  max-width: 100%;
+  height: 100%;
+}
+
+.cooldownOverlay {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(207, 196, 196, 0.3);
+}

@@ -1,3 +1,25 @@
 .spaceshipPanel {
+  position: relative;
+}
 
+.equipmentButtons {
+  position: absolute;
+  top: 75px;
+  bottom: 10px;
+  left: 215px;
+  right: 10px;
+  display: flex;
+  align-items: center;
+}
+.btnWrapper+.btnWrapper{
+  margin-left: 10px;
+}
+.spaceshipContainer {
+  position: absolute;
+  top: 15px;
+  bottom: 10px;
+  left: 15px;
+  width: 180px;
+  display: flex;
+  align-items: start;
 }

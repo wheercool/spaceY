@@ -22,6 +22,8 @@ import { GravityBehaviourComponent } from './GravityBehaviourComponent';
 import { MaxSpeedComponent } from './MaxSpeedComponent';
 import { MapComponent } from './MapComponent';
 import { MapDependentComponent } from './MapDependentComponent';
+import { GravityGunComponent } from './GravityGunComponent';
+import { SpaceshipComponent } from './SpaceshipComponent';
 
 export interface ComponentsRegistry {
   rotation: RotationComponent;
@@ -48,6 +50,8 @@ export interface ComponentsRegistry {
   maxSpeed: MaxSpeedComponent;
   map: MapComponent;
   mapDependent: MapDependentComponent;
+  gravityGun: GravityGunComponent;
+  spaceship: SpaceshipComponent;
 }
 
 export type ComponentValue<Cmp extends keyof CmpRegistry, CmpRegistry> = CmpRegistry[Cmp];

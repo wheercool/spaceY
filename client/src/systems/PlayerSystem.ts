@@ -8,6 +8,7 @@ import { TurretComponent } from '../components/TurretComponent';
 import { startTimer } from '../components/TimerComponent';
 import { makeEntityId, makeSeconds } from '../types';
 import { createGravityBehaviour, GravityTagName } from '../components/GravityBehaviourComponent';
+import { GravityGunTrigger } from '../components/GravityGunComponent';
 
 const STEP = Math.PI / 100;
 const PULLING_FORCE_VALUE = 3;
@@ -34,7 +35,7 @@ export class PlayerSystem implements System {
     if (turret) {
       this.handleFire(turret, inputEntity.input);
     }
-    this.handleShield(inputEntity.input, player, registry);
+    this.handleGravityGun(inputEntity.input, player, registry);
   }
 
   private handleInput(input: InputComponent, player: { rotation: number, pullingForce: PullingForceComponent }) {
@@ -61,44 +62,42 @@ export class PlayerSystem implements System {
   }
 
   private handleFire(turret: TurretComponent, input: InputComponent) {
-    if (input.space) {
+    if (input.e) {
       turret.triggered = true;
     } else {
       turret.triggered = false;
     }
   }
 
-  private handleShield(input: InputComponent, player: Entity, registry: EntityRegistry) {
+  private handleGravityGun(input: InputComponent, player: Entity, registry: EntityRegistry) {
     const builder = EntityBuilder.fromEntity(player);
-    const FORCE = 100000;
-    if (input.g) {
-      const position = builder.getOrDefault('position', false);
-      if (position) {
-        const gravityGun = new EntityBuilder()
-          .applyComponents({
-            mass: -FORCE,
-            gravityBehaviour: createGravityBehaviour(GravityTagName.EnergyGun),
-            position: position,
-            timer: startTimer(makeEntityId(-1), makeSeconds(0), { name: 'lifeTime' })
-          })
-          .build()
-        registry.addEntity(gravityGun);
-      }
+    const gravityGun = builder.getOrDefault('gravityGun', false);
+    if (!gravityGun) {
+      return;
     }
 
-    if (input.f) {
-      const position = builder.getOrDefault('position', false);
-      if (position) {
-        const gravityGun = new EntityBuilder()
-          .applyComponents({
-            mass: FORCE,
-            gravityBehaviour: createGravityBehaviour(GravityTagName.EnergyGun),
-            position: position,
-            timer: startTimer(makeEntityId(-1), makeSeconds(0), { name: 'lifeTime' })
-          })
-          .build()
-        registry.addEntity(gravityGun);
-      }
+    const FORCE = gravityGun.power;
+    if (input.q) {
+      gravityGun.trigger = GravityGunTrigger.Push;
     }
+    if (input.w) {
+      gravityGun.trigger = GravityGunTrigger.Pull;
+    }
+    if (!input.q && !input.w) {
+      gravityGun.trigger = GravityGunTrigger.Off;
+    }
+      // move to system
+      // const position = builder.getOrDefault('position', false);
+      // if (position) {
+      //   const gravityGun = new EntityBuilder()
+      //     .applyComponents({
+      //       mass: -FORCE,
+      //       gravityBehaviour: createGravityBehaviour(GravityTagName.EnergyGun),
+      //       position: position,
+      //       timer: startTimer(makeEntityId(-1), makeSeconds(0), { name: 'lifeTime' })
+      //     })
+      //     .build()
+      //   registry.addEntity(gravityGun);
+      // }
   }
 }

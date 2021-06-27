@@ -11,13 +11,15 @@ import { AccelerationSystem } from './AccelerationSystem';
 import { CollisionDetectionSystem } from './CollisionDetectionSystem';
 import { CollisionResolutionSystem } from './CollisionResolutionSystem';
 import { WorldBoundarySystem } from './WorldBoundarySystem';
-import { DebuggerSystem } from './DebuggerSystem';
 import { TurretSystem } from './TurretSystem';
-import { makeSeconds } from '../types';
+import { makeSeconds, SpaceshipName } from '../types';
 import { createGravityBehaviour, GravityTagName } from '../components/GravityBehaviourComponent';
 import { MaxSpeedSystem } from './MaxSpeedSystem';
 import { Point2D } from '@shared/types/Point2D';
 import { UiNotificationSystem } from './UiNotificationSystem';
+import { createGravityGun } from '../components/GravityGunComponent';
+import { GravityGunSystem } from './GravityGunSystem';
+import { Entity } from '../entities/Entity';
 
 
 export class Game implements System {
@@ -34,13 +36,14 @@ export class Game implements System {
       new InputSystem(),
       new PlayerSystem(),
       new TurretSystem(),
+      new GravityGunSystem(),
       new GravitySystem(),
       new AccelerationSystem(),
       new MovementSystem(),
       new MaxSpeedSystem(),
       new CollisionDetectionSystem(),
       new CollisionResolutionSystem(),
-      new DebuggerSystem('Cooldown: ', ['model'], e => e.find((en: any) => en.model === 'laser')),
+      // new DebuggerSystem('Cooldown: ', ['model'], e => e.find((en: any) => en.model === 'laser')),
       this.renderer,
       this.uiNotificator
     ]);
@@ -66,43 +69,6 @@ export class Game implements System {
       .applyComponent('iteration', 0)
       .build()
 
-    const spaceship = new EntityBuilder()
-      .applyComponents({
-          player: true,
-          cameraAt: true,
-          rotation: 0,
-          position: { x: 0, y: 0 },
-          pullingForce: { x: 0, y: 0 },
-          model: 'starship',
-          mass: 1,
-          boundaries: [
-            {
-              radius: 20,
-              position: { x: 0, y: 20 }
-            },
-            {
-              radius: 20,
-              position: { x: 18, y: -14 }
-            },
-            {
-              radius: 20,
-              position: { x: -18, y: -14 }
-            },
-          ],
-          turret: {
-            direction: 0,
-            cooldown: makeSeconds(0.5),
-            position: {
-              x: 0,
-              y: 60
-            },
-            triggered: false
-          },
-          gravityBehaviour: createGravityBehaviour(GravityTagName.Small),
-          mapDependent: true
-        },
-      )
-      .build()
 
     const planet = new EntityBuilder()
       .applyComponents({
@@ -114,7 +80,8 @@ export class Game implements System {
           radius: 100,
           position: { x: 0, y: 0 }
         }],
-        gravityBehaviour: createGravityBehaviour(GravityTagName.Big)
+        gravityBehaviour: createGravityBehaviour(GravityTagName.Big),
+
       })
       .build()
 
@@ -169,7 +136,7 @@ export class Game implements System {
 
     this.registry.addEntity(game);
     this.registry.addEntity(map);
-    this.registry.addEntity(spaceship)
+    this.registry.addEntity(createRabbit())
     this.registry.addEntity(planet);
     this.registry.addEntity(planet2);
     this.registry.addEntity(planet3);
@@ -199,4 +166,136 @@ function createAsteroid(position: Point2D) {
       gravityBehaviour: createGravityBehaviour(GravityTagName.Enemy)
     })
     .build();
+}
+
+function createStorm(): Entity {
+  return new EntityBuilder()
+    .applyComponents({
+        player: true,
+        cameraAt: true,
+        rotation: 0,
+        position: { x: 0, y: 0 },
+        pullingForce: { x: 0, y: 0 },
+        model: 'storm',
+        mass: 1,
+        boundaries: [
+          {
+            radius: 20,
+            position: { x: 0, y: 20 }
+          },
+          {
+            radius: 20,
+            position: { x: 18, y: -14 }
+          },
+          {
+            radius: 20,
+            position: { x: -18, y: -14 }
+          },
+        ],
+        turret: {
+          direction: 0,
+          cooldown: makeSeconds(0.1),
+          position: {
+            x: 0,
+            y: 60
+          },
+          triggered: false
+        },
+        gravityBehaviour: createGravityBehaviour(GravityTagName.Small),
+        mapDependent: true,
+        spaceship: {
+          name: SpaceshipName.Storm
+        }
+      },
+    )
+    .build()
+}
+
+function createValkiria(): Entity {
+  return new EntityBuilder()
+    .applyComponents({
+        player: true,
+        cameraAt: true,
+        rotation: 0,
+        position: { x: 0, y: 0 },
+        pullingForce: { x: 0, y: 0 },
+        model: 'valkiria',
+        mass: 1,
+        boundaries: [
+          {
+            radius: 20,
+            position: { x: 0, y: 20 }
+          },
+          {
+            radius: 30,
+            position: { x: 18, y: -21 }
+          },
+          {
+            radius: 30,
+            position: { x: -18, y: -21 }
+          },
+        ],
+        turret: {
+          direction: 0,
+          cooldown: makeSeconds(0.5),
+          position: {
+            x: 0,
+            y: 60
+          },
+          triggered: false
+        },
+        gravityBehaviour: createGravityBehaviour(GravityTagName.Small),
+        mapDependent: true,
+        gravityGun: createGravityGun({
+          consumption: 0.1,
+          power: 100000,
+        }),
+        spaceship: {
+          name: SpaceshipName.Valkiria
+        }
+      },
+    )
+    .build()
+}
+
+function createRabbit(): Entity {
+  return new EntityBuilder()
+    .applyComponents({
+        player: true,
+        cameraAt: true,
+        rotation: 0,
+        position: { x: 0, y: 0 },
+        pullingForce: { x: 0, y: 0 },
+        model: 'rabbit',
+        mass: 1,
+        boundaries: [
+          {
+            radius: 20,
+            position: { x: 0, y: 20 }
+          },
+          // {
+          //   radius: 40,
+          //   position: { x: 18, y: -14 }
+          // },
+          // {
+          //   radius: 40,
+          //   position: { x: -18, y: -14 }
+          // },
+          {
+            radius: 20,
+            position: {x: 15, y: -22}
+          },
+             {
+            radius: 20,
+            position: {x: -15, y: -22}
+          }
+        ],
+        gravityBehaviour: createGravityBehaviour(GravityTagName.Small),
+        mapDependent: true,
+        spaceship: {
+          name: SpaceshipName.Rabbit
+        }
+      },
+    )
+    .build()
 }
