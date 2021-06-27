@@ -17,6 +17,7 @@ import { makeSeconds } from '../types';
 import { createGravityBehaviour, GravityTagName } from '../components/GravityBehaviourComponent';
 import { MaxSpeedSystem } from './MaxSpeedSystem';
 import { Point2D } from '@shared/types/Point2D';
+import { UiNotificationSystem } from './UiNotificationSystem';
 
 
 export class Game implements System {
@@ -25,10 +26,10 @@ export class Game implements System {
   private rafHandle: number = -1;
 
   constructor(
-    private readonly renderer: System
-  ) {
+    private readonly renderer: System,
+    private readonly uiNotificator: UiNotificationSystem) {
     this.compositor = new CompositorSystem([
-      // new WorldBoundarySystem(),
+      new WorldBoundarySystem(),
       new ClockSystem(),
       new InputSystem(),
       new PlayerSystem(),
@@ -41,6 +42,7 @@ export class Game implements System {
       new CollisionResolutionSystem(),
       new DebuggerSystem('Cooldown: ', ['model'], e => e.find((en: any) => en.model === 'laser')),
       this.renderer,
+      this.uiNotificator
     ]);
   }
 
@@ -96,7 +98,8 @@ export class Game implements System {
             },
             triggered: false
           },
-          gravityBehaviour: createGravityBehaviour(GravityTagName.Small)
+          gravityBehaviour: createGravityBehaviour(GravityTagName.Small),
+          mapDependent: true
         },
       )
       .build()
@@ -160,34 +163,40 @@ export class Game implements System {
       })
       .build()
 
+    const map = new EntityBuilder()
+      .applyComponent('map', { width: 1000, height: 1000 })
+      .build();
+
     this.registry.addEntity(game);
+    this.registry.addEntity(map);
     this.registry.addEntity(spaceship)
     this.registry.addEntity(planet);
     this.registry.addEntity(planet2);
     this.registry.addEntity(planet3);
     this.registry.addEntity(kepler);
-    this.registry.addEntity(createAsteroid({ x: 0, y: 200}));
-    this.registry.addEntity(createAsteroid({ x: 10, y: 200}));
-    this.registry.addEntity(createAsteroid({ x: 20, y: 200}));
+    this.registry.addEntity(createAsteroid({ x: 0, y: 200 }));
+    this.registry.addEntity(createAsteroid({ x: 10, y: 200 }));
+    this.registry.addEntity(createAsteroid({ x: 20, y: 200 }));
   }
 }
 
 
 function createAsteroid(position: Point2D) {
   return new EntityBuilder()
-      .applyComponents({
-        position,
-        model: 'asteroid',
-        mass: 100,
-        maxSpeed: 10,
-        asteroid: true,
-        boundaries: [
-          {
-            position: { x: 0, y: 2 },
-            radius: 19
-          }
-        ],
-        gravityBehaviour: createGravityBehaviour(GravityTagName.Enemy)
-      })
-      .build();
+    .applyComponents({
+      position,
+      model: 'asteroid',
+      mass: 100,
+      maxSpeed: 10,
+      asteroid: true,
+      boundaries: [
+        {
+          position: { x: 0, y: 2 },
+          radius: 19
+        }
+      ],
+      mapDependent: true,
+      gravityBehaviour: createGravityBehaviour(GravityTagName.Enemy)
+    })
+    .build();
 }

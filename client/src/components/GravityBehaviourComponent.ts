@@ -30,8 +30,8 @@ export function createGravityBehaviour(tag: GravityTagName): GravityBehaviourCom
     case GravityTagName.Big:
       return {
         gravityTag: tag,
-        // pulls: [GravityTagName.Small],
-        pulls: [],
+        pulls: [GravityTagName.Small],
+        // pulls: [],
         pullableBy: []
       }
 

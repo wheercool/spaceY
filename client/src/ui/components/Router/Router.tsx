@@ -7,7 +7,7 @@ import { DockPage } from '../../pages/DockPage/DockPage';
 import { Route } from '../../../stores/RouterStore';
 import { useStore } from '../../../stores/store';
 import { observer } from 'mobx-react';
-import App from '../../../App';
+import { GamePage } from '../../pages/GamePage/GamePage';
 
 const routing: Record<Route, () => JSX.Element> = {
   'start': StartPage,
@@ -15,7 +15,7 @@ const routing: Record<Route, () => JSX.Element> = {
   'quest': QuestPage,
   'about': AboutPage,
   'dock': DockPage,
-  'play': App
+  'play': GamePage
 }
 
 export const Router = observer(() => {

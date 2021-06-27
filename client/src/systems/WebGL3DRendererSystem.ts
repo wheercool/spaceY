@@ -27,7 +27,6 @@ import { length, normalize, Point2D } from '@shared/types/Point2D';
 import { RotationComponent } from '../components/RotationComponent';
 import { AccelerationComponent } from '../components/AccelerationComponent';
 import { JumpComponent } from '../components/JumpComponent';
-import { MAX_X, MAX_Y, MIN_X, MIN_Y } from './WorldBoundarySystem';
 
 type RendererEntity = Entity & { model: Model, position: PositionComponent };
 const CAMERA_HEIGHT = 600;
@@ -185,22 +184,6 @@ export class WebGL3DRendererSystem implements System {
 
     const lookAtPosition = new Vector3(position.x, position.y, 0);
     const cameraPosition = new Vector3().copy(lookAtPosition);
-    if (this.dynamicCamera) {
-      if ((cameraPosition.y - h / 2) < MIN_Y) {
-        cameraPosition.y = MIN_Y + h / 2;
-      }
-
-      if ((cameraPosition.y + h / 2) > MAX_Y) {
-        cameraPosition.y = MAX_Y - h / 2;
-      }
-
-      if ((cameraPosition.x - w / 2) < MIN_X) {
-        cameraPosition.x = MIN_X + w / 2;
-      }
-      if ((cameraPosition.x + w / 2) > MAX_X) {
-        cameraPosition.x = MAX_X - w / 2;
-      }
-    }
     // this.camera.lookAt(cameraPosition)
     // this.camera.position.set(lookAtPosition.x, lookAtPosition.y, this.camera.position.z);
     // const pointLightPosition = new Vector3().copy(this.camera.position);

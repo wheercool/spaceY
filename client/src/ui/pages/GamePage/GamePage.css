@@ -1,0 +1,21 @@
+.gamePage {
+  position: relative;
+}
+
+.overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+}
+
+.spaceShipPanelWrapper {
+  margin-top: auto;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.miniMapWrapper {
+  margin: 15px;
+}

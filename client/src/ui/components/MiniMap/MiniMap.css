@@ -1,0 +1,18 @@
+.miniMap {
+  position: relative;
+  border: 1px solid white;
+  width: 200px;
+  height: 200px;
+}
+.playerMarker {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  bottom: -12px;
+  left: -12px;
+}
+.playerMarkerImage {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}

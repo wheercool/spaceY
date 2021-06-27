@@ -20,6 +20,8 @@ import { TurretComponent } from './TurretComponent';
 import { TimerComponent } from './TimerComponent';
 import { GravityBehaviourComponent } from './GravityBehaviourComponent';
 import { MaxSpeedComponent } from './MaxSpeedComponent';
+import { MapComponent } from './MapComponent';
+import { MapDependentComponent } from './MapDependentComponent';
 
 export interface ComponentsRegistry {
   rotation: RotationComponent;
@@ -44,6 +46,8 @@ export interface ComponentsRegistry {
   timer: TimerComponent;
   gravityBehaviour: GravityBehaviourComponent;
   maxSpeed: MaxSpeedComponent;
+  map: MapComponent;
+  mapDependent: MapDependentComponent;
 }
 
 export type ComponentValue<Cmp extends keyof CmpRegistry, CmpRegistry> = CmpRegistry[Cmp];
