@@ -16,6 +16,10 @@ import { CollisionComponent } from './CollisionComponent';
 import { StaticComponent } from './StaticComponent';
 import { AsteroidComponent } from './AsteroidComponent';
 import { JumpComponent } from './JumpComponent';
+import { TurretComponent } from './TurretComponent';
+import { TimerComponent } from './TimerComponent';
+import { GravityBehaviourComponent } from './GravityBehaviourComponent';
+import { MaxSpeedComponent } from './MaxSpeedComponent';
 
 export interface ComponentsRegistry {
   rotation: RotationComponent;
@@ -36,6 +40,10 @@ export interface ComponentsRegistry {
   static: StaticComponent;
   asteroid: AsteroidComponent;
   jump: JumpComponent;
+  turret: TurretComponent;
+  timer: TimerComponent;
+  gravityBehaviour: GravityBehaviourComponent;
+  maxSpeed: MaxSpeedComponent;
 }
 
 export type ComponentValue<Cmp extends keyof CmpRegistry, CmpRegistry> = CmpRegistry[Cmp];

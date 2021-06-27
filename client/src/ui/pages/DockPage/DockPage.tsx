@@ -8,55 +8,20 @@ import { Page } from '../Page';
 import { ContentContainer } from '../../components/ContentContainer/ContentContainer';
 import { Grid } from '../../components/Grid/Grid';
 import { VerticalStack } from 'src/ui/components/VerticalStack/VerticalStack';
-import { Equipment } from '../../../types';
 import { Spaceship } from '../../components/Spaceship/Spaceship';
 import { SpaceshipInfo } from '../../components/SpaceshipInfo/SpaceshipInfo';
 import { SpaceshipEquipment } from '../../components/SpaceshipEquipment/SpaceshipEquipment';
 import { useStore } from '../../../stores/store';
 import { observer } from 'mobx-react';
+import classNames from 'classnames';
 
-// const spaceshipEquipment: Equipment = [
-//   {
-//     bought: true,
-//     name: 'Rockets',
-//     level: 1,
-//     canUpgrade: true,
-//     canBuy: false,
-//     image: 'rocket',
-//     cost: 200,
-//     facts: [
-//       { name: 'speed', value: '1' },
-//       { name: 'power', value: '1' },
-//       { name: 'coldown', value: '1' },
-//     ],
-//     upgradedFacts: [
-//       { name: 'speed', value: '2' },
-//       { name: 'power', value: '3' },
-//       { name: 'coldown', value: '4' },
-//     ]
-//   },
-//   {
-//     bought: false,
-//     name: 'Energy shield',
-//     level: 1,
-//     canUpgrade: false,
-//     canBuy: true,
-//     image: 'energy_shield',
-//     cost: 200,
-//     facts: [
-//       { name: 'consumption', value: '1' },
-//       { name: 'test', value: '100' },
-//     ],
-//     upgradedFacts: []
-//   }
-// ]
-//
 export const DockPage = observer(() => {
   const router = useStore('Router');
-  const spaceships = useStore('Spaceships');
+  const dock = useStore('Dock');
+  const wallet = useStore('Wallet');
 
   return <Page page="dockPage">
-    <MainContainer title='Dock' size={MainContainerSize.Normal}>
+    <MainContainer title='Dock' size={MainContainerSize.Normal} money={wallet.money.toFixed(0)}>
       <VerticalStack.Container>
         <VerticalStack.Rest>
           <Grid.Container>
@@ -65,26 +30,30 @@ export const DockPage = observer(() => {
                 <VerticalStack.Content>
                   <div className={style.carouselWrapper}>
                     <Carousel
-                      title={spaceships.currentSpaceship.name}
-                      onNext={spaceships.nextSpaceship}
-                      onPrev={spaceships.prevSpaceship}
-                      hasNext={spaceships.hasNextSpaceship}
-                      hasPrev={spaceships.hasPrevSpaceship}
+                      title={dock.currentSpaceship.name}
+                      onNext={dock.nextSpaceship}
+                      onPrev={dock.prevSpaceship}
+                      hasNext={dock.hasNextSpaceship}
+                      hasPrev={dock.hasPrevSpaceship}
                     />
                   </div>
                 </VerticalStack.Content>
                 <VerticalStack.Rest>
                   <ContentContainer>
                     <div className={style.spaceshipWrapper}>
-                      <Spaceship name={spaceships.currentSpaceship.name} locked/>
+                      <Spaceship name={dock.currentSpaceship.name} locked/>
                     </div>
                   </ContentContainer>
                 </VerticalStack.Rest>
               </VerticalStack.Container>
             </Grid.MainColumn>
             <Grid.SecondColumn size={'medium'}>
-              <p className={style.cost}>Cost: {spaceships.currentSpaceship.cost}$</p>
-              <SpaceshipInfo info={spaceships.currentSpaceship.info}/>
+              <p className={classNames(style.cost, {
+                [style.canBuy]: dock.hasMoneyToBuyCurrentSpaceship,
+                [style.bought]: dock.isCurrentSpaceshipBought,
+                [style.cannotBuy]: !dock.hasMoneyToBuyCurrentSpaceship
+              })}>Cost: {dock.currentSpaceship.cost}$</p>
+              <SpaceshipInfo info={dock.currentSpaceship.info}/>
               <SpaceshipEquipment/>
             </Grid.SecondColumn>
           </Grid.Container>
@@ -92,7 +61,11 @@ export const DockPage = observer(() => {
         <VerticalStack.Content>
           <div className={style.buttons}>
             <Button fixed onClick={router.gotoStation}>Back</Button>
-            <Button fixed onClick={() => alert('Hello')}>Buy</Button>
+            {
+              dock.isCurrentSpaceshipBought
+                ? <Button fixed onClick={dock.useCurrentSpaceship} disabled={dock.isCurrentSpaceshipInUse}>Use</Button>
+                : <Button fixed onClick={dock.buyCurrentSpaceship} disabled={!dock.hasMoneyToBuyCurrentSpaceship}>Buy</Button>
+            }
           </div>
         </VerticalStack.Content>
       </VerticalStack.Container>

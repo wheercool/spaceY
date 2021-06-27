@@ -10,14 +10,27 @@
 .buttonFixed {
   min-width: 200px;
 }
+
 .buttonSmall {
   padding: 7px 20px;
 }
+
 .buttonFixed.buttonSmall {
- min-width: 100px;
+  min-width: 100px;
 }
+
 .button:hover {
   background-color: rgba(76, 88, 140, 1);
   border: 2px solid rgba(155, 224, 246, 1);
   cursor: pointer;
+}
+
+.button:disabled {
+  opacity: 0.6;
+  border-color: transparent;
+}
+
+.button:disabled:hover {
+  background-color: rgba(76, 88, 140, 0.8);
+  cursor: auto;
 }

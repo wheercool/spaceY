@@ -1,6 +1,6 @@
-import { Entity } from '../entities/Entity';
+import { EntityId } from '../types';
 
 export type CollisionComponent = {
-  entity1: Entity['id'];
-  entity2: Entity['id'];
+  entity1: EntityId;
+  entity2: EntityId;
 }

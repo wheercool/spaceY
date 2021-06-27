@@ -3,6 +3,9 @@ export class Controller {
   bottom = false;
   left = false;
   right = false;
+  space = false;
+  g = false;
+  f = false;
 
   constructor() {
     window.addEventListener('keydown', this.onKeyDown)
@@ -23,6 +26,15 @@ export class Controller {
     if (key === 'arrowdown') {
       this.bottom = true;
     }
+    if (key === ' ') {
+      this.space = true;
+    }
+    if (key == 'g') {
+      this.g = true;
+    }
+    if (key == 'f') {
+      this.f = true;
+    }
   }
 
   private onKeyUp = (event: KeyboardEvent) => {
@@ -38,6 +50,15 @@ export class Controller {
     }
     if (key === 'arrowdown') {
       this.bottom = false;
+    }
+    if (key === ' ') {
+      this.space = false;
+    }
+    if (key == 'g') {
+      this.g = false;
+    }
+    if (key == 'f') {
+      this.f = false;
     }
   }
 }

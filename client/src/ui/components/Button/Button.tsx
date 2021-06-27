@@ -7,6 +7,7 @@ interface Button {
 
   fixed?: boolean;
   small?: boolean;
+  disabled?: boolean;
 }
 
 export const Button: React.FC<Button> = (
@@ -14,9 +15,11 @@ export const Button: React.FC<Button> = (
     onClick,
     fixed,
     small,
+    disabled = false,
     children
   }) => {
   return <button className={classNames(style.button, { [style.buttonFixed]: !!fixed, [style.buttonSmall]: !!small })}
                  onClick={onClick}
+                 disabled={disabled}
   >{children}</button>
 }

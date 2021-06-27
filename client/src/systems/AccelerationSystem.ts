@@ -11,15 +11,16 @@ export class AccelerationSystem implements System {
   }
 
   update(registry: EntityRegistry): void {
-    const withGravity = registry.findEntitiesByComponents(['gravityForce', 'mass']);
-    for (let element of withGravity) {
+    const withMass = registry.findEntitiesByComponents(['mass']);
+    for (let element of withMass) {
       const entity = EntityBuilder.fromEntity(element);
       const pullingForce = entity.getOrDefault('pullingForce', { x: 0, y: 0 });
+      const gravityForce = entity.getOrDefault('gravityForce', { x: 0, y: 0 });
       const isStatic = entity.getOrDefault('static', false);
       const acceleration = isStatic
         ? { x: 0, y: 0 }
         : divByScalar(
-          add(pullingForce, element.gravityForce),
+          add(pullingForce, gravityForce),
           element.mass);
       entity.applyComponent('acceleration', acceleration);
     }

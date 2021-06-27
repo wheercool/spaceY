@@ -31,7 +31,10 @@ export class InputSystem implements System {
       bottom: this.controller.bottom,
       left: this.controller.left,
       right: this.controller.right,
-      top: this.controller.top
+      top: this.controller.top,
+      space: this.controller.space,
+      g: this.controller.g,
+      f: this.controller.f
     };
   }
 }

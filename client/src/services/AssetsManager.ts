@@ -1,11 +1,25 @@
-import { Group, LoadingManager, Mesh, MeshStandardMaterial, Object3D } from 'three';
+import { CylinderGeometry, Group, LoadingManager, Mesh, MeshStandardMaterial, Object3D } from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 
 export type Model = keyof AssetsManager['models'];
 
+interface InternalModel {
+  mesh: Object3D;
+
+  create(): Object3D;
+}
+
+interface ExternalModel {
+  url: string;
+  mesh: Object3D;
+
+  postProcess(scene: Group): Object3D;
+}
+
 export class AssetsManager {
   private models = {
     'starship': {
+      kind: 'external',
       url: 'assets/models/starship/scene.gltf',
       mesh: new Object3D(),
       postProcess: (scene: Group) => {
@@ -27,6 +41,7 @@ export class AssetsManager {
       }
     },
     'spaceship': {
+      kind: 'external',
       url: 'assets/models/spaceship/scene.gltf',
       mesh: new Object3D(),
       postProcess: (scene: Group) => {
@@ -42,6 +57,7 @@ export class AssetsManager {
       }
     },
     'spaceships': {
+      kind: 'external',
       url: 'assets/models/spaceships/scene.gltf',
       mesh: new Object3D(),
       postProcess: (scene: Group) => {
@@ -63,6 +79,7 @@ export class AssetsManager {
       }
     },
     'planet': {
+      kind: 'external',
       url: 'assets/models/planet/scene.gltf',
       mesh: new Object3D(),
       postProcess: (scene: Group) => {
@@ -83,6 +100,7 @@ export class AssetsManager {
       }
     },
     'kepler': {
+      kind: 'external',
       url: 'assets/models/kepler/scene.gltf',
       mesh: new Object3D(),
       postProcess: (scene: Group) => {
@@ -98,6 +116,7 @@ export class AssetsManager {
       }
     },
     'asteroid': {
+      kind: 'external',
       url: 'assets/models/asteroid/scene.gltf',
       mesh: new Object3D(),
       postProcess: (scene: Group) => {
@@ -111,8 +130,21 @@ export class AssetsManager {
         wrapper.add(result);
         return wrapper;
       }
+    },
+    'laser': {
+      kind: 'internal',
+      mesh: new Object3D(),
+      create: () => {
+        const radius = 3;
+        const height = 20;
+        const geometry = new CylinderGeometry(radius, radius, height);
+        const mesh = new Mesh(geometry, new MeshStandardMaterial({
+          color: 'red'
+        }))
+        return mesh;
+      }
     }
-  }
+  } as const;
 
   getModel(model: Model): Object3D {
     return this.models[model].mesh.clone(true);
@@ -132,9 +164,13 @@ export class AssetsManager {
 
   private async loadModels() {
     for (const [name, config] of Object.entries(this.models)) {
-      this.loader.load(config.url, (gltf) => {
-        config.mesh = config.postProcess(gltf.scene);
-      })
+      if (config.kind === 'external') {
+        this.loader.load(config.url, (gltf) => {
+          (config as any).mesh = config.postProcess(gltf.scene);
+        })
+      } else {
+        (config as any).mesh = config.create();
+      }
     }
   }
 }

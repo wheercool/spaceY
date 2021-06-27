@@ -8,20 +8,24 @@
 .mainContainerNormal {
   width: 90%;
 }
+
 .mainContainerSmall {
   max-width: 800px;
 }
+
 .header {
   flex: 0;
   text-align: center;
   color: #E5E5E5;
-  /*color: #484848;*/
   font-size: 21px;
-  /*background: rgba(196, 196, 196, 0.67);*/
   background: rgba(149, 171, 224, 0.6797);
-;
-  /*background: #5b608b;*/
   padding: 10px;
+  position: relative;
+}
+
+.money {
+  position: absolute;
+  right: 15px;
 }
 
 .main {

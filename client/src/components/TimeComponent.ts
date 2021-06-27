@@ -3,7 +3,10 @@
  * @current - current time
  * @dt - time delta between game iterations
  */
+import { TimeSpan } from '../types';
+
 export interface TimeComponent {
-  dt: number;
-  current: number;
+  dt: TimeSpan;
+  current: TimeSpan;
 }
+

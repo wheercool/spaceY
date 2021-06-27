@@ -2,6 +2,12 @@ import { System } from './System';
 import { EntityRegistry } from '../entities/EntityRegistry';
 import { InputComponent } from '../components/InputComponent';
 import { PullingForceComponent } from '../components/PullingForceComponent';
+import { Entity } from '../entities/Entity';
+import { EntityBuilder } from '../entities/EntityBuilder';
+import { TurretComponent } from '../components/TurretComponent';
+import { startTimer } from '../components/TimerComponent';
+import { makeEntityId, makeSeconds } from '../types';
+import { createGravityBehaviour, GravityTagName } from '../components/GravityBehaviourComponent';
 
 const STEP = Math.PI / 100;
 const PULLING_FORCE_VALUE = 3;
@@ -24,6 +30,11 @@ export class PlayerSystem implements System {
       throw new Error('No player of input')
     }
     this.handleInput(inputEntity.input, player);
+    const turret = EntityBuilder.fromEntity(player).getOrDefault('turret', null);
+    if (turret) {
+      this.handleFire(turret, inputEntity.input);
+    }
+    this.handleShield(inputEntity.input, player, registry);
   }
 
   private handleInput(input: InputComponent, player: { rotation: number, pullingForce: PullingForceComponent }) {
@@ -46,6 +57,48 @@ export class PlayerSystem implements System {
     if (!input.top && !input.bottom) {
       player.pullingForce.x = 0;
       player.pullingForce.y = 0;
+    }
+  }
+
+  private handleFire(turret: TurretComponent, input: InputComponent) {
+    if (input.space) {
+      turret.triggered = true;
+    } else {
+      turret.triggered = false;
+    }
+  }
+
+  private handleShield(input: InputComponent, player: Entity, registry: EntityRegistry) {
+    const builder = EntityBuilder.fromEntity(player);
+    const FORCE = 100000;
+    if (input.g) {
+      const position = builder.getOrDefault('position', false);
+      if (position) {
+        const gravityGun = new EntityBuilder()
+          .applyComponents({
+            mass: -FORCE,
+            gravityBehaviour: createGravityBehaviour(GravityTagName.EnergyGun),
+            position: position,
+            timer: startTimer(makeEntityId(-1), makeSeconds(0), { name: 'lifeTime' })
+          })
+          .build()
+        registry.addEntity(gravityGun);
+      }
+    }
+
+    if (input.f) {
+      const position = builder.getOrDefault('position', false);
+      if (position) {
+        const gravityGun = new EntityBuilder()
+          .applyComponents({
+            mass: FORCE,
+            gravityBehaviour: createGravityBehaviour(GravityTagName.EnergyGun),
+            position: position,
+            timer: startTimer(makeEntityId(-1), makeSeconds(0), { name: 'lifeTime' })
+          })
+          .build()
+        registry.addEntity(gravityGun);
+      }
     }
   }
 }

@@ -2,6 +2,7 @@ import { action, computed, makeObservable, observable } from 'mobx';
 import { Spaceship } from './Spaceship';
 import { EquipmentName, SpaceshipName } from '../types';
 import { Weapon } from './Weapon';
+import { WalletStore } from './WalletStore';
 
 const createEnergyShield = () => {
   return new Weapon(EquipmentName.EnergyShield).update({
@@ -86,9 +87,9 @@ valkiria.weapons = [
   createEnergyShield()
 ]
 
-export class SpaceshipStore {
+export class DockStore {
   @observable spaceships = [rabbit, storm, valkiria];
-  @observable spaceshipInUseIndex = 0;
+  @observable spaceshipInUseIndex = -1;
   @observable currentSpaceshipIndex = 0;
 
   @computed get spaceshipInUse() {
@@ -107,7 +108,19 @@ export class SpaceshipStore {
     return this.currentSpaceshipIndex >= 1;
   }
 
-  constructor() {
+  @computed get isCurrentSpaceshipBought(): boolean {
+    return this.walletStore.ownedSpaceships.has(this.currentSpaceshipIndex)
+  }
+
+  @computed get isCurrentSpaceshipInUse(): boolean {
+    return this.spaceshipInUseIndex === this.currentSpaceshipIndex
+  }
+
+  @computed get hasMoneyToBuyCurrentSpaceship(): boolean {
+    return this.currentSpaceship.cost <= this.walletStore.money;
+  }
+
+  constructor(private walletStore: WalletStore) {
     makeObservable(this);
   }
 
@@ -117,5 +130,20 @@ export class SpaceshipStore {
 
   @action.bound prevSpaceship() {
     this.currentSpaceshipIndex--;
+  }
+
+  @action.bound buyCurrentSpaceship() {
+    this.walletStore.buySpaceship(this.currentSpaceshipIndex, this.currentSpaceship.cost);
+  }
+
+  @action.bound useCurrentSpaceship() {
+    if (this.isCurrentSpaceshipBought) {
+      this.spaceshipInUseIndex = this.currentSpaceshipIndex;
+    }
+  }
+
+  @action.bound upgradeWeapon(weapon: Weapon) {
+    this.walletStore.money -= weapon.cost;
+    weapon.upgrade();
   }
 }

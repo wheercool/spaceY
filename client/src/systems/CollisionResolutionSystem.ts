@@ -27,12 +27,13 @@ export class CollisionResolutionSystem implements System {
         }
 
         if (asteroid && player) {
-          registry.removeEntity(asteroid.build().id);
+          // registry.removeEntity(asteroid.build().id);
         } else {
           if (player) {
             player.applyComponent('jump', JumpComponent.Up);
           }
         }
+        //TODO: Sometimes causes glitches
         if (!player) {
           first.applyComponent('jump', JumpComponent.Down);
         }

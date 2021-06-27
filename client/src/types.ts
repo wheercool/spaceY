@@ -1,5 +1,31 @@
 import { EquipmentImage } from './ui/components/SpaceshipEquipment/SpaceshipEquipment';
 
+export enum Brand {
+  EntityId,
+  TimeSpan,
+  GravityTag
+}
+
+export type EntityId = number & { brand: Brand.EntityId };
+export type TimeSpan = number & { brand: Brand.TimeSpan };
+
+//1 tick - 0.1 s
+export function makeTicks(value: number): TimeSpan {
+  return value as TimeSpan;
+}
+
+export function makeSeconds(value: number): TimeSpan {
+  return value * 10 as TimeSpan;
+}
+
+export function makeEntityId(value: number): EntityId {
+  return value as EntityId;
+}
+
+export function brandWith<T, V extends Brand>(value: T, brand: V): T & { brand: V } {
+  return value as T & { brand: V };
+}
+
 export interface QuestRequirement {
   met: boolean;
   name: string;
@@ -10,13 +36,16 @@ export enum SpaceshipName {
   Storm    = 'Storm',
   Valkiria = 'Valkiria'
 }
+
 export enum EquipmentName {
-  Rocket = 'Rocket',
-  Turret = 'Turret',
+  Rocket       = 'Rocket',
+  Turret       = 'Turret',
   EnergyShield = 'Energy shield',
-  GravityGun = 'Gravity Gun'
+  GravityGun   = 'Gravity Gun'
 }
+
 export type SpaceshipFacts = Fact[];
+
 export interface Fact {
   name: string;
   value: string;

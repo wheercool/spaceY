@@ -1,7 +1,7 @@
 import { EntityRegistry } from '../entities/EntityRegistry';
 import {
   AmbientLight,
-  AxesHelper,
+  AxesHelper, Camera,
   Color,
   CylinderGeometry,
   LineBasicMaterial,
@@ -9,6 +9,7 @@ import {
   Mesh,
   MeshBasicMaterial,
   Object3D,
+  OrthographicCamera,
   PerspectiveCamera,
   PointLight,
   Scene,
@@ -16,7 +17,6 @@ import {
   Vector3,
   WebGLRenderer as Renderer
 } from 'three';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { assetsManager, Model } from '../services/AssetsManager';
 import { EntityBuilder } from '../entities/EntityBuilder';
 import { Entity } from '../entities/Entity';
@@ -27,11 +27,13 @@ import { length, normalize, Point2D } from '@shared/types/Point2D';
 import { RotationComponent } from '../components/RotationComponent';
 import { AccelerationComponent } from '../components/AccelerationComponent';
 import { JumpComponent } from '../components/JumpComponent';
+import { MAX_X, MAX_Y, MIN_X, MIN_Y } from './WorldBoundarySystem';
 
 type RendererEntity = Entity & { model: Model, position: PositionComponent };
 const CAMERA_HEIGHT = 600;
 const UP_JUMP = 100;
 const DOWN_JUMP = -100;
+const CAMERA_FOV = 50;
 
 /***
  * Renders entities with model
@@ -39,13 +41,18 @@ const DOWN_JUMP = -100;
 export class WebGL3DRendererSystem implements System {
   private scene: Scene;
   private renderer: Renderer;
-  private camera: PerspectiveCamera;
-  private controls: OrbitControls;
+  // private camera: PerspectiveCamera;
+  private camera: Camera;
+  // private controls: OrbitControls;
   private models: Object3D;
   private pointLight: PointLight;
   private isBondariesVisible = false;
   private isAccelerationVisible = false;
   private isAxesVisible = false;
+  private dynamicCamera = false;
+  private aspect = 1;
+  private width: number;
+  private height: number;
 
   constructor(private canvas: HTMLCanvasElement) {
     this.initFlags();
@@ -57,11 +64,16 @@ export class WebGL3DRendererSystem implements System {
     (this.renderer as any).antialias = true;
     this.renderer.setClearColor(new Color('#071015'))
 
-    this.camera = new PerspectiveCamera(50, canvas.width / canvas.height);
+    this.width = canvas.width;
+    this.height = canvas.height;
+    this.aspect = this.width / this.height;
+    this.camera = this.createPerspectiveCamera();
+    // this.camera = this.createOrthoCamera();
+
     this.camera.position.set(0, 0, CAMERA_HEIGHT);
     this.camera.rotation.x = Math.PI;
 
-    this.controls = new OrbitControls(this.camera, this.renderer.domElement);
+    // this.controls = new OrbitControls(this.camera, this.renderer.domElement);
     if (this.isAxesVisible) {
       const axes = new AxesHelper();
       axes.scale.multiplyScalar(1000);
@@ -78,8 +90,8 @@ export class WebGL3DRendererSystem implements System {
   }
 
   update(registry: EntityRegistry): void {
+
     this.models.remove(...this.models.children);
-    console.log(this.models.children.length);
     const models = registry.findEntitiesByComponents(['model', 'position']);
     models.forEach(model => {
       const builder = EntityBuilder.fromEntity(model);
@@ -96,13 +108,7 @@ export class WebGL3DRendererSystem implements System {
 
     const cameraAt = registry.findEntitiesByComponents(['cameraAt', 'position']);
     if (cameraAt.length > 0) {
-      const position = cameraAt[0].position;
-      const lookAtPosition = new Vector3(position.x, position.y, 0);
-      this.camera.lookAt(lookAtPosition)
-      this.camera.position.set(lookAtPosition.x, lookAtPosition.y, this.camera.position.z);
-      const pointLightPosition = new Vector3().copy(this.camera.position);
-      pointLightPosition.add(lookAtPosition).multiplyScalar(0.5);
-      this.pointLight.position.copy(pointLightPosition);
+      this.updateCameraPosition(cameraAt[0].position);
     }
     this.renderer.render(this.scene, this.camera);
   }
@@ -143,6 +149,7 @@ export class WebGL3DRendererSystem implements System {
     this.isBondariesVisible = params.get('boundaries') !== null;
     this.isAccelerationVisible = params.get('acceleration') !== null;
     this.isAxesVisible = params.get('axes') !== null;
+    this.dynamicCamera = params.get('dynamic_camera') !== null;
   }
 
   private renderBoundaries(circles: BoundingCircle[]) {
@@ -170,5 +177,51 @@ export class WebGL3DRendererSystem implements System {
     // obj.position.y += height / 2;
     obj.add(cylinder)
     this.models.add(obj);
+  }
+
+  private updateCameraPosition(position: PositionComponent) {
+    const h = Math.tan(CAMERA_FOV * Math.PI / 360) * this.camera.position.z;
+    const w = this.aspect * h;
+
+    const lookAtPosition = new Vector3(position.x, position.y, 0);
+    const cameraPosition = new Vector3().copy(lookAtPosition);
+    if (this.dynamicCamera) {
+      if ((cameraPosition.y - h / 2) < MIN_Y) {
+        cameraPosition.y = MIN_Y + h / 2;
+      }
+
+      if ((cameraPosition.y + h / 2) > MAX_Y) {
+        cameraPosition.y = MAX_Y - h / 2;
+      }
+
+      if ((cameraPosition.x - w / 2) < MIN_X) {
+        cameraPosition.x = MIN_X + w / 2;
+      }
+      if ((cameraPosition.x + w / 2) > MAX_X) {
+        cameraPosition.x = MAX_X - w / 2;
+      }
+    }
+    // this.camera.lookAt(cameraPosition)
+    // this.camera.position.set(lookAtPosition.x, lookAtPosition.y, this.camera.position.z);
+    // const pointLightPosition = new Vector3().copy(this.camera.position);
+    // pointLightPosition.add(cameraPosition).multiplyScalar(0.4);
+    // this.pointLight.position.copy(pointLightPosition);
+
+    this.camera.lookAt(cameraPosition)
+    this.camera.position.set(cameraPosition.x, cameraPosition.y, this.camera.position.z);
+    const pointLightPosition = new Vector3().copy(this.camera.position);
+    pointLightPosition.add(cameraPosition).multiplyScalar(0.4);
+    this.pointLight.position.copy(pointLightPosition);
+  }
+
+  private createPerspectiveCamera() {
+    const camera = new PerspectiveCamera(CAMERA_FOV, this.width / this.height);
+    camera.near = 0;
+    camera.far = CAMERA_HEIGHT;
+    return camera;
+  }
+
+  private createOrthoCamera() {
+    return new OrthographicCamera(this.width / -2, this.width / 2, this.height / 2, this.height / -2, 0, CAMERA_HEIGHT)
   }
 }

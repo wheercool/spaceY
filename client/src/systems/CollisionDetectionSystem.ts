@@ -5,6 +5,7 @@ import { BoundariesComponent, BoundingCircle, positionAbsolute } from '../compon
 import { PositionComponent } from '../components/PositionComponent';
 import { distanceBetween } from '@shared/types/Point2D';
 import { EntityBuilder } from '../entities/EntityBuilder';
+import { Brand, brandWith, makeEntityId } from '../types';
 
 type CollisionEntity = Entity & { boundaries: BoundariesComponent, position: PositionComponent };
 
@@ -22,8 +23,8 @@ export class CollisionDetectionSystem implements System {
         if (this.collides(entities[i], entities[j])) {
           const collisionEntity = new EntityBuilder()
             .applyComponent('collision', {
-              entity1: entities[i].id,
-              entity2: entities[j].id
+              entity1: makeEntityId(entities[i].id),
+              entity2: makeEntityId(entities[j].id)
             })
             .build();
           registry.addEntity(collisionEntity);

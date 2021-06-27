@@ -1,5 +1,6 @@
 import { Entity } from './Entity';
 import { ComponentsRegistry, ComponentValue } from '../components/Components';
+import { makeEntityId } from '../types';
 
 
 export class EntityBuilder<CmpRegistry = ComponentsRegistry> {
@@ -8,7 +9,7 @@ export class EntityBuilder<CmpRegistry = ComponentsRegistry> {
 
   constructor(id?: number) {
     this.entity = {
-      id: id ?? EntityBuilder.lastId++
+      id: makeEntityId(id ?? EntityBuilder.lastId++)
     };
   }
 

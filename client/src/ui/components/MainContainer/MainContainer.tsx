@@ -1,6 +1,7 @@
 import * as React from 'react';
 import style from './MainContainer.css';
 import classNames from 'classnames';
+import { observer } from 'mobx-react';
 
 export enum MainContainerSize {
   Normal,
@@ -10,12 +11,14 @@ export enum MainContainerSize {
 interface MainContainer {
   title: string;
   size?: MainContainerSize;
+  money?: string;
 }
 
-export const MainContainer: React.FC<MainContainer> = (
+export const MainContainer: React.FC<MainContainer> = observer((
   {
     title,
     size = MainContainerSize.Normal,
+    money = '',
     children
   }) => {
   return <div className={classNames(style.mainContainer,
@@ -23,9 +26,9 @@ export const MainContainer: React.FC<MainContainer> = (
       [style.mainContainerNormal]: size === MainContainerSize.Normal,
       [style.mainContainerSmall]: size === MainContainerSize.Small
     })}>
-    <header className={style.header}>{title}</header>
+    <header className={style.header}>{title} {money && <span className={style.money}>{money}$</span>}</header>
     <div className={style.main}>
       {children}
     </div>
   </div>
-}
+})

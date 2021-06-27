@@ -13,6 +13,7 @@ import classNames from 'classnames';
 import { observer } from 'mobx-react';
 import { useStore } from '../../../stores/store';
 import { Weapon } from '../../../stores/Weapon';
+import { useCallback } from 'react';
 
 const equipmentImages: Record<EquipmentName, string> = {
   [EquipmentName.Rocket]: rocket,
@@ -70,12 +71,14 @@ export const SpaceshipEquipmentItem: React.FC<SpaceshipEquipmentItem> = observer
     equipment,
   }
 ) => {
+  const dock = useStore('Dock');
+  const upgradeWeapon = useCallback(() => dock.upgradeWeapon(equipment), [dock, equipment]);
   return <div className={style.spaceshipEquipmentItem}>
     <header>
       <p className={style.equipmentName}>{equipment.name}</p>
       <p className={style.equipmentLevel}>level {equipment.level}</p>
-      {equipment.canUpgrade && <div className={style.upgradeContainer}>
-        <UpgradeButton onClick={equipment.upgrade}/>
+      {equipment.hasUpgrade && <div className={style.upgradeContainer}>
+        <UpgradeButton onClick={upgradeWeapon}/>
         +{equipment.cost}$
       </div>}
     </header>
@@ -107,7 +110,7 @@ export const SpaceshipEquipmentItem: React.FC<SpaceshipEquipmentItem> = observer
 
 export const SpaceshipEquipment: React.FC = observer((
 ) => {
-  const spaceships = useStore('Spaceships');
+  const spaceships = useStore('Dock');
 
   return <div className={style.spaceshipEquipment}>
     {spaceships.currentSpaceship.weapons.map(item => <SpaceshipEquipmentItem key={item.name}

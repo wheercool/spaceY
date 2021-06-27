@@ -1,5 +1,6 @@
 import { EntityBuilder } from './EntityBuilder';
 import { EntityRegistry } from './EntityRegistry';
+import { makeEntityId } from '../types';
 
 interface TestComponentRegistry {
   prop1: number;
@@ -13,13 +14,13 @@ describe('Entities', () => {
     registry = new EntityRegistry();
   })
   it('should add entity', () => {
-    registry.addEntity({ id: 1 });
+    registry.addEntity({ id: makeEntityId(1) });
     expect(registry.entities.length).toEqual(1);
   })
   it('should remove entity by id', () => {
-    registry.addEntity({ id: 1 });
-    registry.addEntity({ id: 2 });
-    registry.removeEntity(1);
+    registry.addEntity({ id: makeEntityId(1) });
+    registry.addEntity({ id: makeEntityId(2) });
+    registry.removeEntity(makeEntityId(1));
     expect(registry.entities.length).toEqual(1);
   })
   it('should find entity with component prop1', () => {
@@ -27,8 +28,8 @@ describe('Entities', () => {
       .applyComponent('prop1', 123)
       .build();
 
-    registry.addEntity({ id: 2 });
-    registry.addEntity({ id: 3 });
+    registry.addEntity({ id: makeEntityId(2) });
+    registry.addEntity({ id: makeEntityId(3) });
     registry.addEntity(entity)
     const searchResult = registry.findEntitiesByComponents<'prop1', TestComponentRegistry>(['prop1']);
     expect(searchResult).toEqual([{ id: 1, prop1: 123 }]);

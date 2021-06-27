@@ -34,8 +34,10 @@
 }
 
 .equipmentImage {
-  width: 128px;
-  height: auto;
+  height: 128px;
+  width: auto;
+  /*width: 128px;*/
+  /*height: auto;*/
 }
 
 .mainColumnWrapper {

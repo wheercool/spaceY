@@ -1,7 +1,8 @@
 import { ComponentsRegistry } from '../components/Components';
+import { EntityId } from '../types';
 
 export interface Entity {
-  id: number;
+  id: EntityId;
 }
 
 type WithComponent<Cmp extends keyof CmpRegistry, CmpRegistry = ComponentsRegistry> = Record<Cmp, CmpRegistry[Cmp]>;

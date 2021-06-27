@@ -9,7 +9,7 @@ export class Weapon {
     return this.level - 1;
   }
 
-  @computed get canUpgrade(): boolean {
+  @computed get hasUpgrade(): boolean {
     return (this.index + 1) < this.allFacts.length;
   }
 

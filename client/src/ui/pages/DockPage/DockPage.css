@@ -23,10 +23,20 @@
   font-size: 21px;
   font-weight: normal;
   margin-bottom: 40px;
-  background: rgba(83, 205, 80, 0.5);
-  background: rgba(150, 55, 61, 0.5);
   padding: 7px;
   border-radius: 2px;
+}
+
+.canBuy {
+  background: rgba(83, 205, 80, 0.5);
+}
+
+.cannotBuy {
+  background: rgba(150, 55, 61, 0.5);
+}
+
+.bought {
+  background: transparent;
 }
 
 .spaceshipWrapper {
