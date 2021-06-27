@@ -207,4 +207,19 @@ export class WebGL3DRendererSystem implements System {
   private createOrthoCamera() {
     return new OrthographicCamera(this.width / -2, this.width / 2, this.height / 2, this.height / -2, 0, CAMERA_HEIGHT)
   }
+
+  updateSize(width: number, height: number) {
+    this.width = width;
+    this.height = height;
+    this.aspect = width / height;
+    if (this.camera instanceof PerspectiveCamera) {
+      this.camera = this.createPerspectiveCamera();
+      this.camera.position.set(0, 0, CAMERA_HEIGHT);
+      this.camera.rotation.x = Math.PI;
+      // this.camera.aspect = this.aspect;
+      // this.camera.updateProjectionMatrix();
+    }
+    //
+    this.renderer.setSize(width, height);
+  }
 }

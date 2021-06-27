@@ -14,6 +14,7 @@ export const GamePage = observer(() => {
   const miniMap = useStore('Minimap');
   const spaceshipPanel = useStore('SpaceshipPanel');
   const canvasRef = createRef<HTMLCanvasElement>();
+  const pageRef = createRef<HTMLDivElement>();
   const WIDTH = window.innerWidth;
   const HEIGHT = window.innerHeight;
 
@@ -25,11 +26,24 @@ export const GamePage = observer(() => {
     const uiNotificator = new UiNotificationSystem(miniMap, spaceshipPanel);
     assetsManager.load().then(() => {
       new Game(renderer, uiNotificator).startGame();
+    });
+    window.addEventListener('resize', () => {
+      const WIDTH = window.innerWidth;
+      const HEIGHT = window.innerHeight;
+
+      if (pageRef.current) {
+        pageRef.current.style.width = WIDTH + 'px';
+        pageRef.current.style.height = HEIGHT + 'px';
+      }
+      renderer.updateSize(WIDTH, HEIGHT);
     })
+    return () => {
+
+    }
   }, []);
 
-  return <div className="gamePage" style={{ width: WIDTH, height: HEIGHT }}>
-    <canvas width={WIDTH} height={HEIGHT} ref={canvasRef} style={{width: WIDTH, height: HEIGHT}}/>
+  return <div className={style.gamePage} ref={pageRef} style={{ width: WIDTH, height: HEIGHT }}>
+    <canvas width={WIDTH} height={HEIGHT} ref={canvasRef} style={{ width: WIDTH, height: HEIGHT }}/>
     <div className={style.overlay}>
       <div className={style.miniMapWrapper}>
         <MiniMap player={miniMap.player} rotation={miniMap.rotation}/>

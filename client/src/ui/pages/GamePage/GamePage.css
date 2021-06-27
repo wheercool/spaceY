@@ -7,15 +7,25 @@
   bottom: 0;
   left: 0;
   right: 0;
+  width: 100%;
+  margin: 0;
   display: flex;
+  overflow: hidden;
+}
+.gamePage canvas {
+  display: block;
+  margin: 0;
+  padding: 0;
 }
 
 .spaceShipPanelWrapper {
+  flex: 0;
   margin-top: auto;
   margin-left: auto;
   margin-right: auto;
 }
 
 .miniMapWrapper {
+  flex: 0;
   margin: 15px;
 }

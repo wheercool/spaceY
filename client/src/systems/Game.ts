@@ -136,7 +136,7 @@ export class Game implements System {
 
     this.registry.addEntity(game);
     this.registry.addEntity(map);
-    this.registry.addEntity(createRabbit())
+    this.registry.addEntity(createStorm())
     this.registry.addEntity(planet);
     this.registry.addEntity(planet2);
     this.registry.addEntity(planet3);
