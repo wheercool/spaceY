@@ -13,6 +13,7 @@ import { observer } from 'mobx-react';
 export const GamePage = observer(() => {
   const miniMap = useStore('Minimap');
   const spaceshipPanel = useStore('SpaceshipPanel');
+  const space = useStore('Space');
   const canvasRef = createRef<HTMLCanvasElement>();
   const pageRef = createRef<HTMLDivElement>();
   const WIDTH = window.innerWidth;
@@ -25,9 +26,11 @@ export const GamePage = observer(() => {
     const renderer = new WebGL3DRendererSystem(canvasRef.current)
     const uiNotificator = new UiNotificationSystem(miniMap, spaceshipPanel);
     assetsManager.load().then(() => {
-      new Game(renderer, uiNotificator).startGame();
+      new Game(renderer, uiNotificator)
+        .init(space.getEntityRegistry())
+        .startGame();
     });
-    window.addEventListener('resize', () => {
+    const resizeHandler = () => {
       const WIDTH = window.innerWidth;
       const HEIGHT = window.innerHeight;
 
@@ -36,9 +39,10 @@ export const GamePage = observer(() => {
         pageRef.current.style.height = HEIGHT + 'px';
       }
       renderer.updateSize(WIDTH, HEIGHT);
-    })
+    };
+    window.addEventListener('resize', resizeHandler)
     return () => {
-
+      window.removeEventListener('resize', resizeHandler);
     }
   }, []);
 
