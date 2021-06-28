@@ -10,7 +10,7 @@ import { useStore } from '../../../stores/store';
 export function AboutPage() {
   const router = useStore('Router');
 
-  return <Page page="startPage">
+  return <Page page="aboutPage">
     <div className={style.wrapper}>
       <MainContainer title='About' size={MainContainerSize.Small}>
         <p>Created by: Aleksander Rudy</p>

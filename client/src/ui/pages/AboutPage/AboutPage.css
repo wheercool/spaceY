@@ -1,7 +1,7 @@
-:global(body.startPage) {
+:global(body.aboutPage) {
   background-image: url('public/assets/images/starting_screen.png');
   background-repeat: no-repeat;
-  background-size: 100% auto;
+  background-size: cover;
 }
 
 .wrapper {

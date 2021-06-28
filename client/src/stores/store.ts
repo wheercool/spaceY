@@ -8,9 +8,9 @@ import { SpaceshipPanelStore } from './SpaceshipPanelStore/SpaceshipPanelStore';
 import { SpaceStore } from './SpaceStore';
 import { QuestStore } from './QuestStore';
 
-const rootStore = new RootStore();
 const walletStore = new WalletStore();
 const routerStore = new RouterStore();
+const rootStore = new RootStore(routerStore);
 const dockStore = new DockStore(walletStore);
 export const { StoreProvider, useStore } = createContext({
   RootStore: rootStore,

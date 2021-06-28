@@ -1,0 +1,24 @@
+.loader {
+
+}
+
+.title {
+  text-align: center;
+  color: white;
+  font-weight: 100;
+  font-size: 21px;
+  margin: 0 0 10px;
+}
+
+.progressContainer {
+  width: 100%;
+  background-color: rgba(196, 196, 196, 0.4);
+  border-radius: 9px;
+  overflow: hidden;
+  box-shadow: 0 0 10px 2px #9BE0F6;
+}
+
+.progressValue {
+  height: 15px;
+  background-color: #4C588C;
+}

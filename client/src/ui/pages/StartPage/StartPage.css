@@ -1,21 +1,20 @@
 :global(body.startPage) {
+  background-color: #21242c;
   background-image: url('public/assets/images/starting_screen.png');
-  background-repeat: no-repeat;
-  background-size: 100% auto;
+  background-position: 50% 30%;
+  background-size: cover;
 }
 
-.wrapper {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
+.logo {
+  align-self: center;
+  margin-top: auto;
 }
-
-.buttons {
+.container {
   display: flex;
+  margin-top: auto;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
+  padding-bottom: 20px;
+  width: 800px;
 }
 
 .header {
@@ -25,7 +24,10 @@
   font-size: 21px;
   font-weight: normal;
 }
+.buttons {
+  display: flex;
+}
 
-.buttons button + button {
-  margin-top: 20px;
+.buttons > button+button {
+  margin-left: auto;
 }

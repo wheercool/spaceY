@@ -3,18 +3,6 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 
 export type Model = keyof AssetsManager['models'];
 
-interface InternalModel {
-  mesh: Object3D;
-
-  create(): Object3D;
-}
-
-interface ExternalModel {
-  url: string;
-  mesh: Object3D;
-
-  postProcess(scene: Group): Object3D;
-}
 
 export class AssetsManager {
   private models = {
@@ -188,20 +176,34 @@ export class AssetsManager {
       }
     }
   } as const;
+  private progressHandler: (progress: number) => void = noop;
+  private doneHandler: () => void = noop;
 
   getModel(model: Model): Object3D {
     return this.models[model].mesh.clone(true);
   }
 
   private manager: LoadingManager;
+
   private loader: GLTFLoader;
 
   constructor() {
     this.manager = new LoadingManager();
+
+    this.manager.onProgress = (url, itemsLoaded, itemsTotal) => {
+      this.progressHandler(Math.round(itemsLoaded / itemsTotal * 100));
+    };
+
+    this.manager.onLoad = () => {
+      this.doneHandler();
+    };
+
     this.loader = new GLTFLoader(this.manager);
   }
 
-  async load() {
+  async load(progress: (progress: number) => void, doneHandler: () => void) {
+    this.progressHandler = progress;
+    this.doneHandler = doneHandler;
     await this.loadModels();
   }
 
@@ -219,3 +221,6 @@ export class AssetsManager {
 }
 
 export const assetsManager = new AssetsManager();
+
+function noop() {
+}

@@ -2,7 +2,6 @@ import React, { createRef, useEffect } from 'react';
 import { WebGL3DRendererSystem } from '../../../systems/WebGL3DRendererSystem';
 import { SpaceshipPanel } from '../../components/SpaceshipPanel/SpaceshipPanel';
 import { Game } from '../../../systems/Game';
-import { assetsManager } from '../../../services/AssetsManager';
 // import { assetsManager } from '../services/AssetsManager';
 import style from './GamePage.css';
 import { MiniMap } from '../../components/MiniMap/MiniMap';
@@ -25,11 +24,11 @@ export const GamePage = observer(() => {
     }
     const renderer = new WebGL3DRendererSystem(canvasRef.current)
     const uiNotificator = new UiNotificationSystem(miniMap, spaceshipPanel);
-    assetsManager.load().then(() => {
-      new Game(renderer, uiNotificator)
-        .init(space.getEntityRegistry())
-        .startGame();
-    });
+
+    new Game(renderer, uiNotificator)
+      .init(space.getEntityRegistry())
+      .startGame();
+
     const resizeHandler = () => {
       const WIDTH = window.innerWidth;
       const HEIGHT = window.innerHeight;
