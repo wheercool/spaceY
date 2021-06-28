@@ -14,11 +14,6 @@ export class RouterStore {
 
   constructor() {
     makeObservable(this);
-    const params = new URLSearchParams(window.location.search);
-    const page = params.get('page');
-    if (page) {
-      this.route = page as Route;
-    }
   }
 
   @action.bound gotoStation() {

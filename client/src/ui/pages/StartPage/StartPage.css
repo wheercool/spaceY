@@ -1,6 +1,6 @@
 :global(body.startPage) {
   background-color: #21242c;
-  background-image: url('public/assets/images/starting_screen.png');
+  background-image: url('public/assets/images/starting_screen.jpg');
   background-position: 50% 30%;
   background-size: cover;
 }

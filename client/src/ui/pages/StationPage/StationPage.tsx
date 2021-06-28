@@ -6,8 +6,8 @@ import { MainContainer, MainContainerSize } from '../../components/MainContainer
 import style from './StationPage.css';
 import { Page } from '../Page';
 import { Card } from '../../components/Card/Card';
-import dockImage from '/public/assets/images/dock_screen.png';
-import tavernScreen from '/public/assets/images/quest_screen.png';
+import dockImage from '/public/assets/images/dock_screen.jpg';
+import tavernScreen from '/public/assets/images/quest_screen.jpg';
 import { useStore } from '../../../stores/store';
 
 

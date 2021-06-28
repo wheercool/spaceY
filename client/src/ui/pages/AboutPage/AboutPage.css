@@ -1,8 +1,8 @@
 :global(body.aboutPage) {
-  background-image: url('public/assets/images/starting_screen.png');
+  background-image: url('public/assets/images/starting_screen.jpg');
   background-repeat: no-repeat;
-  background-size: cover;
-}
+  background-position: 50% 30%;
+  background-size: cover;}
 
 .wrapper {
   display: flex;

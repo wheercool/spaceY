@@ -1,10 +1,23 @@
-import { CylinderGeometry, Group, LoadingManager, Mesh, MeshStandardMaterial, Object3D } from 'three';
+import { CylinderGeometry, Group, ImageLoader, LoadingManager, Mesh, MeshStandardMaterial, Object3D } from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 
 export type Model = keyof AssetsManager['models'];
 
 
 export class AssetsManager {
+  private imagesToPrefetch = [
+    'dock_screen.jpg',
+    'station.jpg',
+    'quest_screen.jpg',
+    'rabbit.png',
+    'storm.png',
+    'valkiria.png',
+    'energy_shield.png',
+    'gravity_gun.png',
+    'gravity_gun_small.png',
+    'rocket.png',
+    'turret.png'
+  ]
   private models = {
     'starship': {
       kind: 'external',
@@ -205,6 +218,7 @@ export class AssetsManager {
     this.progressHandler = progress;
     this.doneHandler = doneHandler;
     await this.loadModels();
+    this.loadImages();
   }
 
   private async loadModels() {
@@ -217,6 +231,11 @@ export class AssetsManager {
         (config as any).mesh = config.create();
       }
     }
+  }
+
+  private loadImages() {
+    const imageLoader = new ImageLoader(this.manager);
+    this.imagesToPrefetch.forEach(img => imageLoader.load(`assets/images/${img}`));
   }
 }
 

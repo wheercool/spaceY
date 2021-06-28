@@ -25,19 +25,6 @@ export class SpaceStore {
     private spaceshipProvider: SpaceshipProvider
   ) {
     makeObservable(this);
-
-    // const params = new URLSearchParams(window.location.search);
-    // switch (params.get('spaceship')?.toLowerCase()) {
-    //   case 'valkiria':
-    //     this.player = createValkiria();
-    //     break;
-    //   case 'storm':
-    //     this.player = createStorm();
-    //     break;
-    //   default:
-    //     this.player = createRabbit();
-    //     break;
-    // }
   }
 
   @action.bound getEntityRegistry(): EntityRegistry {
