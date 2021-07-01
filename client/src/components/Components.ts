@@ -25,6 +25,7 @@ import { MapDependentComponent } from './MapDependentComponent';
 import { GravityGunComponent } from './GravityGunComponent';
 import { SpaceshipComponent } from './SpaceshipComponent';
 import { QuestComponent } from './QuestComponent';
+import { MinimapComponent } from './MinimapComponent';
 
 export interface ComponentsRegistry {
   rotation: RotationComponent;
@@ -54,6 +55,7 @@ export interface ComponentsRegistry {
   gravityGun: GravityGunComponent;
   spaceship: SpaceshipComponent;
   quest: QuestComponent;
+  onMinimap: MinimapComponent;
 }
 
 export type ComponentValue<Cmp extends keyof CmpRegistry, CmpRegistry> = CmpRegistry[Cmp];

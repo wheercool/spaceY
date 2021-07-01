@@ -2,7 +2,7 @@ import { System } from './System';
 import { EntityRegistry } from '../entities/EntityRegistry';
 import { EntityBuilder } from '../entities/EntityBuilder';
 import { OnTimerFinished, startTimer } from '../components/TimerComponent';
-import { Brand, brandWith, makeTicks } from '../types';
+import { makeTicks } from '../types';
 
 /***
  * Counts game time

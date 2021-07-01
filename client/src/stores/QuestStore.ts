@@ -77,7 +77,7 @@ export class QuestStore implements QuestManager {
       case 0:
         return this.firstQuestEntities(playerId);
       case 1:
-        return this.secondQuestEntities(playerId);
+        return this.secondQuestEntities();
     }
     return [];
   }
@@ -110,6 +110,9 @@ export class QuestStore implements QuestManager {
     const result: Entity[] = [];
     const mapWidth = 10000;
     const mapHeight = 10000;
+    const asteroidsNumber = 100;
+    const planetsNumber = 50;
+
     const map = new EntityBuilder()
       .applyComponent('map', { width: mapWidth, height: mapHeight })
       .build();
@@ -141,15 +144,11 @@ export class QuestStore implements QuestManager {
       })
       .build();
 
-    for (let i = 0; i < 100; i++) {
+    for (let i = 0; i < asteroidsNumber; i++) {
       result.push(createAsteroid(QuestStore.randomPosition(mapWidth, mapHeight)));
     }
 
-    for (let i = 0; i < 50; i++) {
-      result.push(createPlanet(QuestStore.randomPosition(mapWidth, mapHeight)));
-    }
-
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < planetsNumber; i++) {
       result.push(createPlanet(QuestStore.randomPosition(mapWidth, mapHeight)));
     }
 
@@ -181,9 +180,10 @@ export class QuestStore implements QuestManager {
     }
   }
 
-  private secondQuestEntities(playerId: EntityId) {
-    const width = 800;
-    const height = 1000;
+  private secondQuestEntities() {
+    const width = 2000;
+    const height = 2000;
+    const asteroidsNumber = 80;
     const map = new EntityBuilder()
       .applyComponents({
         map: {
@@ -210,14 +210,34 @@ export class QuestStore implements QuestManager {
         },
         mass: 100,
         gravityBehaviour: createGravityBehaviour(GravityTagName.Cargo),
-        mapDependent: true
+        mapDependent: true,
+        onMinimap: {
+          shape: {
+            type: 'rectangle',
+            width: 15,
+            height: 15,
+            color: '#27bb1f'
+          }
+        }
       })
       .build()
 
-    const earth = createEarth({
-      x: 400,
-      y: 400
-    });
+    const earth = EntityBuilder.fromEntity(
+      createEarth({
+        x: 1500,
+        y: 1500
+      }))
+      .applyComponents({
+        onMinimap: {
+          shape: {
+            type: 'circle',
+            radius: 20,
+            color: '#525f90'
+          }
+        }
+      })
+      .build();
+
 
     const quest = new EntityBuilder()
       .applyComponents({
@@ -235,11 +255,24 @@ export class QuestStore implements QuestManager {
         }
       })
       .build()
+
+    const asteroids: Entity[] = [];
+    for (let i = 0; i < asteroidsNumber; i++) {
+      let position: Point2D;
+
+      do {
+        position = QuestStore.randomPosition(width, height);
+      } while (position.x <= 180 && position.y <= 180);
+
+      asteroids.push(createAsteroid(position));
+    }
+
     return [
       map,
       crystal,
       earth,
-      quest
+      quest,
+      ...asteroids
     ];
   }
 }
@@ -292,7 +325,7 @@ function createEarth(position: Point2D) {
       boundaries: [
         {
           position: { x: 0, y: 0 },
-          radius: 100
+          radius: 110
         }
       ],
       mapDependent: true,

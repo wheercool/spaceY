@@ -48,8 +48,6 @@ export class Game implements System {
       this.renderer,
       this.uiNotificator
     ]);
-
-
   }
 
   init(registry: EntityRegistry) {
@@ -61,11 +59,17 @@ export class Game implements System {
     // this.initEntities();
     this.compositor.init(this.registry);
     this.update();
+    return this;
   }
 
   update() {
     this.compositor.update(this.registry);
     this.rafHandle = requestAnimationFrame(() => this.update());
+  }
+
+  dispose() {
+    this.compositor.dispose();
+    console.log('dispose')
   }
 }
 

@@ -26,7 +26,7 @@ export const GamePage = observer(() => {
     const renderer = new WebGL3DRendererSystem(canvasRef.current)
     const uiNotificator = new UiNotificationSystem(miniMap, spaceshipPanel, quest);
 
-    new Game(renderer, uiNotificator)
+    const game = new Game(renderer, uiNotificator)
       .init(space.getEntityRegistry())
       .startGame();
 
@@ -43,6 +43,7 @@ export const GamePage = observer(() => {
     window.addEventListener('resize', resizeHandler)
     return () => {
       window.removeEventListener('resize', resizeHandler);
+      game.dispose();
     }
   }, []);
 
@@ -50,7 +51,7 @@ export const GamePage = observer(() => {
     <canvas width={WIDTH} height={HEIGHT} ref={canvasRef} style={{ width: WIDTH, height: HEIGHT }}/>
     <div className={style.overlay}>
       <div className={style.miniMapWrapper}>
-        <MiniMap player={miniMap.player} rotation={miniMap.rotation}/>
+        <MiniMap entities={miniMap.entities}/>
       </div>
       <div className={style.spaceShipPanelWrapper}>
         <SpaceshipPanel/>

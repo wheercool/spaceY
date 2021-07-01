@@ -28,11 +28,21 @@ export class UiNotificationSystem implements System {
 
     // Minimap
     const worldEntity = registry.findSingle(['map']);
-    const position: Point2D = {
-      x: playerEntity.position.x / worldEntity.map.width,
-      y: playerEntity.position.y / worldEntity.map.height
-    }
-    this.miniMap.updateMinimap(position, playerEntity.rotation)
+    const visibleOnMinimaps = registry.findEntitiesByComponents(['onMinimap', 'position']);
+    const minimapEntities = visibleOnMinimaps.map(entity => {
+      const position: Point2D = {
+        x: entity.position.x / worldEntity.map.width,
+        y: entity.position.y / worldEntity.map.height
+      }
+      const rotation = EntityBuilder.fromEntity(entity).getOrDefault('rotation', 0);
+      return {
+        position,
+        rotation: rotation,
+        shape: entity.onMinimap.shape
+      }
+    });
+    this.miniMap.updateMinimap(minimapEntities);
+
 
     // Spaceship
     const spaceship = playerBuilder.getOrDefault('spaceship', false);

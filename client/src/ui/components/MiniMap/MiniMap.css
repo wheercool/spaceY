@@ -4,6 +4,7 @@
   width: 200px;
   height: 200px;
 }
+
 .playerMarker {
   position: absolute;
   width: 24px;
@@ -11,6 +12,20 @@
   bottom: -12px;
   left: -12px;
 }
+
+.rectangleMarker {
+  position: absolute;
+  border-width: 4px;
+  border-style: solid;
+}
+
+.circleMarker {
+  position: absolute;
+  border-width: 4px;
+  border-style: solid;
+  border-radius: 50%;
+}
+
 .playerMarkerImage {
   width: 100%;
   height: 100%;

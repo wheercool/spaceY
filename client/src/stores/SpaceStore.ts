@@ -37,78 +37,6 @@ export class SpaceStore {
     const mapEntities = this.questStore.getCurrentQuestMap(player.id);
     mapEntities.forEach(mapEntity => this.registry.addEntity(mapEntity));
 
-    // const planet = new EntityBuilder()
-    //   .applyComponents({
-    //     position: { x: 300, y: 100 },
-    //     model: 'planet',
-    //     mass: 10000,
-    //     static: true,
-    //     boundaries: [{
-    //       radius: 100,
-    //       position: { x: 0, y: 0 }
-    //     }],
-    //     gravityBehaviour: createGravityBehaviour(GravityTagName.Big),
-    //
-    //   })
-    //   .build()
-    //
-    //
-    // const planet2 = new EntityBuilder()
-    //   .applyComponents({
-    //     position: { x: 450, y: 200 },
-    //     model: 'planet',
-    //     mass: 10000,
-    //     static: true,
-    //     boundaries: [{
-    //       radius: 100,
-    //       position: { x: 0, y: 0 }
-    //     }],
-    //     gravityBehaviour: createGravityBehaviour(GravityTagName.Big)
-    //
-    //   })
-    //   .build()
-    //
-    // const planet3 = new EntityBuilder()
-    //   .applyComponents({
-    //     position: { x: 300, y: 500 },
-    //     model: 'planet',
-    //     mass: 10000,
-    //     static: true,
-    //     boundaries: [{
-    //       radius: 100,
-    //       position: { x: 0, y: 0 }
-    //     }],
-    //     gravityBehaviour: createGravityBehaviour(GravityTagName.Big)
-    //   })
-    //   .build()
-    //
-    // const kepler = new EntityBuilder()
-    //   .applyComponents({
-    //     position: { x: 200, y: 100 },
-    //     model: 'kepler',
-    //     boundaries: [
-    //       {
-    //         position: { x: 0, y: 0 },
-    //         radius: 33
-    //       }
-    //     ],
-    //     mass: 10000,
-    //     gravityBehaviour: createGravityBehaviour(GravityTagName.Big)
-    //   })
-    //   .build()
-    //
-    // const map = new EntityBuilder()
-    //   .applyComponent('map', { width: 1000, height: 1000 })
-    //   .build();
-    //
-    // this.registry.addEntity(map);
-    // this.registry.addEntity(planet);
-    // this.registry.addEntity(planet2);
-    // this.registry.addEntity(planet3);
-    // this.registry.addEntity(kepler);
-    // this.registry.addEntity(createAsteroid({ x: 0, y: 200 }));
-    // this.registry.addEntity(createAsteroid({ x: 10, y: 200 }));
-    // this.registry.addEntity(createAsteroid({ x: 20, y: 200 }));
     return this.registry;
   }
 
@@ -141,6 +69,11 @@ export class SpaceStore {
       .applyComponents(weapons)
       .applyComponents({
         mass,
+        onMinimap: {
+          shape: {
+            type: 'player'
+          }
+        }
       })
       .build();
   }

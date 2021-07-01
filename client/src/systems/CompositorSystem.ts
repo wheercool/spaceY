@@ -16,4 +16,8 @@ export class CompositorSystem implements System {
       system.update(registry);
     }
   }
+
+  dispose() {
+    this.systems.forEach(system => system.dispose && system.dispose());
+  }
 }

@@ -27,5 +27,4 @@ export class AccelerationSystem implements System {
       entity.applyComponent('acceleration', acceleration);
     }
   }
-
 }

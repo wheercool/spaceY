@@ -1,7 +1,8 @@
 import { EntityRegistry } from '../entities/EntityRegistry';
 import {
   AmbientLight,
-  AxesHelper, Camera,
+  AxesHelper,
+  Camera,
   Color,
   CylinderGeometry,
   LineBasicMaterial,
@@ -110,6 +111,12 @@ export class WebGL3DRendererSystem implements System {
       this.updateCameraPosition(cameraAt[0].position);
     }
     this.renderer.render(this.scene, this.camera);
+  }
+
+  dispose() {
+    this.scene.remove(...this.scene.children);
+    this.renderer.renderLists.dispose();
+    this.renderer.dispose();
   }
 
   private renderEntity(entity: RendererEntity, options: {
