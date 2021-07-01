@@ -75,6 +75,9 @@ export interface WeightFact {
 }
 export type Fact = ConsumptionFact | PowerFact | CooldownFact | SpeedFact | WeightFact;
 
+export enum Achievement {
+  GravityGun = 'Gravity gun'
+}
 export interface MergedFact {
   name: Fact['name'];
   value: string;

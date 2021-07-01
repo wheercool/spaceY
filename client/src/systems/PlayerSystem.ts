@@ -77,10 +77,10 @@ export class PlayerSystem implements System {
     }
 
     const FORCE = gravityGun.power;
-    if (input.q) {
+    if (input.w) {
       gravityGun.trigger = GravityGunTrigger.Push;
     }
-    if (input.w) {
+    if (input.q) {
       gravityGun.trigger = GravityGunTrigger.Pull;
     }
     if (!input.q && !input.w) {

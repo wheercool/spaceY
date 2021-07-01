@@ -40,7 +40,6 @@ export class CollisionResolutionSystem implements System {
       } catch (e) {
         console.error(e);
       }
-      registry.removeEntity(collisionId);
     }
   }
 }

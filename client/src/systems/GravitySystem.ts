@@ -35,7 +35,10 @@ export class GravitySystem implements System {
         const e2 = elements[j];
         // Direction in which e1 pulls e2
         const distVector = sub(e1.position, e2.position);
-        const distance = length(distVector);
+        let distance = length(distVector);
+        if (distance === 0) {
+          distance = EPS;
+        }
         let F = Math.abs(distance) > EPS
           ? G * e1.mass * e2.mass / (distance * distance)
           : 0;
@@ -54,6 +57,7 @@ export class GravitySystem implements System {
     }
 
     for (let i = 0; i < elements.length; i++) {
+
       EntityBuilder.fromEntity(elements[i])
         .applyComponent('gravityForce', forces[i])
     }

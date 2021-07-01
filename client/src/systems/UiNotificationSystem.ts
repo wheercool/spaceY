@@ -4,9 +4,17 @@ import { MinimapStore } from '../stores/MinimapStore';
 import { Point2D } from '@shared/types/Point2D';
 import { SpaceshipPanelStore } from '../stores/SpaceshipPanelStore/SpaceshipPanelStore';
 import { EntityBuilder } from '../entities/EntityBuilder';
+import { QuestStatus } from '../components/QuestComponent';
+import { Entity } from '../entities/Entity';
+import { ComponentsRegistry } from '../components/Components';
+import { QuestManager } from '../stores/QuestStore';
 
 export class UiNotificationSystem implements System {
-  constructor(private miniMap: MinimapStore, private spaceshipPanel: SpaceshipPanelStore) {
+  constructor(
+    private miniMap: MinimapStore,
+    private spaceshipPanel: SpaceshipPanelStore,
+    private questManager: QuestManager
+  ) {
 
   }
 
@@ -48,15 +56,32 @@ export class UiNotificationSystem implements System {
         this.spaceshipPanel.updateTurretCooldown(0);
       }
     } else {
-     this.spaceshipPanel.hasTurret(false);
+      this.spaceshipPanel.hasTurret(false);
     }
 
     //Gravity gun activity
     const gravityGun = playerBuilder.getOrDefault('gravityGun', false);
     if (gravityGun) {
-     this.spaceshipPanel.hasGravityGun(true, gravityGun.active);
+      this.spaceshipPanel.hasGravityGun(true, gravityGun.active);
     } else {
       this.spaceshipPanel.hasGravityGun(false);
     }
+
+
+    // Check quest
+    const questEntities = registry.findEntitiesByComponents(['quest']);
+    if (questEntities.length > 0 && questEntities.every(questEntity => questEntity.quest.status === QuestStatus.Completed)) {
+      UiNotificationSystem.removeQuest(questEntities, registry);
+      this.questManager.questCompleted();
+    }
+    if (questEntities.length > 0 && questEntities.some(questEntity => questEntity.quest.status === QuestStatus.Failed)) {
+      UiNotificationSystem.removeQuest(questEntities, registry);
+      this.questManager.questFailed();
+    }
+
+  }
+
+  private static removeQuest(questEntities: (Entity & Pick<ComponentsRegistry, 'quest'>)[], registry: EntityRegistry) {
+    questEntities.forEach(questEntity => registry.removeEntity(questEntity.id));
   }
 }

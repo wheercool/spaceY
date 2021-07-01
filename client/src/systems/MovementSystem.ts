@@ -20,6 +20,7 @@ export class MovementSystem implements System {
     for (let i = 0; i < elements.length; i++) {
       let element = elements[i];
       const acceleration = EntityBuilder.fromEntity(element).getOrDefault('acceleration', {x: 0, y: 0});
+
       const prevPosition = prevPositions[i];
       let newPosition = [
         mulByScalar(element.position, 2),

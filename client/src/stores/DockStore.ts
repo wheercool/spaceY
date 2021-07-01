@@ -19,7 +19,7 @@ const createEnergyShield = () => {
 }
 
 const rabbit = new Spaceship(SpaceshipName.Rabbit, [
-  { name: 'speed', displayValue: 'very fast', value: 8},
+  { name: 'speed', displayValue: 'very fast', value: 4},
   { name: 'weight', displayValue: 'light', value: 0.5},
 ]);
 

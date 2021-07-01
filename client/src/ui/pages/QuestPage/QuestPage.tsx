@@ -18,7 +18,7 @@ export const QuestPage = observer(() => {
     const questStore = useStore('Quest');
     const router = useStore('Router');
     const currentQuest = questStore.currentQuest;
-    const requirements = currentQuest.requirements;
+    const requirements = questStore.currentQuestRequirements;
 
     return <Page page="questPage">
       <MainContainer title='Tavern' size={MainContainerSize.Normal}>

@@ -1,3 +1,4 @@
+import { action, runInAction } from 'mobx';
 import { CylinderGeometry, Group, ImageLoader, LoadingManager, Mesh, MeshStandardMaterial, Object3D } from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 
@@ -16,7 +17,9 @@ export class AssetsManager {
     'gravity_gun.png',
     'gravity_gun_small.png',
     'rocket.png',
-    'turret.png'
+    'turret.png',
+    'supernova_hires.jpg',
+    'crystal.png'
   ]
   private models = {
     'starship': {
@@ -143,9 +146,9 @@ export class AssetsManager {
         return wrapper;
       }
     },
-    'kepler': {
+    'earth': {
       kind: 'external',
-      url: 'assets/models/kepler/scene.gltf',
+      url: 'assets/models/earth/scene.gltf',
       mesh: new Object3D(),
       postProcess: (scene: Group) => {
         let result: Object3D = scene;
@@ -154,7 +157,7 @@ export class AssetsManager {
         result.rotation.x = -Math.PI;
         result.rotation.z = Math.PI;
         result.rotation.y = Math.PI;
-        result.scale.multiplyScalar(0.03);
+        result.scale.multiplyScalar(0.1);
         wrapper.add(result);
         return wrapper;
       }
@@ -175,6 +178,42 @@ export class AssetsManager {
         return wrapper;
       }
     },
+    'supernova': {
+      kind: 'external',
+      url: 'assets/models/supernova/supernova.glb',
+      mesh: new Object3D(),
+      postProcess: (scene: Group) => {
+        let result: Object3D = scene;
+        const wrapper = new Object3D();
+        result.scale.multiplyScalar(100);
+        wrapper.add(result);
+        return wrapper;
+      }
+    },
+    'crystal': {
+      kind: 'external',
+      url: 'assets/models/crystal/crystal.glb',
+      mesh: new Object3D(),
+      postProcess: (scene: Group) => {
+        let result: Object3D = scene;
+        const wrapper = new Object3D();
+        result.scale.multiplyScalar(0.1);
+        wrapper.add(result);
+        return wrapper;
+      }
+    },
+    // 'earth': {
+    //   kind: 'external',
+    //   url: 'assets/models/earth/earth.glb',
+    //   mesh: new Object3D(),
+    //   postProcess: (scene: Group) => {
+    //     let result: Object3D = scene;
+    //     const wrapper = new Object3D();
+    //     result.scale.multiplyScalar(100);
+    //     wrapper.add(result);
+    //     return wrapper;
+    //   }
+    // },
     'laser': {
       kind: 'internal',
       mesh: new Object3D(),
@@ -204,11 +243,11 @@ export class AssetsManager {
     this.manager = new LoadingManager();
 
     this.manager.onProgress = (url, itemsLoaded, itemsTotal) => {
-      this.progressHandler(Math.round(itemsLoaded / itemsTotal * 100));
+      runInAction(() => this.progressHandler(Math.round(itemsLoaded / itemsTotal * 100)));
     };
 
     this.manager.onLoad = () => {
-      this.doneHandler();
+      runInAction(() => this.doneHandler());
     };
 
     this.loader = new GLTFLoader(this.manager);

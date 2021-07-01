@@ -10,11 +10,12 @@ export interface GravityBehaviourComponent {
 
 
 export enum GravityTagName {
-  Enemy        = 'enemy',
-  Small        = 'small',
-  Big          = 'big',
-  Free         = 'free',
-  EnergyGun    = 'energy_gun',
+  Enemy     = 'enemy',
+  Small     = 'small',
+  Big       = 'big',
+  Free      = 'free',
+  EnergyGun = 'energy_gun',
+  Cargo     = 'cargo'
 }
 
 export type GravityTagOption = GravityTagName | '*';
@@ -45,13 +46,21 @@ export function createGravityBehaviour(tag: GravityTagName): GravityBehaviourCom
       return {
         gravityTag: GravityTagName.EnergyGun,
         pullableBy: [],
-        pulls: [GravityTagName.Enemy]
+        pulls: [GravityTagName.Enemy, GravityTagName.Cargo]
       }
     case GravityTagName.Enemy: {
       return {
         gravityTag: GravityTagName.Enemy,
         pulls: [GravityTagName.Small],
         pullableBy: [GravityTagName.EnergyGun, GravityTagName.Small, GravityTagName.Big]
+      }
+    }
+
+    case GravityTagName.Cargo: {
+      return {
+        gravityTag: GravityTagName.Cargo,
+        pulls: [],
+        pullableBy: [GravityTagName.EnergyGun]
       }
     }
   }

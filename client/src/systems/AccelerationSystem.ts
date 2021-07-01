@@ -17,11 +17,13 @@ export class AccelerationSystem implements System {
       const pullingForce = entity.getOrDefault('pullingForce', { x: 0, y: 0 });
       const gravityForce = entity.getOrDefault('gravityForce', { x: 0, y: 0 });
       const isStatic = entity.getOrDefault('static', false);
+      const force = add(pullingForce, gravityForce);
       const acceleration = isStatic
         ? { x: 0, y: 0 }
         : divByScalar(
-          add(pullingForce, gravityForce),
-          element.mass);
+          force,
+          element.mass === 0 ? 1 : element.mass);
+
       entity.applyComponent('acceleration', acceleration);
     }
   }

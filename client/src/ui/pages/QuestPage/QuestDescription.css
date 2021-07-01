@@ -1,0 +1,14 @@
+.container {
+  overflow: hidden;
+  line-height: 1.5;
+}
+
+.imageWrapper {
+  width: 30%;
+  float: left;
+  margin-right: 15px;
+  margin-bottom: 15px;
+}
+.imageWrapper > img {
+  width: 100%;
+}

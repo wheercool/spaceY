@@ -13,6 +13,7 @@ export const GamePage = observer(() => {
   const miniMap = useStore('Minimap');
   const spaceshipPanel = useStore('SpaceshipPanel');
   const space = useStore('Space');
+  const quest = useStore('Quest');
   const canvasRef = createRef<HTMLCanvasElement>();
   const pageRef = createRef<HTMLDivElement>();
   const WIDTH = window.innerWidth;
@@ -23,7 +24,7 @@ export const GamePage = observer(() => {
       return;
     }
     const renderer = new WebGL3DRendererSystem(canvasRef.current)
-    const uiNotificator = new UiNotificationSystem(miniMap, spaceshipPanel);
+    const uiNotificator = new UiNotificationSystem(miniMap, spaceshipPanel, quest);
 
     new Game(renderer, uiNotificator)
       .init(space.getEntityRegistry())

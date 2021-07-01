@@ -14,6 +14,9 @@ import { TurretSystem } from './TurretSystem';
 import { MaxSpeedSystem } from './MaxSpeedSystem';
 import { UiNotificationSystem } from './UiNotificationSystem';
 import { GravityGunSystem } from './GravityGunSystem';
+import { CollisionCleaningSystem } from './CollisionCleaningSystem';
+import { CollisionQuestSystem } from './CollisionQuestSystem';
+import { DebuggerSystem } from './DebuggerSystem';
 
 
 export class Game implements System {
@@ -37,7 +40,11 @@ export class Game implements System {
       new MaxSpeedSystem(),
       new CollisionDetectionSystem(),
       new CollisionResolutionSystem(),
-      // new DebuggerSystem('Cooldown: ', ['model'], e => e.find((en: any) => en.model === 'laser')),
+      new CollisionQuestSystem(),
+      new CollisionCleaningSystem(),
+      new DebuggerSystem()
+        // .log('Cooldown: ', ['model'], e => e.find((en: any) => en.model === 'laser'))
+      ,
       this.renderer,
       this.uiNotificator
     ]);
