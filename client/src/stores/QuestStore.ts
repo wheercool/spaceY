@@ -213,16 +213,33 @@ export class QuestStore implements QuestManager {
         mapDependent: true
       })
       .build()
-    //
+
     const earth = createEarth({
-      x: 0,
-      y: 0
+      x: 400,
+      y: 400
     });
 
+    const quest = new EntityBuilder()
+      .applyComponents({
+        quest: {
+          status: QuestStatus.InProgress,
+          goal: {
+            type: 'collision',
+            collisions: [
+              {
+                entity1: earth.id,
+                entity2: crystal.id
+              }
+            ]
+          }
+        }
+      })
+      .build()
     return [
       map,
       crystal,
-      // earth
+      earth,
+      quest
     ];
   }
 }
