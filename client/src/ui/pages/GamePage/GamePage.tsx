@@ -42,6 +42,7 @@ export const GamePage = observer(() => {
     };
     window.addEventListener('resize', resizeHandler)
     return () => {
+      console.log('dispose');
       window.removeEventListener('resize', resizeHandler);
       game.dispose();
     }

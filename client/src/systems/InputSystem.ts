@@ -1,6 +1,5 @@
 import { System } from './System';
 import { EntityRegistry } from '../entities/EntityRegistry';
-import { Controller } from '../services/Controller';
 import { EntityBuilder } from '../entities/EntityBuilder';
 import { InputComponent } from '../components/InputComponent';
 
@@ -28,6 +27,10 @@ export class InputSystem implements System {
       .applyComponent('input', this.getInputComponent())
       .build();
     registry.addEntity(input);
+  }
+  dispose() {
+    window.removeEventListener('keydown', this.onKeyDown);
+    window.removeEventListener('keyup', this.onKeyUp);
   }
 
   update(registry: EntityRegistry): void {

@@ -43,7 +43,7 @@ export class Game implements System {
       new CollisionQuestSystem(),
       new CollisionCleaningSystem(),
       new DebuggerSystem()
-        // .log('Cooldown: ', ['model'], e => e.find((en: any) => en.model === 'laser'))
+      // .log('Cooldown: ', ['model'], e => e.find((en: any) => en.model === 'laser'))
       ,
       this.renderer,
       this.uiNotificator
@@ -56,10 +56,13 @@ export class Game implements System {
   }
 
   startGame() {
-    // this.initEntities();
     this.compositor.init(this.registry);
     this.update();
     return this;
+  }
+
+  stopGame() {
+    cancelAnimationFrame(this.rafHandle);
   }
 
   update() {
@@ -69,7 +72,7 @@ export class Game implements System {
 
   dispose() {
     this.compositor.dispose();
-    console.log('dispose')
+    this.stopGame();
   }
 }
 

@@ -19,7 +19,8 @@ export class AssetsManager {
     'rocket.png',
     'turret.png',
     'supernova_hires.jpg',
-    'crystal.png'
+    'crystal.png',
+    'space_classic.jpg'
   ]
   private models = {
     'starship': {

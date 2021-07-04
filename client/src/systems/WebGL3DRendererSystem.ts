@@ -2,7 +2,7 @@ import { EntityRegistry } from '../entities/EntityRegistry';
 import {
   AmbientLight,
   AxesHelper,
-  Camera,
+  Camera, ClampToEdgeWrapping,
   Color,
   CylinderGeometry,
   LineBasicMaterial,
@@ -11,10 +11,10 @@ import {
   MeshBasicMaterial,
   Object3D,
   OrthographicCamera,
-  PerspectiveCamera,
-  PointLight,
+  PerspectiveCamera, PlaneGeometry,
+  PointLight, RepeatWrapping,
   Scene,
-  SphereGeometry,
+  SphereGeometry, Texture, TextureLoader,
   Vector3,
   WebGLRenderer as Renderer
 } from 'three';
@@ -28,6 +28,8 @@ import { length, normalize, Point2D } from '@shared/types/Point2D';
 import { RotationComponent } from '../components/RotationComponent';
 import { AccelerationComponent } from '../components/AccelerationComponent';
 import { JumpComponent } from '../components/JumpComponent';
+import spaceImg from '/public/assets/images/space_classic.jpg';
+
 
 type RendererEntity = Entity & { model: Model, position: PositionComponent };
 const CAMERA_HEIGHT = 600;
@@ -87,6 +89,20 @@ export class WebGL3DRendererSystem implements System {
   }
 
   init(registry: EntityRegistry) {
+    const map = registry.findSingle(['map']).map;
+    new TextureLoader().load(spaceImg, (texture) => {
+      const plane = new PlaneGeometry(map.width, map.height);
+      texture.wrapS = RepeatWrapping;
+      texture.wrapT = RepeatWrapping
+      texture.repeat.set(map.width / texture.image.width, map.height / texture.image.height);
+      const material = new MeshBasicMaterial({
+        map: texture
+      });
+      const background = new Mesh(plane, material);
+      background.position.set(map.width / 2, map.height / 2, 0);
+      this.scene.add(background)
+    })
+
   }
 
   update(registry: EntityRegistry): void {
@@ -114,6 +130,15 @@ export class WebGL3DRendererSystem implements System {
   }
 
   dispose() {
+    console.log('WEBGL displosed');
+    this.scene.traverse((object) => {
+      if (object instanceof Mesh) {
+        if (object.material) {
+          object.material.dispose();
+        }
+        object.geometry.dispose();
+      }
+    })
     this.scene.remove(...this.scene.children);
     this.renderer.renderLists.dispose();
     this.renderer.dispose();
