@@ -55,6 +55,37 @@ export class TurretSystem implements System {
         prevPosition: laserPosition,
         position: add(laserPosition, pullingForce),
         maxSpeed: 300,
+        bullet: true,
+        boundaries: [
+          {
+            position: {
+              x: 0,
+              y: 3
+            },
+            radius: 3,
+          },
+          {
+            position: {
+              x: 0,
+              y: 9
+            },
+            radius: 3,
+          },
+          {
+            position: {
+              x: 0,
+              y: -3
+            },
+            radius: 3,
+          },
+          {
+            position: {
+              x: 0,
+              y: -9
+            },
+            radius: 3,
+          },
+        ],
         // mass: 1,
         // pullingForce: pullingForce,
         timer: startTimer(makeEntityId(-1), makeSeconds(3), { name: 'lifeTime' }),

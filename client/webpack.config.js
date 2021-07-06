@@ -57,6 +57,16 @@ module.exports = (env, args) => {
               }
             }]
         },
+        {
+          test: /\.(glsl)$/,
+          use:
+            [
+              {
+                loader: 'raw-loader',
+              }
+            ]
+        },
+
         // {
         //   test: /\.css$/,
         //   use: [{

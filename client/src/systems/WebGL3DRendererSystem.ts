@@ -2,20 +2,24 @@ import { EntityRegistry } from '../entities/EntityRegistry';
 import {
   AmbientLight,
   AxesHelper,
-  Camera, ClampToEdgeWrapping,
+  Camera,
   Color,
-  CylinderGeometry,
+  CylinderGeometry, IUniform,
   LineBasicMaterial,
   LineSegments,
   Mesh,
-  MeshBasicMaterial,
+  MeshBasicMaterial, NormalBlending,
   Object3D,
   OrthographicCamera,
-  PerspectiveCamera, PlaneGeometry,
-  PointLight, RepeatWrapping,
-  Scene,
-  SphereGeometry, Texture, TextureLoader,
-  Vector3,
+  PerspectiveCamera, PlaneBufferGeometry,
+  PlaneGeometry,
+  PointLight,
+  RepeatWrapping,
+  Scene, Shader,
+  ShaderMaterial,
+  SphereGeometry,
+  TextureLoader, Vector2,
+  Vector3, WebGLRenderer,
   WebGLRenderer as Renderer
 } from 'three';
 import { assetsManager, Model } from '../services/AssetsManager';
@@ -29,6 +33,10 @@ import { RotationComponent } from '../components/RotationComponent';
 import { AccelerationComponent } from '../components/AccelerationComponent';
 import { JumpComponent } from '../components/JumpComponent';
 import spaceImg from '/public/assets/images/space_classic.jpg';
+import { ComponentsRegistry } from '../components/Components';
+
+import explosionFragmentShader from '../shaders/explosion.fragment.glsl';
+import defaultVertexShader from '../shaders/vertex.glsl';
 
 
 type RendererEntity = Entity & { model: Model, position: PositionComponent };
@@ -37,12 +45,15 @@ const UP_JUMP = 100;
 const DOWN_JUMP = -100;
 const CAMERA_FOV = 50;
 
+class EntityId {
+}
+
 /***
  * Renders entities with model
  */
 export class WebGL3DRendererSystem implements System {
   private scene: Scene;
-  private renderer: Renderer;
+  private renderer: WebGLRenderer;
   // private camera: PerspectiveCamera;
   private camera: Camera;
   // private controls: OrbitControls;
@@ -55,16 +66,24 @@ export class WebGL3DRendererSystem implements System {
   private aspect = 1;
   private width: number;
   private height: number;
+  private explosionShaderMaterial: ShaderMaterial;
+  private longLivingObjects: Object3D;
+  private longLivingObjectsMapping = new Map<EntityId, Mesh>();
+
 
   constructor(private canvas: HTMLCanvasElement) {
     this.initFlags();
     this.scene = new Scene();
     this.models = new Object3D();
     this.scene.add(this.models);
+    this.longLivingObjects = new Object3D();
+    this.scene.add(this.longLivingObjects);
 
-    this.renderer = new Renderer({ canvas });
+    this.renderer = new WebGLRenderer({ canvas });
     (this.renderer as any).antialias = true;
     this.renderer.setClearColor(new Color('#071015'))
+    const pixelRation = window.devicePixelRatio;
+    this.renderer.setPixelRatio(pixelRation)
 
     this.width = canvas.width;
     this.height = canvas.height;
@@ -82,6 +101,8 @@ export class WebGL3DRendererSystem implements System {
       this.scene.add(axes);
     }
 
+    this.explosionShaderMaterial = this.createExplosionShader();
+
     this.pointLight = new PointLight(new Color('#ffffff'));
     const ambient = new AmbientLight();
     this.scene.add(ambient);
@@ -91,7 +112,7 @@ export class WebGL3DRendererSystem implements System {
   init(registry: EntityRegistry) {
     const map = registry.findSingle(['map']).map;
     new TextureLoader().load(spaceImg, (texture) => {
-      const plane = new PlaneGeometry(map.width, map.height);
+      const plane = new PlaneBufferGeometry(map.width, map.height, 2, 2);
       texture.wrapS = RepeatWrapping;
       texture.wrapT = RepeatWrapping
       texture.repeat.set(map.width / texture.image.width, map.height / texture.image.height);
@@ -99,10 +120,9 @@ export class WebGL3DRendererSystem implements System {
         map: texture
       });
       const background = new Mesh(plane, material);
-      background.position.set(map.width / 2, map.height / 2, 0);
+      background.position.set(map.width / 2, map.height / 2, -200);
       this.scene.add(background)
     })
-
   }
 
   update(registry: EntityRegistry): void {
@@ -121,6 +141,10 @@ export class WebGL3DRendererSystem implements System {
       //TODO: Put in separate system
       builder.removeComponent('jump');
     });
+
+    const explosionsEntities = registry.findEntitiesByComponents(['explosion']);
+    const dt = registry.findSingle(['time']).time.dt;
+    this.renderExplosionEntities(explosionsEntities, dt);
 
     const cameraAt = registry.findEntitiesByComponents(['cameraAt', 'position']);
     if (cameraAt.length > 0) {
@@ -253,5 +277,35 @@ export class WebGL3DRendererSystem implements System {
     }
     //
     this.renderer.setSize(width, height);
+  }
+
+  private renderExplosionEntities(entities: (Entity & Pick<ComponentsRegistry, 'explosion'>)[], dt: number) {
+    for (const entity of entities) {
+      let mesh = this.longLivingObjectsMapping.get(entity.id);
+      if (!mesh) {
+        const position = entity.explosion.position;
+        const size = entity.explosion.size;
+        const geometry = new PlaneBufferGeometry(size, size, 1, 1);
+        const material = this.explosionShaderMaterial;
+        mesh = new Mesh(geometry, material);
+        mesh.position.set(position.x, position.y, 10);
+        this.longLivingObjects.add(mesh);
+        this.longLivingObjectsMapping.set(entity.id, mesh);
+      }
+      (mesh.material as ShaderMaterial).uniforms.u_time.value += dt;
+    }
+  }
+
+  private createExplosionShader(): ShaderMaterial {
+    return new ShaderMaterial({
+      uniforms: {
+        u_time: { type: 'f', value: 1.0 } as IUniform,
+        u_resolution: { type: 'v2', value: new Vector2(this.width, this.height) } as IUniform,
+      },
+      fragmentShader: explosionFragmentShader,
+      vertexShader: defaultVertexShader,
+      blending: NormalBlending,
+      transparent: true
+    });
   }
 }

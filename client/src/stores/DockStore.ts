@@ -50,15 +50,15 @@ storm.weapons = [
       allFacts: [
         [
           { name: 'power', displayValue: '1', value: 1 },
-          { name: 'cooldown', displayValue: '2', value: 2}
+          { name: 'cooldown', displayValue: '0.7', value: 0.7}
         ],
         [
           { name: 'power', displayValue: '1.5', value: 1.5},
-          { name: 'cooldown', displayValue: '1.8', value: 1.8 }
+          { name: 'cooldown', displayValue: '0.5', value: 0.5 }
         ],
         [
           { name: 'power', displayValue: '2', value: 2},
-          { name: 'cooldown', displayValue: '1.5', value: 1.5}
+          { name: 'cooldown', displayValue: '0.2', value: 0.2}
         ]
       ]
     }),

@@ -23,7 +23,7 @@ export class RouterStore {
 
   @action.bound gotoStation() {
     this.route = Route.Station;
-    history.pushState(null,  'Station', document.location.pathname + '#station');
+    history.pushState(null, 'Station', this.getUrlFor('#station'));
   }
 
   @action.bound goToStart() {
@@ -32,17 +32,17 @@ export class RouterStore {
 
   @action.bound goToAbout() {
     this.route = Route.Abount;
-    history.pushState(null,  'About', document.location.pathname + '#about');
+    history.pushState(null, 'About', this.getUrlFor('#about'));
   }
 
   @action.bound goToTavern() {
     this.route = Route.Tavern;
-    history.pushState(null,  'Tavern', document.location.pathname + '#tavern');
+    history.pushState(null, 'Tavern', this.getUrlFor('#tavern'));
   }
 
   @action.bound goToDock() {
     this.route = Route.Dock;
-    history.pushState(null,  'Dock', document.location.pathname + '#dock');
+    history.pushState(null, 'Dock', this.getUrlFor('#dock'));
   }
 
   @action.bound goToPlay() {
@@ -67,5 +67,9 @@ export class RouterStore {
         this.goToStart();
         break;
     }
+  }
+
+  private getUrlFor(hash: string) {
+    return document.location.pathname + document.location.search + hash;
   }
 }

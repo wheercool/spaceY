@@ -1,0 +1,1 @@
+export type BulletComponent = true;

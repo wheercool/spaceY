@@ -3,6 +3,12 @@ import { EntityRegistry } from '../entities/EntityRegistry';
 import { EntityBuilder } from '../entities/EntityBuilder';
 import { JumpComponent } from '../components/JumpComponent';
 import { QuestStatus } from '../components/QuestComponent';
+import { startTimer } from '../components/TimerComponent';
+import { makeEntityId, makeSeconds } from '../types';
+
+const FIRE_DURATION = makeSeconds(15);
+const FIRE_SIZE = 100;
+
 
 export class CollisionResolutionSystem implements System {
   init(registry: EntityRegistry): void {
@@ -18,7 +24,8 @@ export class CollisionResolutionSystem implements System {
         const collided = [first, second];
         let player: EntityBuilder | undefined,
             asteroid: EntityBuilder | undefined,
-            crystal: EntityBuilder | undefined;
+            crystal: EntityBuilder | undefined,
+            bullet: EntityBuilder | undefined;
         for (let entity of collided) {
           if (entity.getOrDefault('player', false)) {
             player = entity;
@@ -29,6 +36,9 @@ export class CollisionResolutionSystem implements System {
           if (entity.getOrDefault('asteroid', false)) {
             asteroid = entity;
           }
+          if (entity.getOrDefault('bullet', false)) {
+            bullet = entity;
+          }
         }
 
         if (asteroid && player || asteroid && crystal) {
@@ -38,6 +48,21 @@ export class CollisionResolutionSystem implements System {
           if (player) {
             player.applyComponent('jump', JumpComponent.Up);
           }
+        }
+        if (asteroid && bullet) {
+          registry.removeEntity(asteroid.build().id);
+          registry.removeEntity(bullet.build().id);
+          registry.addEntity(
+            new EntityBuilder()
+              .applyComponents({
+                explosion: {
+                  size: FIRE_SIZE,
+                  position: asteroid.getOrDefault('position', {x: 0, y: 0})
+                },
+                timer: startTimer(makeEntityId(-1), FIRE_DURATION)
+              })
+              .build()
+          )
         }
         //TODO: Sometimes causes visual glitches
         // if (!player) {

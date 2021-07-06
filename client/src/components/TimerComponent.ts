@@ -19,7 +19,7 @@ interface StartTimerParams {
   onFinish?: OnTimerFinished; //what to do with timer
 }
 
-export function startTimer(target: EntityId, duration: number, params: StartTimerParams): TimerComponent {
+export function startTimer(target: EntityId, duration: number, params: StartTimerParams = {}): TimerComponent {
   const timer: TimerComponent = {
     target,
     duration,

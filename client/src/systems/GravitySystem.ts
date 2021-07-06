@@ -57,7 +57,6 @@ export class GravitySystem implements System {
     }
 
     for (let i = 0; i < elements.length; i++) {
-
       EntityBuilder.fromEntity(elements[i])
         .applyComponent('gravityForce', forces[i])
     }
