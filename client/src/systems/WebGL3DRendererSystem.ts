@@ -18,7 +18,7 @@ import {
   Scene, Shader,
   ShaderMaterial,
   SphereGeometry,
-  TextureLoader, Vector2,
+  TextureLoader, Uniform, Vector2,
   Vector3, WebGLRenderer,
   WebGLRenderer as Renderer
 } from 'three';
@@ -32,7 +32,6 @@ import { length, normalize, Point2D } from '@shared/types/Point2D';
 import { RotationComponent } from '../components/RotationComponent';
 import { AccelerationComponent } from '../components/AccelerationComponent';
 import { JumpComponent } from '../components/JumpComponent';
-import spaceImg from '/public/assets/images/space_classic.jpg';
 import { ComponentsRegistry } from '../components/Components';
 
 import explosionFragmentShader from '../shaders/explosion.fragment.glsl';
@@ -111,18 +110,17 @@ export class WebGL3DRendererSystem implements System {
 
   init(registry: EntityRegistry) {
     const map = registry.findSingle(['map']).map;
-    new TextureLoader().load(spaceImg, (texture) => {
-      const plane = new PlaneBufferGeometry(map.width, map.height, 2, 2);
-      texture.wrapS = RepeatWrapping;
-      texture.wrapT = RepeatWrapping
-      texture.repeat.set(map.width / texture.image.width, map.height / texture.image.height);
-      const material = new MeshBasicMaterial({
-        map: texture
-      });
-      const background = new Mesh(plane, material);
-      background.position.set(map.width / 2, map.height / 2, -200);
-      this.scene.add(background)
-    })
+    const spaceTexture = assetsManager.getTexture('space');
+    const plane = new PlaneBufferGeometry(map.width, map.height, 2, 2);
+    spaceTexture.wrapS = RepeatWrapping;
+    spaceTexture.wrapT = RepeatWrapping
+    spaceTexture.repeat.set(map.width / spaceTexture.image.width, map.height / spaceTexture.image.height);
+    const material = new MeshBasicMaterial({
+      map: spaceTexture
+    });
+    const background = new Mesh(plane, material);
+    background.position.set(map.width / 2, map.height / 2, -200);
+    this.scene.add(background)
   }
 
   update(registry: EntityRegistry): void {
@@ -144,7 +142,10 @@ export class WebGL3DRendererSystem implements System {
 
     const explosionsEntities = registry.findEntitiesByComponents(['explosion']);
     const dt = registry.findSingle(['time']).time.dt;
+
     this.renderExplosionEntities(explosionsEntities, dt);
+
+    this.removeExpiredLongLivingObjects(registry.entities);
 
     const cameraAt = registry.findEntitiesByComponents(['cameraAt', 'position']);
     if (cameraAt.length > 0) {
@@ -286,13 +287,17 @@ export class WebGL3DRendererSystem implements System {
         const position = entity.explosion.position;
         const size = entity.explosion.size;
         const geometry = new PlaneBufferGeometry(size, size, 1, 1);
-        const material = this.explosionShaderMaterial;
+        const material = this.explosionShaderMaterial.clone();
+        material.uniforms.u_time.value = 0;
         mesh = new Mesh(geometry, material);
         mesh.position.set(position.x, position.y, 10);
         this.longLivingObjects.add(mesh);
         this.longLivingObjectsMapping.set(entity.id, mesh);
       }
-      (mesh.material as ShaderMaterial).uniforms.u_time.value += dt;
+      if (mesh.material instanceof ShaderMaterial) {
+        mesh.material.uniforms.u_time.value += dt;
+        mesh.material.uniforms.u_resolution.value = new Vector2(entity.explosion.size, entity.explosion.size);
+      }
     }
   }
 
@@ -300,12 +305,24 @@ export class WebGL3DRendererSystem implements System {
     return new ShaderMaterial({
       uniforms: {
         u_time: { type: 'f', value: 1.0 } as IUniform,
-        u_resolution: { type: 'v2', value: new Vector2(this.width, this.height) } as IUniform,
+        u_resolution: { type: 'v2', value: new Vector2(0, 0) } as IUniform,
+        noise_texture: new Uniform(assetsManager.getTexture('noise')),
+        noise_texture2: new Uniform(assetsManager.getTexture('noise2'))
       },
       fragmentShader: explosionFragmentShader,
       vertexShader: defaultVertexShader,
       blending: NormalBlending,
       transparent: true
     });
+  }
+
+  private removeExpiredLongLivingObjects(entities: (Entity)[]) {
+    const ids = new Set<EntityId>(entities.map(entity => entity.id));
+
+    for (const [id, mesh] of this.longLivingObjectsMapping) {
+      if (!ids.has(id)) {
+        mesh.removeFromParent();
+      }
+    }
   }
 }

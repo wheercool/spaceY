@@ -50,14 +50,18 @@ export class QuestStore implements QuestManager {
 
   questCompleted(): void {
     //TODO: Add dialog that will show reward and button "Go to Station"
-    alert('Completed');
-    this.wallet.money += this.currentQuest.reward;
-    this.router.gotoStation();
+    setTimeout(() => {
+      alert('Completed');
+      this.wallet.money += this.currentQuest.reward;
+      this.router.gotoStation();
+    }, 2000)
   }
 
   questFailed(): void {
-    alert('Failed');
-    this.router.gotoStation();
+    setTimeout(() => {
+      alert('Failed');
+      this.router.gotoStation();
+    }, 2000)
   }
 
   @action.bound nextQuest() {

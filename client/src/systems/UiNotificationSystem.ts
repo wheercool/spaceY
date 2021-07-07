@@ -88,7 +88,6 @@ export class UiNotificationSystem implements System {
       UiNotificationSystem.removeQuest(questEntities, registry);
       this.questManager.questFailed();
     }
-
   }
 
   private static removeQuest(questEntities: (Entity & Pick<ComponentsRegistry, 'quest'>)[], registry: EntityRegistry) {

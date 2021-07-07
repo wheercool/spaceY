@@ -5,8 +5,9 @@ import { JumpComponent } from '../components/JumpComponent';
 import { QuestStatus } from '../components/QuestComponent';
 import { startTimer } from '../components/TimerComponent';
 import { makeEntityId, makeSeconds } from '../types';
+import { Point2D } from '@shared/types/Point2D';
 
-const FIRE_DURATION = makeSeconds(15);
+const FIRE_DURATION = makeSeconds(1.5);
 const FIRE_SIZE = 100;
 
 
@@ -22,6 +23,9 @@ export class CollisionResolutionSystem implements System {
         const first = EntityBuilder.fromEntity(registry.findById(collision.entity1));
         const second = EntityBuilder.fromEntity(registry.findById(collision.entity2));
         const collided = [first, second];
+        let explosion = false;
+        let explosionPosition: Point2D = {x: 0, y: 0};
+
         let player: EntityBuilder | undefined,
             asteroid: EntityBuilder | undefined,
             crystal: EntityBuilder | undefined,
@@ -42,6 +46,10 @@ export class CollisionResolutionSystem implements System {
         }
 
         if (asteroid && player || asteroid && crystal) {
+          explosion = true;
+          explosionPosition = asteroid.getOrDefault('position', explosionPosition);
+          registry.removeEntity(asteroid.build().id);
+
           registry.findEntitiesByComponents(['quest'])
             .forEach(questEntity => questEntity.quest.status = QuestStatus.Failed)
         } else {
@@ -49,15 +57,20 @@ export class CollisionResolutionSystem implements System {
             player.applyComponent('jump', JumpComponent.Up);
           }
         }
-        if (asteroid && bullet) {
+        if (asteroid && bullet
+        ) {
           registry.removeEntity(asteroid.build().id);
           registry.removeEntity(bullet.build().id);
+          explosion = true;
+          explosionPosition = asteroid.getOrDefault('position', explosionPosition);
+        }
+        if (explosion) {
           registry.addEntity(
             new EntityBuilder()
               .applyComponents({
                 explosion: {
                   size: FIRE_SIZE,
-                  position: asteroid.getOrDefault('position', {x: 0, y: 0})
+                  position: explosionPosition
                 },
                 timer: startTimer(makeEntityId(-1), FIRE_DURATION)
               })
@@ -68,7 +81,8 @@ export class CollisionResolutionSystem implements System {
         // if (!player) {
         //   first.applyComponent('jump', JumpComponent.Down);
         // }
-      } catch (e) {
+      } catch
+        (e) {
         console.error(e);
       }
     }

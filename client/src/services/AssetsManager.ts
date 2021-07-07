@@ -1,9 +1,9 @@
-import { action, runInAction } from 'mobx';
-import { CylinderGeometry, Group, ImageLoader, LoadingManager, Mesh, MeshStandardMaterial, Object3D } from 'three';
+import { runInAction } from 'mobx';
+import { CylinderGeometry, Group, ImageLoader, LoadingManager, Mesh, MeshStandardMaterial, Object3D, Texture, TextureLoader } from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 
 export type Model = keyof AssetsManager['models'];
-
+export type TextureName = keyof AssetsManager['textures'];
 
 export class AssetsManager {
   private imagesToPrefetch = [
@@ -229,6 +229,20 @@ export class AssetsManager {
       }
     }
   } as const;
+  private textures = {
+    'space': {
+      url: 'space_classic.jpg',
+      texture: new Texture()
+    },
+    'noise': {
+      url: 'noise.png',
+      texture: new Texture()
+    },
+    'noise2': {
+      url: 'noise.png',
+      texture: new Texture()
+    }
+  }
   private progressHandler: (progress: number) => void = noop;
   private doneHandler: () => void = noop;
 
@@ -259,6 +273,7 @@ export class AssetsManager {
     this.doneHandler = doneHandler;
     await this.loadModels();
     this.loadImages();
+    this.loadTextures();
   }
 
   private async loadModels() {
@@ -276,6 +291,19 @@ export class AssetsManager {
   private loadImages() {
     const imageLoader = new ImageLoader(this.manager);
     this.imagesToPrefetch.forEach(img => imageLoader.load(`assets/images/${img}`));
+  }
+
+  getTexture(textureName: TextureName): Texture {
+    return this.textures[textureName].texture;
+  }
+
+  private loadTextures() {
+    const textureLoader = new TextureLoader(this.manager)
+    for (const config of Object.values(this.textures)) {
+      textureLoader.load(`assets/images/${config.url}`, (texture) => {
+        config.texture = texture;
+      })
+    }
   }
 }
 
