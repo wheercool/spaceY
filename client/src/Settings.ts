@@ -4,5 +4,5 @@ export enum RenderQuality {
 }
 
 export class Settings {
-  static renderingQuality = RenderQuality.Low;
+  static renderingQuality = RenderQuality.High;
 }

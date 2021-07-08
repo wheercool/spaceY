@@ -1,11 +1,6 @@
 import { System } from './System';
 import { EntityRegistry } from '../entities/EntityRegistry';
 
-
-export const MAX_X = 4000;
-export const MIN_Y = 0;
-export const MAX_Y = 4000;
-
 export class WorldBoundarySystem implements System {
   init(registry: EntityRegistry): void {
   }

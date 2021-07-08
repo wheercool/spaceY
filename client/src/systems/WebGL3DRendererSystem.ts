@@ -61,7 +61,7 @@ export class WebGL3DRendererSystem implements System {
   private isBondariesVisible = false;
   private isAccelerationVisible = false;
   private isAxesVisible = false;
-  private dynamicCamera = false;
+  private dynamicCamera = true;
   private aspect = 1;
   private width: number;
   private height: number;
@@ -92,8 +92,8 @@ export class WebGL3DRendererSystem implements System {
     this.width = canvas.width;
     this.height = canvas.height;
     this.aspect = this.width / this.height;
-    this.camera = this.createPerspectiveCamera();
-    // this.camera = this.createOrthoCamera();
+    // this.camera = this.createPerspectiveCamera();
+    this.camera = this.createOrthoCamera();
 
     this.camera.position.set(0, 0, CAMERA_HEIGHT);
     this.camera.rotation.x = Math.PI;
@@ -156,7 +156,10 @@ export class WebGL3DRendererSystem implements System {
 
     const cameraAt = registry.findEntitiesByComponents(['cameraAt', 'position']);
     if (cameraAt.length > 0) {
-      this.updateCameraPosition(cameraAt[0].position);
+      const mapEntity = registry.findSingle(['map']);
+      const width = mapEntity.map.width;
+      const height = mapEntity.map.height;
+      this.updateCameraPosition(cameraAt[0].position, width, height);
     }
     this.renderer.render(this.scene, this.camera);
   }
@@ -217,7 +220,6 @@ export class WebGL3DRendererSystem implements System {
     this.isBondariesVisible = params.get('boundaries') !== null;
     this.isAccelerationVisible = params.get('acceleration') !== null;
     this.isAxesVisible = params.get('axes') !== null;
-    this.dynamicCamera = params.get('dynamic_camera') !== null;
   }
 
   private renderBoundaries(circles: BoundingCircle[]) {
@@ -247,12 +249,34 @@ export class WebGL3DRendererSystem implements System {
     this.models.add(obj);
   }
 
-  private updateCameraPosition(position: PositionComponent) {
-    const h = Math.tan(CAMERA_FOV * Math.PI / 360) * this.camera.position.z;
-    const w = this.aspect * h;
+  private updateCameraPosition(position: PositionComponent, width: number, height: number) {
+    const {width: cameraWidth, height: cameraHeight} = this.getCameraViewportSize();
 
     const lookAtPosition = new Vector3(position.x, position.y, 0);
     const cameraPosition = new Vector3().copy(lookAtPosition);
+
+    const MIN_Y = 0;
+    const MIN_X = 0;
+    const MAX_X = width;
+    const MAX_Y = height;
+    if (this.dynamicCamera) {
+      const cameraHalfHeight = 0.5 * cameraHeight;
+      if ((cameraPosition.y - cameraHalfHeight) < MIN_Y) {
+        cameraPosition.y = MIN_Y + cameraHalfHeight
+      }
+
+      if ((cameraPosition.y + cameraHalfHeight) > MAX_Y) {
+        cameraPosition.y = MAX_Y - cameraHalfHeight;
+      }
+
+      const cameraHalfWidth = 0.5 * cameraWidth;
+      if ((cameraPosition.x - cameraHalfWidth) < MIN_X) {
+        cameraPosition.x = MIN_X + cameraHalfWidth;
+      }
+      if ((cameraPosition.x + cameraHalfWidth) > MAX_X) {
+        cameraPosition.x = MAX_X - cameraHalfWidth;
+      }
+    }
     // this.camera.lookAt(cameraPosition)
     // this.camera.position.set(lookAtPosition.x, lookAtPosition.y, this.camera.position.z);
     // const pointLightPosition = new Vector3().copy(this.camera.position);
@@ -274,21 +298,30 @@ export class WebGL3DRendererSystem implements System {
   }
 
   private createOrthoCamera() {
-    return new OrthographicCamera(this.width / -2, this.width / 2, this.height / 2, this.height / -2, 0, CAMERA_HEIGHT)
+    return new OrthographicCamera(
+      this.width / -2,
+      this.width / 2,
+      this.height / 2,
+      this.height / -2,
+      0,
+      1.5 * CAMERA_HEIGHT)
   }
 
   updateSize(width: number, height: number) {
     this.width = width;
     this.height = height;
     this.aspect = width / height;
+
     if (this.camera instanceof PerspectiveCamera) {
       this.camera = this.createPerspectiveCamera();
-      this.camera.position.set(0, 0, CAMERA_HEIGHT);
-      this.camera.rotation.x = Math.PI;
-      // this.camera.aspect = this.aspect;
-      // this.camera.updateProjectionMatrix();
     }
-    //
+
+    if (this.camera instanceof OrthographicCamera) {
+      this.camera = this.createOrthoCamera();
+    }
+
+    this.camera.position.set(0, 0, CAMERA_HEIGHT);
+    this.camera.rotation.x = Math.PI;
     this.renderer.setSize(width, height);
   }
 
@@ -336,5 +369,23 @@ export class WebGL3DRendererSystem implements System {
         mesh.removeFromParent();
       }
     }
+  }
+
+  private getCameraViewportSize() {
+    if (this.camera instanceof PerspectiveCamera) {
+      const h = Math.tan(CAMERA_FOV * Math.PI / 360) * this.camera.position.z;
+      const w = this.aspect * h;
+      return {
+        width: w,
+        height: h
+      }
+    }
+    if (this.camera instanceof OrthographicCamera) {
+      return {
+        width: this.width,
+        height: this.height
+      }
+    }
+    throw new Error('Not supported camera')
   }
 }

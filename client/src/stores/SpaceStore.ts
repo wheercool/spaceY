@@ -68,6 +68,10 @@ export class SpaceStore {
     return spaceshipEntity
       .applyComponents(weapons)
       .applyComponents({
+        position: {
+          x: 300,
+          y: 300
+        },
         mass,
         onMinimap: {
           shape: {
@@ -207,7 +211,7 @@ function createEmptyRabbit(speed: number): EntityBuilder {
         player: true,
         cameraAt: true,
         rotation: 0,
-        position: { x: 0, y: 0 },
+        position: { x: 300, y: 300 },
         pullingForce: { x: 0, y: 0 },
         model: 'rabbit',
         mass: 1,

@@ -7,9 +7,7 @@ import { EntityBuilder } from '../entities/EntityBuilder';
 import { TurretComponent } from '../components/TurretComponent';
 import { GravityGunTrigger } from '../components/GravityGunComponent';
 
-const STEP = Math.PI / 100;
-// const PULLING_FORCE_VALUE = 3;
-// const BACK_FORCE_VALUE = PULLING_FORCE_VALUE;
+const STEP = Math.PI / 50;
 
 /***
  * Handles inputs.
