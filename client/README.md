@@ -1,5 +1,8 @@
 # TODO: 
- - [ ] Add modal dialog with Complete/Fail notifications
+ - [x] Add modal dialog with Complete/Fail notifications
+ - [x] Preprocess 3D models (reduce image texture, join meshes)
+ - [x]  Check if reusing meshes helps -> helps
+ - [ ] Store meshes in local state cache (long living object)
  - [ ] Add SoundService that can play sounds
  - [ ] Integrate SoundService
 

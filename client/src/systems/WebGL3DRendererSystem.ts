@@ -36,6 +36,7 @@ import { ComponentsRegistry } from '../components/Components';
 
 import explosionFragmentShader from '../shaders/explosion.fragment.glsl';
 import defaultVertexShader from '../shaders/vertex.glsl';
+import { RenderQuality, Settings } from '../Settings';
 
 
 type RendererEntity = Entity & { model: Model, position: PositionComponent };
@@ -43,7 +44,6 @@ const CAMERA_HEIGHT = 600;
 const UP_JUMP = 100;
 const DOWN_JUMP = -100;
 const CAMERA_FOV = 50;
-
 class EntityId {
 }
 
@@ -78,7 +78,12 @@ export class WebGL3DRendererSystem implements System {
     this.longLivingObjects = new Object3D();
     this.scene.add(this.longLivingObjects);
 
-    this.renderer = new WebGLRenderer({ canvas });
+    this.renderer = new WebGLRenderer({
+      canvas,
+      precision: Settings.renderingQuality === RenderQuality.Low ? 'lowp' : 'highp',
+      antialias: Settings.renderingQuality !== RenderQuality.Low
+    });
+    this.renderer.shadowMap.autoUpdate = false;
     (this.renderer as any).antialias = true;
     this.renderer.setClearColor(new Color('#071015'))
     const pixelRation = window.devicePixelRatio;
@@ -105,7 +110,9 @@ export class WebGL3DRendererSystem implements System {
     this.pointLight = new PointLight(new Color('#ffffff'));
     const ambient = new AmbientLight();
     this.scene.add(ambient);
-    this.scene.add(this.pointLight);
+    if (Settings.renderingQuality === RenderQuality.High) {
+      this.scene.add(this.pointLight);
+    }
   }
 
   init(registry: EntityRegistry) {
@@ -120,11 +127,11 @@ export class WebGL3DRendererSystem implements System {
     });
     const background = new Mesh(plane, material);
     background.position.set(map.width / 2, map.height / 2, -200);
+    (window as any).renderer = this.renderer;
     this.scene.add(background)
   }
 
   update(registry: EntityRegistry): void {
-
     this.models.remove(...this.models.children);
     const models = registry.findEntitiesByComponents(['model', 'position']);
     models.forEach(model => {
@@ -176,7 +183,12 @@ export class WebGL3DRendererSystem implements System {
     jump: JumpComponent | false
   }) {
     const { model, position } = entity;
-    const object = assetsManager.getModel(model);
+    let object: Mesh | undefined = this.longLivingObjectsMapping.get(entity.id);
+    if (!object) {
+      object = assetsManager.getModel(model) as Mesh;
+      this.longLivingObjectsMapping.set(entity.id, object);
+      this.longLivingObjects.add(object);
+    }
 
     object.position.setX(position.x);
     object.position.setY(position.y)

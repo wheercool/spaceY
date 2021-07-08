@@ -1,6 +1,7 @@
 import { runInAction } from 'mobx';
 import { CylinderGeometry, Group, ImageLoader, LoadingManager, Mesh, MeshStandardMaterial, Object3D, Texture, TextureLoader } from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
+import { RenderQuality, Settings } from '../Settings';
 
 export type Model = keyof AssetsManager['models'];
 export type TextureName = keyof AssetsManager['textures'];
@@ -36,8 +37,10 @@ export class AssetsManager {
         result.rotation.z = 0;
         result.traverse(o => {
           if (o instanceof Mesh) {
-            o.receiveShadow = true;
-            o.castShadow = true;
+            if (Settings.renderingQuality === RenderQuality.High) {
+              o.receiveShadow = true;
+              o.castShadow = true;
+            }
           }
         })
         result.scale.multiplyScalar(2)
@@ -58,8 +61,10 @@ export class AssetsManager {
         result.rotation.z = 0;
         result.traverse(o => {
           if (o instanceof Mesh) {
-            o.receiveShadow = true;
-            o.castShadow = true;
+            if (Settings.renderingQuality === RenderQuality.High) {
+              o.receiveShadow = true;
+              o.castShadow = true;
+            }
           }
         })
         result.scale.multiplyScalar(0.8)
@@ -80,8 +85,10 @@ export class AssetsManager {
         result.rotation.z = 0;
         result.traverse(o => {
           if (o instanceof Mesh) {
-            o.receiveShadow = true;
-            o.castShadow = true;
+            if (Settings.renderingQuality === RenderQuality.High) {
+              o.receiveShadow = true;
+              o.castShadow = true;
+            }
           }
         })
         result.scale.multiplyScalar(0.8)
@@ -104,28 +111,6 @@ export class AssetsManager {
         return wrapper;
       }
     },
-    'spaceships': {
-      kind: 'external',
-      url: 'assets/models/spaceships/scene.gltf',
-      mesh: new Object3D(),
-      postProcess: (scene: Group) => {
-        let result: Object3D = scene;
-        scene.traverse(node => {
-          //space_shi_, sapceship_3, drt, df
-          if (node.name.match(/space_shi_/)) {
-            result = node;
-          }
-        })
-        const wrapper = new Object3D();
-        result.position.set(0, 0, 0);
-        result.rotation.x = -Math.PI;
-        result.rotation.z = Math.PI;
-        result.rotation.y = Math.PI;
-        result.scale.multiplyScalar(0.3);
-        wrapper.add(result);
-        return wrapper;
-      }
-    },
     'planet': {
       kind: 'external',
       url: 'assets/models/planet/scene.gltf',
@@ -137,13 +122,21 @@ export class AssetsManager {
         result.rotation.x = -Math.PI;
         result.rotation.z = Math.PI;
         result.rotation.y = Math.PI;
+        let meshes = 0;
+        let mesh: Mesh;
         result.traverse(o => {
           if (o instanceof Mesh) {
-            o.receiveShadow = true;
-            o.castShadow = true;
+            mesh = o;
+            meshes++;
+            if (Settings.renderingQuality === RenderQuality.High) {
+              o.receiveShadow = true;
+              o.castShadow = true;
+            }
           }
         })
+        console.log('Meshes', meshes)
         wrapper.add(result);
+        // return mesh!;
         return wrapper;
       }
     },
@@ -165,7 +158,7 @@ export class AssetsManager {
     },
     'asteroid': {
       kind: 'external',
-      url: 'assets/models/asteroid/scene.gltf',
+      url: 'assets/models/asteroid/asteroid.glb',
       mesh: new Object3D(),
       postProcess: (scene: Group) => {
         let result: Object3D = scene;
@@ -175,8 +168,21 @@ export class AssetsManager {
         result.rotation.z = Math.PI;
         result.rotation.y = Math.PI;
         result.scale.multiplyScalar(0.3);
+        let mesh: Mesh;
+        scene.traverse(o => {
+          if (o instanceof Mesh) {
+            mesh = o;
+          }
+        });
         wrapper.add(result);
-        return wrapper;
+        return mesh!;
+      },
+      update: (mesh: Mesh) => {
+        mesh.position.set(0, 0, 0);
+        mesh.rotation.x = -Math.PI;
+        mesh.rotation.z = Math.PI;
+        mesh.rotation.y = Math.PI;
+        mesh.scale.multiplyScalar(0.3);
       }
     },
     'supernova': {
@@ -247,7 +253,12 @@ export class AssetsManager {
   private doneHandler: () => void = noop;
 
   getModel(model: Model): Object3D {
-    return this.models[model].mesh.clone(true);
+    if (model === 'asteroid') {
+      const mesh = this.models[model].mesh.clone();
+      this.models.asteroid.update(mesh as Mesh);
+      return mesh;
+    }
+    return this.models[model].mesh.clone();
   }
 
   private manager: LoadingManager;
