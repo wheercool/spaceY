@@ -53,6 +53,16 @@ export class Game implements System {
 
   init(registry: EntityRegistry) {
     this.registry = registry;
+    this.registry.addEntity(
+      new EntityBuilder()
+        .applyComponents({
+          gravityForce: {
+            x: 200,
+            y: 200
+          }
+        })
+        .build()
+    )
     return this;
   }
 

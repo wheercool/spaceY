@@ -4,23 +4,26 @@ import {
   AxesHelper,
   Camera,
   Color,
-  CylinderGeometry, IUniform,
+  CylinderGeometry,
+  IUniform,
   LineBasicMaterial,
   LineSegments,
   Mesh,
-  MeshBasicMaterial, NormalBlending,
+  MeshBasicMaterial,
+  NormalBlending,
   Object3D,
   OrthographicCamera,
-  PerspectiveCamera, PlaneBufferGeometry,
-  PlaneGeometry,
+  PerspectiveCamera,
+  PlaneBufferGeometry,
   PointLight,
   RepeatWrapping,
-  Scene, Shader,
+  Scene,
   ShaderMaterial,
   SphereGeometry,
-  TextureLoader, Uniform, Vector2,
-  Vector3, WebGLRenderer,
-  WebGLRenderer as Renderer
+  Uniform,
+  Vector2,
+  Vector3,
+  WebGLRenderer
 } from 'three';
 import { assetsManager, Model } from '../services/AssetsManager';
 import { EntityBuilder } from '../entities/EntityBuilder';
@@ -35,6 +38,7 @@ import { JumpComponent } from '../components/JumpComponent';
 import { ComponentsRegistry } from '../components/Components';
 
 import explosionFragmentShader from '../shaders/explosion.fragment.glsl';
+import gravityForceFragmentShader from '../shaders/gravity_force.fragment.glsl';
 import defaultVertexShader from '../shaders/vertex.glsl';
 import { RenderQuality, Settings } from '../Settings';
 
@@ -66,6 +70,7 @@ export class WebGL3DRendererSystem implements System {
   private width: number;
   private height: number;
   private explosionShaderMaterial: ShaderMaterial;
+  private gravityForceShaderMaterial: ShaderMaterial;
   private longLivingObjects: Object3D;
   private longLivingObjectsMapping = new Map<EntityId, Mesh>();
 
@@ -106,6 +111,7 @@ export class WebGL3DRendererSystem implements System {
     }
 
     this.explosionShaderMaterial = this.createExplosionShader();
+    this.gravityForceShaderMaterial = this.createGravityForceShader();
 
     this.pointLight = new PointLight(new Color('#ffffff'));
     const ambient = new AmbientLight();
@@ -150,7 +156,9 @@ export class WebGL3DRendererSystem implements System {
     const explosionsEntities = registry.findEntitiesByComponents(['explosion']);
     const dt = registry.findSingle(['time']).time.dt;
 
+    const gravityForceEntities = registry.findEntitiesByComponents(['gravityForce']);
     this.renderExplosionEntities(explosionsEntities, dt);
+    this.renderGravityForceEntities(gravityForceEntities, dt);
 
     this.removeExpiredLongLivingObjects(registry.entities);
 
@@ -325,6 +333,26 @@ export class WebGL3DRendererSystem implements System {
     this.renderer.setSize(width, height);
   }
 
+  private renderGravityForceEntities(entities: (Entity & Pick<ComponentsRegistry, 'gravityForce'>)[], dt: number){
+    const size = 300;
+    for (const entity of entities) {
+      let mesh = this.longLivingObjectsMapping.get(entity.id);
+      if (!mesh) {
+        const position = entity.gravityForce;
+        const geometry = new PlaneBufferGeometry(size, size, 1, 1);
+        const material = this.gravityForceShaderMaterial.clone();
+        material.uniforms.u_time.value = 0;
+        mesh = new Mesh(geometry, material);
+        mesh.position.set(position.x, position.y, 10);
+        this.longLivingObjects.add(mesh);
+        this.longLivingObjectsMapping.set(entity.id, mesh);
+      }
+      if (mesh.material instanceof ShaderMaterial) {
+        mesh.material.uniforms.u_time.value += dt;
+        mesh.material.uniforms.u_resolution.value = new Vector2(size, size);
+      }
+    }
+  }
   private renderExplosionEntities(entities: (Entity & Pick<ComponentsRegistry, 'explosion'>)[], dt: number) {
     for (const entity of entities) {
       let mesh = this.longLivingObjectsMapping.get(entity.id);
@@ -387,5 +415,18 @@ export class WebGL3DRendererSystem implements System {
       }
     }
     throw new Error('Not supported camera')
+  }
+
+  private createGravityForceShader(): ShaderMaterial {
+    return new ShaderMaterial({
+      uniforms: {
+        u_time: { type: 'f', value: 1.0 } as IUniform,
+        u_resolution: { type: 'v2', value: new Vector2(0, 0) } as IUniform
+      },
+      fragmentShader: gravityForceFragmentShader,
+      vertexShader: defaultVertexShader,
+      blending: NormalBlending,
+      transparent: true
+    });
   }
 }
