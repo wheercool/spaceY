@@ -1,7 +1,12 @@
+# TODO: 
+ - [ ] Add modal dialog with Complete/Fail notifications
+ - [ ] Add SoundService that can play sounds
+ - [ ] Integrate SoundService
+
+
 # Issues
 - First meeting of asteroid/planet cause lag
 - Sometimes asteroid hides behind planet. Should I use zIndex to put them on the different layer?
-- 
 # Asteroids game
 
 ## Architecture:

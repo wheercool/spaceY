@@ -9,6 +9,7 @@ import { Achievement, EntityId, QuestRequirement } from '../types';
 import { RouterStore } from './RouterStore';
 import { WalletStore } from './WalletStore';
 import { PlayerAchievementsStore } from './PlayerAchievementsStore';
+import { DialogStyle, ModalDialog } from './DialogStore';
 
 export interface QuestManager {
   questCompleted(): void;
@@ -42,26 +43,22 @@ export class QuestStore implements QuestManager {
 
   constructor(
     private router: RouterStore,
+    private modalDialog: ModalDialog,
     private wallet: WalletStore,
     private playerAchievements: PlayerAchievementsStore
   ) {
     makeObservable(this);
   }
 
-  questCompleted(): void {
-    //TODO: Add dialog that will show reward and button "Go to Station"
-    setTimeout(() => {
-      alert('Completed');
-      this.wallet.money += this.currentQuest.reward;
-      this.router.gotoStation();
-    }, 2000)
+  async questCompleted() {
+    await this.modalDialog.show('Mission', 'Completed', DialogStyle.Successful);
+    this.wallet.money += this.currentQuest.reward;
+    this.router.gotoStation();
   }
 
-  questFailed(): void {
-    setTimeout(() => {
-      alert('Failed');
-      this.router.gotoStation();
-    }, 2000)
+  async questFailed() {
+    await this.modalDialog.show('Mission', 'Failed', DialogStyle.Dangerous);
+    this.router.gotoStation();
   }
 
   @action.bound nextQuest() {

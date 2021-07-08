@@ -8,13 +8,15 @@ import { SpaceshipPanelStore } from './SpaceshipPanelStore/SpaceshipPanelStore';
 import { SpaceStore } from './SpaceStore';
 import { QuestStore } from './QuestStore';
 import { PlayerAchievementsStore } from './PlayerAchievementsStore';
+import { DialogStore, ModalDialog, ModalDialogConsumer } from './DialogStore';
 
 const walletStore = new WalletStore();
 const routerStore = new RouterStore();
 const rootStore = new RootStore(routerStore);
 const dockStore = new DockStore(walletStore);
 const playerAchievements = new PlayerAchievementsStore(dockStore);
-const questStore = new QuestStore(routerStore, walletStore, playerAchievements)
+const dialogStore = new DialogStore();
+const questStore = new QuestStore(routerStore, dialogStore, walletStore, playerAchievements)
 
 export const { StoreProvider, useStore } = createContext({
   RootStore: rootStore,
@@ -25,5 +27,7 @@ export const { StoreProvider, useStore } = createContext({
   SpaceshipPanel: new SpaceshipPanelStore(),
   Space: new SpaceStore(routerStore, dockStore, questStore),
   Quest: questStore,
-  PlayerAchievements: playerAchievements
+  PlayerAchievements: playerAchievements,
+  ModalDialog: dialogStore as ModalDialog,
+  ModalDialogConsumer: dialogStore as ModalDialogConsumer
 });
