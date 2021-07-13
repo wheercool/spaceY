@@ -41,6 +41,7 @@ import explosionFragmentShader from '../shaders/explosion.fragment.glsl';
 import gravityForceFragmentShader from '../shaders/gravity_force.fragment.glsl';
 import defaultVertexShader from '../shaders/vertex.glsl';
 import { RenderQuality, Settings } from '../Settings';
+import { EffectName } from '../components/EffectsComponent';
 
 
 type RendererEntity = Entity & { model: Model, position: PositionComponent };
@@ -73,6 +74,8 @@ export class WebGL3DRendererSystem implements System {
   private gravityForceShaderMaterial: ShaderMaterial;
   private longLivingObjects: Object3D;
   private longLivingObjectsMapping = new Map<EntityId, Mesh>();
+  private effectObjects: Object3D;
+  private effectsMapping = new Map<number, Mesh>();
 
 
   constructor(private canvas: HTMLCanvasElement) {
@@ -82,6 +85,9 @@ export class WebGL3DRendererSystem implements System {
     this.scene.add(this.models);
     this.longLivingObjects = new Object3D();
     this.scene.add(this.longLivingObjects);
+
+    this.effectObjects = new Object3D();
+    this.scene.add(this.effectObjects);
 
     this.renderer = new WebGLRenderer({
       canvas,
@@ -156,11 +162,12 @@ export class WebGL3DRendererSystem implements System {
     const explosionsEntities = registry.findEntitiesByComponents(['explosion']);
     const dt = registry.findSingle(['time']).time.dt;
 
-    const gravityForceEntities = registry.findEntitiesByComponents(['gravityForce']);
+    const effects = registry.findEntitiesByComponents(['effects', 'position']);
     this.renderExplosionEntities(explosionsEntities, dt);
-    this.renderGravityForceEntities(gravityForceEntities, dt);
+    this.renderEffect(effects, dt);
 
     this.removeExpiredLongLivingObjects(registry.entities);
+    this.removeExpiredEffects(effects);
 
     const cameraAt = registry.findEntitiesByComponents(['cameraAt', 'position']);
     if (cameraAt.length > 0) {
@@ -333,23 +340,26 @@ export class WebGL3DRendererSystem implements System {
     this.renderer.setSize(width, height);
   }
 
-  private renderGravityForceEntities(entities: (Entity & Pick<ComponentsRegistry, 'gravityForce'>)[], dt: number){
-    const size = 300;
+  private renderEffect(entities: (Entity & Pick<ComponentsRegistry, 'effects' | 'position'>)[], dt: number){
     for (const entity of entities) {
-      let mesh = this.longLivingObjectsMapping.get(entity.id);
-      if (!mesh) {
-        const position = entity.gravityForce;
-        const geometry = new PlaneBufferGeometry(size, size, 1, 1);
-        const material = this.gravityForceShaderMaterial.clone();
-        material.uniforms.u_time.value = 0;
-        mesh = new Mesh(geometry, material);
+      for (const effect of entity.effects) {
+        const effectId = effect.id;
+        const size = effect.size;
+        let mesh = this.effectsMapping.get(effectId);
+        const position = entity.position;
+        if (!mesh) {
+          const geometry = new PlaneBufferGeometry(size, size, 1, 1);
+          const material = this.getEffectShaderMaterial(effect.name); //this.gravityForceShaderMaterial.clone();
+          material.uniforms.u_time.value = 0;
+          mesh = new Mesh(geometry, material);
+          this.effectObjects.add(mesh);
+          this.effectsMapping.set(effectId, mesh);
+        }
         mesh.position.set(position.x, position.y, 10);
-        this.longLivingObjects.add(mesh);
-        this.longLivingObjectsMapping.set(entity.id, mesh);
-      }
-      if (mesh.material instanceof ShaderMaterial) {
-        mesh.material.uniforms.u_time.value += dt;
-        mesh.material.uniforms.u_resolution.value = new Vector2(size, size);
+        if (mesh.material instanceof ShaderMaterial) {
+          mesh.material.uniforms.u_time.value += dt;
+          mesh.material.uniforms.u_resolution.value = new Vector2(size, size);
+        }
       }
     }
   }
@@ -399,6 +409,16 @@ export class WebGL3DRendererSystem implements System {
     }
   }
 
+  private removeExpiredEffects(entities: (Entity & Pick<ComponentsRegistry, 'effects'>)[]) {
+    const ids = new Set<EntityId>(entities.flatMap(entity => entity.effects.flatMap(e => e.id)));
+
+    for (const [id, mesh] of this.effectsMapping) {
+      if (!ids.has(id)) {
+        mesh.removeFromParent();
+      }
+    }
+  }
+
   private getCameraViewportSize() {
     if (this.camera instanceof PerspectiveCamera) {
       const h = Math.tan(CAMERA_FOV * Math.PI / 360) * this.camera.position.z;
@@ -421,12 +441,33 @@ export class WebGL3DRendererSystem implements System {
     return new ShaderMaterial({
       uniforms: {
         u_time: { type: 'f', value: 1.0 } as IUniform,
-        u_resolution: { type: 'v2', value: new Vector2(0, 0) } as IUniform
+        u_resolution: { type: 'v2', value: new Vector2(0, 0) } as IUniform,
+        u_push: {type: 'f', value: 0.0} as IUniform
       },
       fragmentShader: gravityForceFragmentShader,
       vertexShader: defaultVertexShader,
       blending: NormalBlending,
       transparent: true
     });
+  }
+
+  private getEffectShaderMaterial(name: EffectName): ShaderMaterial {
+    switch (name) {
+      case EffectName.Explosion:
+        return this.explosionShaderMaterial.clone();
+      case EffectName.Fire:
+        throw new Error('Invalid material');
+        break;
+      case EffectName.GravityWavePull: {
+        const material = this.gravityForceShaderMaterial.clone();
+        material.uniforms.u_push.value = 0.0;
+        return material;
+      }
+      case EffectName.GravityWavePush: {
+        const material = this.gravityForceShaderMaterial.clone();
+        material.uniforms.u_push.value = 1.0;
+        return material;
+      }
+    }
   }
 }

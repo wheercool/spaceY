@@ -3,8 +3,8 @@ import { EntityRegistry } from '../entities/EntityRegistry';
 import { EntityBuilder } from '../entities/EntityBuilder';
 import { GravityGunTrigger } from '../components/GravityGunComponent';
 import { createGravityBehaviour, GravityTagName } from '../components/GravityBehaviourComponent';
-import { startTimer } from '../components/TimerComponent';
-import { makeEntityId, makeSeconds } from '../types';
+import { makeEntityId } from '../types';
+import { createEffect, EffectName } from '../components/EffectsComponent';
 
 export class GravityGunSystem implements System {
   init(registry: EntityRegistry): void {
@@ -16,19 +16,35 @@ export class GravityGunSystem implements System {
     for (const entity of entities) {
       const gun = entity.gravityGun;
       if (gun.trigger === GravityGunTrigger.Off) {
+        registry.removeEntity(makeEntityId(1111));
         gun.active = false;
         continue;
       }
       gun.active = true;
-      const gravityGunEnergy = new EntityBuilder()
-        .applyComponents({
-          mass: gun.trigger === GravityGunTrigger.Pull ? gun.power : -gun.power,
-          gravityBehaviour: createGravityBehaviour(GravityTagName.EnergyGun),
-          position: entity.position,
-          timer: startTimer(makeEntityId(-1), makeSeconds(0), { name: 'lifeTime' })
-        })
-        .build()
-      registry.addEntity(gravityGunEnergy);
+      const playerId = registry.findSingle(['player']).id;
+
+      if (!registry.existEntityWithId(makeEntityId(1111))) {
+        const gravityGunEnergy = new EntityBuilder(1111)
+          .applyComponents({
+            child: {
+              parentId: playerId,
+              relativePosition: {
+                x: 0,
+                y: 0
+              }
+            },
+            effects: [createEffect(gun.trigger === GravityGunTrigger.Pull
+              ? EffectName.GravityWavePull
+              : EffectName.GravityWavePush,
+              450
+            )],
+            mass: gun.trigger === GravityGunTrigger.Pull ? gun.power : -gun.power,
+            gravityBehaviour: createGravityBehaviour(GravityTagName.EnergyGun),
+          })
+          .build()
+        registry.addEntity(gravityGunEnergy);
+      }
+
     }
   }
 }

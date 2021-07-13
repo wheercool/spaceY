@@ -12,6 +12,7 @@ import { ComponentsRegistry } from '../components/Components';
 import { Weapon } from './Weapon';
 import { TurretComponent } from '../components/TurretComponent';
 import { QuestStore } from './QuestStore';
+import { storeAnnotation } from 'mobx/dist/api/decorators';
 
 
 interface SpaceshipProvider {
@@ -65,7 +66,7 @@ export class SpaceStore {
     }
     const weapons = this.createWeapons();
     const mass = parseFloatFact(spaceship.info, 'weight', 1);
-    return spaceshipEntity
+    const player = spaceshipEntity
       .applyComponents(weapons)
       .applyComponents({
         position: {
@@ -80,6 +81,7 @@ export class SpaceStore {
         }
       })
       .build();
+    return player;
   }
 
   private createWeapons(): Partial<ComponentsRegistry> {

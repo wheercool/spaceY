@@ -10,6 +10,7 @@ import { RouterStore } from './RouterStore';
 import { WalletStore } from './WalletStore';
 import { PlayerAchievementsStore } from './PlayerAchievementsStore';
 import { DialogStyle, ModalDialog } from './DialogStore';
+import { createEffect, EffectName } from '../components/EffectsComponent';
 
 export interface QuestManager {
   questCompleted(): void;
@@ -306,6 +307,9 @@ function createPlanet(position: Point2D) {
       model: 'planet',
       mass: 10000,
       static: true,
+      effects: [
+        createEffect(EffectName.GravityWavePull, 800)
+      ],
       boundaries: [{
         radius: 100,
         position: {

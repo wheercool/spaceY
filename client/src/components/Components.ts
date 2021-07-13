@@ -28,6 +28,8 @@ import { QuestComponent } from './QuestComponent';
 import { MinimapComponent } from './MinimapComponent';
 import { BulletComponent } from './BulletComponent';
 import { ExplosionComponent } from './ExplosionComponent';
+import { ChildComponent } from './ChildComponent';
+import { EffectsComponent } from './EffectsComponent';
 
 export interface ComponentsRegistry {
   rotation: RotationComponent;
@@ -60,6 +62,8 @@ export interface ComponentsRegistry {
   onMinimap: MinimapComponent;
   bullet: BulletComponent;
   explosion: ExplosionComponent;
+  child: ChildComponent;
+  effects: EffectsComponent;
 }
 
 export type ComponentValue<Cmp extends keyof CmpRegistry, CmpRegistry> = CmpRegistry[Cmp];

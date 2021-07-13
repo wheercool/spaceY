@@ -1,5 +1,6 @@
 import { ComponentsRegistry } from '../components/Components';
 import { Entity } from './Entity';
+import { EntityId } from '../types';
 
 export class EntityRegistry {
   readonly entities: Entity[] = [];
@@ -42,5 +43,9 @@ export class EntityRegistry {
       throw new Error(`Cannot find entity with id: ${id}`)
     }
     return entity;
+  }
+
+  existEntityWithId(id: EntityId): boolean {
+    return !!this.entities.find(entity => entity.id === id);
   }
 }
