@@ -19,22 +19,11 @@ varying vec2 vUv;
 // Press 1-2-3 to zoom in and zoom out.
 // License: Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License
 //-------------------------------------------------------------------------------------
-
-// comment this string to see each part in full screen
-//#define BOTH
-// uncomment this string to see left part
 #define LEFT
-
-//#define LOW_QUALITY
-
 #define DITHERING
-
-//#define TONEMAPPING
 
 //-------------------
 #define pi 3.14159265
-//#define R(p, a) p=cos(a)*p+sin(a)*vec2(p.y, -p.x)
-
 
 // iq's noise
 float noise(in vec3 x)
