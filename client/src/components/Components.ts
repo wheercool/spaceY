@@ -27,7 +27,6 @@ import { SpaceshipComponent } from './SpaceshipComponent';
 import { QuestComponent } from './QuestComponent';
 import { MinimapComponent } from './MinimapComponent';
 import { BulletComponent } from './BulletComponent';
-import { ExplosionComponent } from './ExplosionComponent';
 import { ChildComponent } from './ChildComponent';
 import { EffectsComponent } from './EffectsComponent';
 
@@ -61,7 +60,6 @@ export interface ComponentsRegistry {
   quest: QuestComponent;
   onMinimap: MinimapComponent;
   bullet: BulletComponent;
-  explosion: ExplosionComponent;
   child: ChildComponent;
   effects: EffectsComponent;
 }

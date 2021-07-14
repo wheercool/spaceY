@@ -159,11 +159,9 @@ export class WebGL3DRendererSystem implements System {
       builder.removeComponent('jump');
     });
 
-    const explosionsEntities = registry.findEntitiesByComponents(['explosion']);
     const dt = registry.findSingle(['time']).time.dt;
 
     const effects = registry.findEntitiesByComponents(['effects', 'position']);
-    this.renderExplosionEntities(explosionsEntities, dt);
     this.renderEffect(effects, dt);
 
     this.removeExpiredLongLivingObjects(registry.entities);
@@ -363,27 +361,6 @@ export class WebGL3DRendererSystem implements System {
       }
     }
   }
-  private renderExplosionEntities(entities: (Entity & Pick<ComponentsRegistry, 'explosion'>)[], dt: number) {
-    for (const entity of entities) {
-      let mesh = this.longLivingObjectsMapping.get(entity.id);
-      if (!mesh) {
-        const position = entity.explosion.position;
-        const size = entity.explosion.size;
-        const geometry = new PlaneBufferGeometry(size, size, 1, 1);
-        const material = this.explosionShaderMaterial.clone();
-        material.uniforms.u_time.value = 0;
-        mesh = new Mesh(geometry, material);
-        mesh.position.set(position.x, position.y, 10);
-        this.longLivingObjects.add(mesh);
-        this.longLivingObjectsMapping.set(entity.id, mesh);
-      }
-      if (mesh.material instanceof ShaderMaterial) {
-        mesh.material.uniforms.u_time.value += dt;
-        mesh.material.uniforms.u_resolution.value = new Vector2(entity.explosion.size, entity.explosion.size);
-      }
-    }
-  }
-
   private createExplosionShader(): ShaderMaterial {
     return new ShaderMaterial({
       uniforms: {

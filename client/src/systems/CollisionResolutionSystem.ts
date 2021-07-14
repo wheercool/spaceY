@@ -6,10 +6,10 @@ import { QuestStatus } from '../components/QuestComponent';
 import { startTimer } from '../components/TimerComponent';
 import { makeEntityId, makeSeconds } from '../types';
 import { Point2D } from '@shared/types/Point2D';
+import { createEffect, EffectName } from '../components/EffectsComponent';
 
 const FIRE_DURATION = makeSeconds(1.5);
 const FIRE_SIZE = 100;
-
 
 export class CollisionResolutionSystem implements System {
   init(registry: EntityRegistry): void {
@@ -68,10 +68,10 @@ export class CollisionResolutionSystem implements System {
           registry.addEntity(
             new EntityBuilder()
               .applyComponents({
-                explosion: {
-                  size: FIRE_SIZE,
-                  position: explosionPosition
-                },
+                position: explosionPosition,
+                effects: [
+                  createEffect(EffectName.Explosion, FIRE_SIZE)
+                ],
                 timer: startTimer(makeEntityId(-1), FIRE_DURATION)
               })
               .build()
