@@ -19,7 +19,6 @@ import { CollisionQuestSystem } from './CollisionQuestSystem';
 import { DebuggerSystem } from './DebuggerSystem';
 import { EntityBuilder } from '../entities/EntityBuilder';
 import { ChildrenSystem } from './ChildrenSystem';
-import { ZSystem } from './ZSystem';
 
 
 export class Game implements System {

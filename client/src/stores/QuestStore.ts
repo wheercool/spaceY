@@ -11,6 +11,7 @@ import { WalletStore } from './WalletStore';
 import { PlayerAchievementsStore } from './PlayerAchievementsStore';
 import { DialogStyle, ModalDialog } from './DialogStore';
 import { createEffect, EffectName } from '../components/EffectsComponent';
+import { Controller } from '../services/Controller';
 
 export interface QuestManager {
   questCompleted(): void;
@@ -84,8 +85,10 @@ export class QuestStore implements QuestManager {
   getCurrentQuestMap(playerId: EntityId): Entity[] {
     switch (this.currentQuestIndex) {
       case 0:
-        return this.firstQuestEntities(playerId);
+        return this.tutorialQuestEntities(playerId);
       case 1:
+        return this.firstQuestEntities(playerId);
+      case 2:
         return this.secondQuestEntities();
     }
     return [];
@@ -93,9 +96,18 @@ export class QuestStore implements QuestManager {
 
   private static createQuests(): Quest[] {
     return [
+      QuestStore.createTutorial(),
       QuestStore.createFirstQuest(),
       QuestStore.createSecondQuest()
     ];
+  }
+
+  private static createTutorial(): Quest {
+    const result = new Quest();
+    result.title = 'Tutorial';
+    result.description = QuestDescription.Tutorial;
+    result.reward = 100;
+    return result;
   }
 
   private static createFirstQuest(): Quest {
@@ -285,6 +297,48 @@ export class QuestStore implements QuestManager {
       quest,
       ...asteroids
     ];
+  }
+
+  private tutorialQuestEntities(playerId: EntityId) {
+    const result: Entity[] = [];
+    const mapWidth = 2000;
+    const mapHeight = 2000;
+
+    const map = new EntityBuilder()
+      .applyComponent('map', { width: mapWidth, height: mapHeight })
+      .build();
+
+    result.push(map);
+
+    const quest = new EntityBuilder()
+      .applyComponents({
+        quest: {
+          status: QuestStatus.InProgress,
+          goal: {
+            type: 'presskey',
+            key: Controller.ARROW_UP,
+            text: 'Use arrow up key to push your spaceship'
+          }
+        }
+      })
+      .build()
+
+    const quest2 = new EntityBuilder()
+      .applyComponents({
+        quest: {
+          status: QuestStatus.InProgress,
+          goal: {
+            type: 'presskey',
+            key: Controller.ARROW_DOWN,
+            text: 'Use arrow down key to move in reversed direction'
+          }
+        }
+      })
+      .build()
+
+    result.push(quest);
+    result.push(quest2);
+    return result;
   }
 }
 

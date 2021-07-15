@@ -11,7 +11,13 @@ interface Props {
   description: QuestDescription;
 }
 
-
+export const Tutorial = () => {
+  return <div className={style.container}>
+    <p>Pass tutorial in order to be able to do next quests</p>
+    <p>Here you will train how to fly</p>
+    <p>You will learn about gravity</p>
+  </div>
+}
 export const FirstQuest = () => {
   return <div className={style.container}>
     <div className={style.imageWrapper}>
@@ -52,6 +58,8 @@ export const QuestsDescription: React.FC<Props> = (
     description
   }) => {
   switch (description) {
+    case QuestDescription.Tutorial:
+      return <Tutorial/>;
     case QuestDescription.FirstQuest:
       return <FirstQuest/>;
     case QuestDescription.SecondQuest:

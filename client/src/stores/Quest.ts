@@ -3,6 +3,7 @@ import { Achievement, QuestRequirement } from '../types';
 
 
 export enum QuestDescription {
+  Tutorial,
   FirstQuest,
   SecondQuest
 }

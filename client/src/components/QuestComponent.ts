@@ -11,10 +11,15 @@ export interface QuestComponent {
   goal: QuestGoal;
 }
 
-export type QuestGoal = CollisionQuestGoal;
+export type QuestGoal = CollisionQuestGoal | PressKeyGoal;
 
 export interface CollisionQuestGoal {
   type: 'collision';
   text: string;
   collisions: CollisionComponent[]
+}
+export interface PressKeyGoal {
+  type: 'presskey';
+  text: string;
+  key: string;
 }
