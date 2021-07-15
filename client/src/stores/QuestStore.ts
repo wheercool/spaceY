@@ -52,13 +52,13 @@ export class QuestStore implements QuestManager {
   }
 
   async questCompleted() {
-    await this.modalDialog.show('Mission', 'Completed', DialogStyle.Successful);
+    await this.modalDialog.show('Mission completed', `Reward 100$. Back to station`, DialogStyle.Successful);
     this.wallet.money += this.currentQuest.reward;
     this.router.gotoStation();
   }
 
   async questFailed() {
-    await this.modalDialog.show('Mission', 'Failed', DialogStyle.Dangerous);
+    await this.modalDialog.show('Mission failed', 'Back to station', DialogStyle.Dangerous);
     this.router.gotoStation();
   }
 
@@ -305,10 +305,10 @@ function createPlanet(position: Point2D) {
     .applyComponents({
       position,
       model: 'planet',
-      mass: 10000,
+      mass: 100000,
       static: true,
       effects: [
-        createEffect(EffectName.GravityWavePull, 800)
+        createEffect(EffectName.GravityWavePull, {x: 800, y: 800})
       ],
       boundaries: [{
         radius: 100,

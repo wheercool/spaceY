@@ -36,7 +36,7 @@ export class GravityGunSystem implements System {
             effects: [createEffect(gun.trigger === GravityGunTrigger.Pull
               ? EffectName.GravityWavePull
               : EffectName.GravityWavePush,
-              450
+              {x: 450, y: 450}
             )],
             mass: gun.trigger === GravityGunTrigger.Pull ? gun.power : -gun.power,
             gravityBehaviour: createGravityBehaviour(GravityTagName.EnergyGun),

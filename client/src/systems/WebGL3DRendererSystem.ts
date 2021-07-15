@@ -31,17 +31,19 @@ import { Entity } from '../entities/Entity';
 import { BoundariesComponent, BoundingCircle, positionAbsolute } from '../components/BoundariesComponent';
 import { PositionComponent } from '../components/PositionComponent';
 import { System } from './System';
-import { length, normalize, Point2D } from '@shared/types/Point2D';
+import { add, length, normalize, Point2D, rotate } from '@shared/types/Point2D';
 import { RotationComponent } from '../components/RotationComponent';
 import { AccelerationComponent } from '../components/AccelerationComponent';
 import { JumpComponent } from '../components/JumpComponent';
 import { ComponentsRegistry } from '../components/Components';
 
-import explosionFragmentShader from '../shaders/explosion.fragment.glsl';
-import gravityForceFragmentShader from '../shaders/gravity_force.fragment.glsl';
-import defaultVertexShader from '../shaders/vertex.glsl';
 import { RenderQuality, Settings } from '../Settings';
 import { EffectName } from '../components/EffectsComponent';
+
+import explosionFragmentShader from '../shaders/explosion.fragment.glsl';
+import gravityForceFragmentShader from '../shaders/gravity_force.fragment.glsl';
+import fireFragmentShader from '../shaders/fire.fragment.glsl';
+import defaultVertexShader from '../shaders/vertex.glsl';
 
 
 type RendererEntity = Entity & { model: Model, position: PositionComponent };
@@ -72,6 +74,7 @@ export class WebGL3DRendererSystem implements System {
   private height: number;
   private explosionShaderMaterial: ShaderMaterial;
   private gravityForceShaderMaterial: ShaderMaterial;
+  private fireShaderMaterial: ShaderMaterial;
   private longLivingObjects: Object3D;
   private longLivingObjectsMapping = new Map<EntityId, Mesh>();
   private effectObjects: Object3D;
@@ -109,7 +112,6 @@ export class WebGL3DRendererSystem implements System {
     this.camera.position.set(0, 0, CAMERA_HEIGHT);
     this.camera.rotation.x = Math.PI;
 
-    // this.controls = new OrbitControls(this.camera, this.renderer.domElement);
     if (this.isAxesVisible) {
       const axes = new AxesHelper();
       axes.scale.multiplyScalar(1000);
@@ -118,6 +120,7 @@ export class WebGL3DRendererSystem implements System {
 
     this.explosionShaderMaterial = this.createExplosionShader();
     this.gravityForceShaderMaterial = this.createGravityForceShader();
+    this.fireShaderMaterial = this.createFireShader();
 
     this.pointLight = new PointLight(new Color('#ffffff'));
     const ambient = new AmbientLight();
@@ -162,7 +165,7 @@ export class WebGL3DRendererSystem implements System {
     const dt = registry.findSingle(['time']).time.dt;
 
     const effects = registry.findEntitiesByComponents(['effects', 'position']);
-    this.renderEffect(effects, dt);
+    this.renderEffects(effects, dt);
 
     this.removeExpiredLongLivingObjects(registry.entities);
     this.removeExpiredEffects(effects);
@@ -178,7 +181,7 @@ export class WebGL3DRendererSystem implements System {
   }
 
   dispose() {
-    console.log('WEBGL displosed');
+    console.log('WEBGL disposed');
     this.scene.traverse((object) => {
       if (object instanceof Mesh) {
         if (object.material) {
@@ -338,15 +341,17 @@ export class WebGL3DRendererSystem implements System {
     this.renderer.setSize(width, height);
   }
 
-  private renderEffect(entities: (Entity & Pick<ComponentsRegistry, 'effects' | 'position'>)[], dt: number){
+  private renderEffects(entities: (Entity & Pick<ComponentsRegistry, 'effects' | 'position'>)[], dt: number){
     for (const entity of entities) {
       for (const effect of entity.effects) {
         const effectId = effect.id;
         const size = effect.size;
         let mesh = this.effectsMapping.get(effectId);
-        const position = entity.position;
+        const rotation = EntityBuilder.fromEntity(entity).getOrDefault('rotation', 0);
+        const position = add(entity.position, rotate(effect.relativePosition, rotation));
+
         if (!mesh) {
-          const geometry = new PlaneBufferGeometry(size, size, 1, 1);
+          const geometry = new PlaneBufferGeometry(size.x, size.y, 1, 1);
           const material = this.getEffectShaderMaterial(effect.name); //this.gravityForceShaderMaterial.clone();
           material.uniforms.u_time.value = 0;
           mesh = new Mesh(geometry, material);
@@ -354,9 +359,10 @@ export class WebGL3DRendererSystem implements System {
           this.effectsMapping.set(effectId, mesh);
         }
         mesh.position.set(position.x, position.y, 10);
+        mesh.rotation.z = rotation;
         if (mesh.material instanceof ShaderMaterial) {
           mesh.material.uniforms.u_time.value += dt;
-          mesh.material.uniforms.u_resolution.value = new Vector2(size, size);
+          mesh.material.uniforms.u_resolution.value = new Vector2(size.x, size.y);
         }
       }
     }
@@ -428,13 +434,25 @@ export class WebGL3DRendererSystem implements System {
     });
   }
 
+  private createFireShader(): ShaderMaterial {
+    return new ShaderMaterial({
+      uniforms: {
+        u_time: { type: 'f', value: 1.0 } as IUniform,
+        u_resolution: { type: 'v2', value: new Vector2(0, 0) } as IUniform
+      },
+      fragmentShader: fireFragmentShader,
+      vertexShader: defaultVertexShader,
+      blending: NormalBlending,
+      transparent: true
+    });
+  }
+
   private getEffectShaderMaterial(name: EffectName): ShaderMaterial {
     switch (name) {
       case EffectName.Explosion:
         return this.explosionShaderMaterial.clone();
       case EffectName.Fire:
-        throw new Error('Invalid material');
-        break;
+        return this.fireShaderMaterial.clone();
       case EffectName.GravityWavePull: {
         const material = this.gravityForceShaderMaterial.clone();
         material.uniforms.u_push.value = 0.0;

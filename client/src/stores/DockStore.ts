@@ -9,59 +9,63 @@ const createEnergyShield = () => {
     cost: 300,
     allFacts: [
       [
-        { name: 'consumption', displayValue: '1', value: 1},
+        { name: 'consumption', displayValue: '1', value: 1 },
       ],
       [
-        { name: 'consumption', displayValue: '1.5', value: 1.5},
+        { name: 'consumption', displayValue: '1.5', value: 1.5 },
       ]
     ]
   });
 }
 
 const rabbit = new Spaceship(SpaceshipName.Rabbit, [
-  { name: 'speed', displayValue: 'very fast', value: 4},
-  { name: 'weight', displayValue: 'light', value: 0.5},
+  { name: 'speed', displayValue: 'very fast', value: 4 },
+  { name: 'weight', displayValue: 'light', value: 0.5 },
 ]);
 
 rabbit.cost = 0;
 
-rabbit.weapons = [
-  new Weapon(EquipmentName.GravityGun)
-    .update({
-      cost: 100,
-      allFacts: [
-        [{ name: 'consumption', displayValue: '1' , value: 1}, { name: 'power', displayValue: 'low', value: 100000}],
-        [{ name: 'consumption', displayValue: '0.9', value: 0.9}, { name: 'power', displayValue: 'medium', value: 400000}],
-        [{ name: 'consumption', displayValue: '0.8', value: 0.8}, { name: 'power', displayValue: 'high', value: 1000000}]
+const createGravityGun = () => new Weapon(EquipmentName.GravityGun)
+  .update({
+    cost: 100,
+    allFacts: [
+      [{ name: 'consumption', displayValue: '1', value: 1 }, { name: 'power', displayValue: 'low', value: 100000 }],
+      [{ name: 'consumption', displayValue: '0.9', value: 0.9 }, { name: 'power', displayValue: 'medium', value: 400000 }],
+      [{ name: 'consumption', displayValue: '0.8', value: 0.8 }, { name: 'power', displayValue: 'high', value: 1000000 }]
+    ]
+  });
+
+const createTurret = () => new Weapon(EquipmentName.Turret)
+  .update({
+    cost: 400,
+    allFacts: [
+      [
+        { name: 'power', displayValue: '1', value: 1 },
+        { name: 'cooldown', displayValue: '0.7', value: 0.7 }
+      ],
+      [
+        { name: 'power', displayValue: '1.5', value: 1.5 },
+        { name: 'cooldown', displayValue: '0.5', value: 0.5 }
+      ],
+      [
+        { name: 'power', displayValue: '2', value: 2 },
+        { name: 'cooldown', displayValue: '0.2', value: 0.2 }
       ]
-    }),
+    ]
+  });
+
+rabbit.weapons = [
+  createGravityGun(),
   createEnergyShield()
 ]
 
 const storm = new Spaceship(SpaceshipName.Storm, [
   { name: 'speed', displayValue: 'fast', value: 4 },
-  { name: 'weight', displayValue: 'medium', value: 1},
+  { name: 'weight', displayValue: 'medium', value: 1 },
 ]);
 storm.cost = 1000;
 storm.weapons = [
-  new Weapon(EquipmentName.Turret)
-    .update({
-      cost: 400,
-      allFacts: [
-        [
-          { name: 'power', displayValue: '1', value: 1 },
-          { name: 'cooldown', displayValue: '0.7', value: 0.7}
-        ],
-        [
-          { name: 'power', displayValue: '1.5', value: 1.5},
-          { name: 'cooldown', displayValue: '0.5', value: 0.5 }
-        ],
-        [
-          { name: 'power', displayValue: '2', value: 2},
-          { name: 'cooldown', displayValue: '0.2', value: 0.2}
-        ]
-      ]
-    }),
+  createTurret(),
   createEnergyShield()
 ]
 
@@ -72,17 +76,19 @@ const valkiria = new Spaceship(SpaceshipName.Valkiria, [
 valkiria.cost = 10000;
 
 valkiria.weapons = [
+  createTurret(),
+  createGravityGun(),
   new Weapon(EquipmentName.Rocket).update({
     cost: 1000,
     allFacts: [
       [
-        { name: 'speed', displayValue: '1', value: 1},
-        { name: 'power', displayValue: '1', value: 1},
-        { name: 'cooldown', displayValue: '1', value: 1}
+        { name: 'speed', displayValue: '1', value: 1 },
+        { name: 'power', displayValue: '1', value: 1 },
+        { name: 'cooldown', displayValue: '1', value: 1 }
       ], [
-        { name: 'speed', displayValue: '2', value: 2},
-        { name: 'power', displayValue: '3', value: 3},
-        { name: 'cooldown', displayValue: '4', value: 4},
+        { name: 'speed', displayValue: '2', value: 2 },
+        { name: 'power', displayValue: '3', value: 3 },
+        { name: 'cooldown', displayValue: '4', value: 4 },
       ]]
   }),
   createEnergyShield()

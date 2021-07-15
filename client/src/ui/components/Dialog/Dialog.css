@@ -4,10 +4,18 @@
   bottom: 0;
   left: 0;
   right: 0;
-  background-color: #eeeeee2e;
+  animation: gameover 3s ease  forwards;
   display: flex;
   justify-content: center;
   align-items: center;
+}
+@keyframes gameover {
+  0% {
+    background-color: rgba(0, 0, 0, 0);
+  }
+  100% {
+    background-color: rgba(0, 0, 0, 1.0);
+  }
 }
 .dialog {
   min-height: 250px;
@@ -31,7 +39,7 @@
 .body {
   flex: 1;
   display: flex;
-  color: #424242;
+  color: #2d2d2d;
   font-weight: bold;
   font-size: 21px;
   align-items: center;

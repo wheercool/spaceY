@@ -9,7 +9,7 @@ import { Point2D } from '@shared/types/Point2D';
 import { createEffect, EffectName } from '../components/EffectsComponent';
 
 const FIRE_DURATION = makeSeconds(1.5);
-const FIRE_SIZE = 100;
+const EXPLOSION_SIZE = {x: 100, y: 100};
 
 export class CollisionResolutionSystem implements System {
   init(registry: EntityRegistry): void {
@@ -70,7 +70,7 @@ export class CollisionResolutionSystem implements System {
               .applyComponents({
                 position: explosionPosition,
                 effects: [
-                  createEffect(EffectName.Explosion, FIRE_SIZE)
+                  createEffect(EffectName.Explosion, EXPLOSION_SIZE)
                 ],
                 timer: startTimer(makeEntityId(-1), FIRE_DURATION)
               })

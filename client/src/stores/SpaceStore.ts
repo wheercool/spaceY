@@ -2,7 +2,6 @@ import { action, makeObservable } from 'mobx';
 import { EntityRegistry } from '../entities/EntityRegistry';
 import { EntityBuilder } from '../entities/EntityBuilder';
 import { createGravityBehaviour, GravityTagName } from '../components/GravityBehaviourComponent';
-import { Point2D } from '@shared/types/Point2D';
 import { Entity } from '../entities/Entity';
 import { EquipmentName, Fact, makeSeconds, SpaceshipName } from '../types';
 import { createGravityGun, GravityGunComponent } from '../components/GravityGunComponent';
@@ -12,8 +11,6 @@ import { ComponentsRegistry } from '../components/Components';
 import { Weapon } from './Weapon';
 import { TurretComponent } from '../components/TurretComponent';
 import { QuestStore } from './QuestStore';
-import { storeAnnotation } from 'mobx/dist/api/decorators';
-
 
 interface SpaceshipProvider {
   spaceshipInUse: Spaceship;
@@ -163,7 +160,12 @@ function createEmptyStorm(speed: number): EntityBuilder {
         mapDependent: true,
         spaceship: {
           name: SpaceshipName.Storm,
-          speed
+          speed,
+          engineSize: {x: 8, y: 40},
+          enginePosition: {
+            x: 0,
+            y: -60
+          }
         }
       },
     )
@@ -201,7 +203,12 @@ function createEmptyValkiria(speed: number): EntityBuilder {
         // }),
         spaceship: {
           name: SpaceshipName.Valkiria,
-          speed
+          speed,
+          engineSize: {x: 20, y: 60},
+          enginePosition: {
+            x: 0,
+            y: -70
+          }
         }
       },
     )
@@ -235,7 +242,12 @@ function createEmptyRabbit(speed: number): EntityBuilder {
         mapDependent: true,
         spaceship: {
           name: SpaceshipName.Rabbit,
-          speed
+          speed,
+          engineSize: {x: 12, y: 60},
+          enginePosition: {
+            x: 0,
+            y: -69
+          }
         }
       }
     )
