@@ -16,7 +16,7 @@ export const SpaceshipCard = observer(() => {
       </div>
     </div>
     <div className={style.footer}>
-      Some info goes here
+
     </div>
   </div>
 })

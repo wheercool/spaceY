@@ -4,7 +4,7 @@ import { Entity } from '../entities/Entity';
 import { EntityBuilder } from '../entities/EntityBuilder';
 import { Point2D } from '@shared/types/Point2D';
 import { createGravityBehaviour, GravityTagName } from '../components/GravityBehaviourComponent';
-import { QuestStatus } from '../components/QuestComponent';
+import { QuestGoal, QuestStatus } from '../components/QuestComponent';
 import { Achievement, EntityId, QuestRequirement } from '../types';
 import { RouterStore } from './RouterStore';
 import { WalletStore } from './WalletStore';
@@ -16,11 +16,14 @@ export interface QuestManager {
   questCompleted(): void;
 
   questFailed(): void;
+
+  updateGoals(goals: QuestGoal[]): void;
 }
 
 export class QuestStore implements QuestManager {
   private quests: Quest[] = QuestStore.createQuests();
   @observable currentQuestIndex = 0;
+  @observable currentGoals: string[] = [];
 
   @computed get currentQuest(): Quest {
     return this.quests[this.currentQuestIndex];
@@ -46,9 +49,13 @@ export class QuestStore implements QuestManager {
     private router: RouterStore,
     private modalDialog: ModalDialog,
     private wallet: WalletStore,
-    private playerAchievements: PlayerAchievementsStore
+    private playerAchievements: PlayerAchievementsStore,
   ) {
     makeObservable(this);
+  }
+
+  updateGoals(goals: QuestGoal[]): void {
+    this.currentGoals = goals.map(goal => goal.text);
   }
 
   async questCompleted() {
@@ -160,6 +167,7 @@ export class QuestStore implements QuestManager {
           status: QuestStatus.InProgress,
           goal: {
             type: 'collision',
+            text: 'Find supernova',
             collisions: [{
               entity1: superNova.id,
               entity2: playerId
@@ -247,6 +255,7 @@ export class QuestStore implements QuestManager {
           status: QuestStatus.InProgress,
           goal: {
             type: 'collision',
+            text: 'Deliver the crystal to the Kepler',
             collisions: [
               {
                 entity1: earth.id,
@@ -308,7 +317,7 @@ function createPlanet(position: Point2D) {
       mass: 100000,
       static: true,
       effects: [
-        createEffect(EffectName.GravityWavePull, {x: 400, y: 400}, { z: 0})
+        createEffect(EffectName.GravityWavePull, { x: 400, y: 400 }, { z: 0 })
       ],
       boundaries: [{
         radius: 100,

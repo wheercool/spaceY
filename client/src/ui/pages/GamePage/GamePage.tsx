@@ -8,6 +8,7 @@ import { MiniMap } from '../../components/MiniMap/MiniMap';
 import { useStore } from 'src/stores/store';
 import { UiNotificationSystem } from '../../../systems/UiNotificationSystem';
 import { observer } from 'mobx-react';
+import { CurrentQuestInfo } from '../../components/CurrentQuestInfo/CurrentQuestInfo';
 
 export const GamePage = observer(() => {
   const miniMap = useStore('Minimap');
@@ -56,6 +57,11 @@ export const GamePage = observer(() => {
       </div>
       <div className={style.spaceShipPanelWrapper}>
         <SpaceshipPanel/>
+      </div>
+    </div>
+    <div className={style.questOverlay}>
+      <div className={style.questStatusWrapper}>
+        <CurrentQuestInfo/>
       </div>
     </div>
   </div>

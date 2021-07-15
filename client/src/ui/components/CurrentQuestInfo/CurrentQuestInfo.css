@@ -1,0 +1,13 @@
+.currentQuest {
+  color: white;
+  padding: 15px;
+}
+.header {
+  text-align: center;
+  font-size: 21px;
+  margin-bottom: 10px;
+}
+.body {
+  text-align: right;
+  font-size: 14px;
+}

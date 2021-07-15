@@ -25,6 +25,15 @@
   margin-right: auto;
 }
 
+.questOverlay {
+  position: absolute;
+  bottom: 0;
+  top: 0;
+  right: 0;
+}
+.questStatusWrapper {
+  display: flex;
+}
 .miniMapWrapper {
   flex: 0;
   margin: 15px;

@@ -15,5 +15,6 @@ export type QuestGoal = CollisionQuestGoal;
 
 export interface CollisionQuestGoal {
   type: 'collision';
+  text: string;
   collisions: CollisionComponent[]
 }
