@@ -308,7 +308,7 @@ function createPlanet(position: Point2D) {
       mass: 100000,
       static: true,
       effects: [
-        createEffect(EffectName.GravityWavePull, {x: 800, y: 800})
+        createEffect(EffectName.GravityWavePull, {x: 400, y: 400}, { z: 0})
       ],
       boundaries: [{
         radius: 100,
@@ -317,6 +317,9 @@ function createPlanet(position: Point2D) {
           y: 0
         }
       }],
+      z: {
+        index: -80
+      },
       gravityBehaviour: createGravityBehaviour(GravityTagName.Big),
     })
     .build()

@@ -27,5 +27,5 @@ void main()
     float c2 = smoothstep(-1.0, 1.0, pct);
     vec3 FRCOL = mix(SPCOL1, SPCOL2, u_push);
     vec3 col = mix(FRCOL, BACKCOL, c2);
-    gl_FragColor = vec4(col, col);
+    gl_FragColor = vec4(col, 0.35 * col);
 }

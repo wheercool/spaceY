@@ -161,7 +161,7 @@ function createEmptyStorm(speed: number): EntityBuilder {
         spaceship: {
           name: SpaceshipName.Storm,
           speed,
-          engineSize: {x: 8, y: 40},
+          engineSize: { x: 8, y: 40 },
           enginePosition: {
             x: 0,
             y: -60
@@ -204,7 +204,7 @@ function createEmptyValkiria(speed: number): EntityBuilder {
         spaceship: {
           name: SpaceshipName.Valkiria,
           speed,
-          engineSize: {x: 20, y: 60},
+          engineSize: { x: 20, y: 60 },
           enginePosition: {
             x: 0,
             y: -70
@@ -243,11 +243,14 @@ function createEmptyRabbit(speed: number): EntityBuilder {
         spaceship: {
           name: SpaceshipName.Rabbit,
           speed,
-          engineSize: {x: 12, y: 60},
+          engineSize: { x: 12, y: 60 },
           enginePosition: {
             x: 0,
             y: -69
           }
+        },
+        z: {
+          index: 100
         }
       }
     )

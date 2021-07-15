@@ -8,6 +8,10 @@ export interface Effect {
   size: Point2D;
   rotation: number;
   relativePosition: Point2D;
+  z: {
+    index: number;
+    coordinate?: number;
+  }
 }
 
 export enum EffectName {
@@ -20,8 +24,9 @@ export enum EffectName {
 let effectId = 1;
 
 interface EffectOptions {
-  relativePosition: Point2D,
-  rotation: number
+  relativePosition: Point2D;
+  rotation: number;
+  z: number;
 }
 
 export function createEffect(name: EffectName,
@@ -29,12 +34,16 @@ export function createEffect(name: EffectName,
                              config: Partial<EffectOptions> | undefined = undefined): Effect {
   const relativePosition = config?.relativePosition ?? { x: 0, y: 0 };
   const rotation = config?.rotation ?? 0;
+  const z = config?.z ?? 0;
   return {
     id: effectId++,
     name,
     size,
     relativePosition,
-    rotation
+    rotation,
+    z: {
+      index: z
+    }
   }
 }
 

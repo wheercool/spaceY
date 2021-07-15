@@ -44,6 +44,7 @@ import explosionFragmentShader from '../shaders/explosion.fragment.glsl';
 import gravityForceFragmentShader from '../shaders/gravity_force.fragment.glsl';
 import fireFragmentShader from '../shaders/fire.fragment.glsl';
 import defaultVertexShader from '../shaders/vertex.glsl';
+import { EffectZIndexManager } from '../services/EffectZIndexManager';
 
 
 type RendererEntity = Entity & { model: Model, position: PositionComponent };
@@ -51,7 +52,7 @@ const CAMERA_HEIGHT = 600;
 const UP_JUMP = 100;
 const DOWN_JUMP = -100;
 const CAMERA_FOV = 50;
-const MAP_Z_INDEX = 0;
+const MAP_Z_INDEX = -10;
 
 class EntityId {
 }
@@ -81,6 +82,7 @@ export class WebGL3DRendererSystem implements System {
   private longLivingObjectsMapping = new Map<EntityId, Mesh>();
   private effectObjects: Object3D;
   private effectsMapping = new Map<number, Mesh>();
+  private effectZIndexManager = new EffectZIndexManager();
 
 
   constructor(private canvas: HTMLCanvasElement) {
@@ -108,8 +110,8 @@ export class WebGL3DRendererSystem implements System {
     this.width = canvas.width;
     this.height = canvas.height;
     this.aspect = this.width / this.height;
-    this.camera = this.createPerspectiveCamera();
-    // this.camera = this.createOrthoCamera();
+    // this.camera = this.createPerspectiveCamera();
+    this.camera = this.createOrthoCamera();
 
     this.camera.position.set(0, 0, CAMERA_HEIGHT);
     this.camera.rotation.x = Math.PI;
@@ -158,6 +160,7 @@ export class WebGL3DRendererSystem implements System {
         acceleration: builder.getOrDefault('acceleration', null),
         rotation: builder.getOrDefault('rotation', 0),
         boundaries: builder.getOrDefault('boundaries', []),
+        z: builder.getOrDefault('z', { index: 0 }).index,
         jump
       });
       //TODO: Put in separate system
@@ -203,7 +206,8 @@ export class WebGL3DRendererSystem implements System {
     rotation: RotationComponent,
     boundaries: BoundariesComponent,
     acceleration: AccelerationComponent | null,
-    jump: JumpComponent | false
+    jump: JumpComponent | false,
+    z: number
   }) {
     const { model, position } = entity;
     let object: Mesh | undefined = this.longLivingObjectsMapping.get(entity.id);
@@ -215,11 +219,12 @@ export class WebGL3DRendererSystem implements System {
 
     object.position.setX(position.x);
     object.position.setY(position.y)
-    if (options.jump === false) {
-      object.position.setZ(0);
-    } else {
-      object.position.setZ(options.jump === JumpComponent.Up ? UP_JUMP : DOWN_JUMP);
-    }
+    object.position.setZ(options.z);
+    // if (options.jump === false) {
+    //   object.position.setZ(0);
+    // } else {
+    //   object.position.setZ(options.jump === JumpComponent.Up ? UP_JUMP : DOWN_JUMP);
+    // }
 
     if (this.isBondariesVisible) {
       const circles = positionAbsolute(options.boundaries, entity.position, options.rotation)
@@ -361,7 +366,8 @@ export class WebGL3DRendererSystem implements System {
           this.effectObjects.add(mesh);
           this.effectsMapping.set(effectId, mesh);
         }
-        mesh.position.set(position.x, position.y, 10);
+        const z = this.effectZIndexManager.getZCoordinate(effect); // 10
+        mesh.position.set(position.x, position.y, z);
         mesh.rotation.z = rotation;
         if (mesh.material instanceof ShaderMaterial) {
           mesh.material.uniforms.u_time.value += dt;

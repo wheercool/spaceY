@@ -29,6 +29,7 @@ import { MinimapComponent } from './MinimapComponent';
 import { BulletComponent } from './BulletComponent';
 import { ChildComponent } from './ChildComponent';
 import { EffectsComponent } from './EffectsComponent';
+import { ZComponent } from './ZComponent';
 
 export interface ComponentsRegistry {
   rotation: RotationComponent;
@@ -62,6 +63,7 @@ export interface ComponentsRegistry {
   bullet: BulletComponent;
   child: ChildComponent;
   effects: EffectsComponent;
+  z: ZComponent;
 }
 
 export type ComponentValue<Cmp extends keyof CmpRegistry, CmpRegistry> = CmpRegistry[Cmp];
