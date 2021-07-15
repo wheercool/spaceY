@@ -51,6 +51,8 @@ const CAMERA_HEIGHT = 600;
 const UP_JUMP = 100;
 const DOWN_JUMP = -100;
 const CAMERA_FOV = 50;
+const MAP_Z_INDEX = 0;
+
 class EntityId {
 }
 
@@ -106,8 +108,8 @@ export class WebGL3DRendererSystem implements System {
     this.width = canvas.width;
     this.height = canvas.height;
     this.aspect = this.width / this.height;
-    // this.camera = this.createPerspectiveCamera();
-    this.camera = this.createOrthoCamera();
+    this.camera = this.createPerspectiveCamera();
+    // this.camera = this.createOrthoCamera();
 
     this.camera.position.set(0, 0, CAMERA_HEIGHT);
     this.camera.rotation.x = Math.PI;
@@ -141,7 +143,7 @@ export class WebGL3DRendererSystem implements System {
       map: spaceTexture
     });
     const background = new Mesh(plane, material);
-    background.position.set(map.width / 2, map.height / 2, -200);
+    background.position.set(map.width / 2, map.height / 2, MAP_Z_INDEX);
     (window as any).renderer = this.renderer;
     this.scene.add(background)
   }
@@ -175,6 +177,8 @@ export class WebGL3DRendererSystem implements System {
       const mapEntity = registry.findSingle(['map']);
       const width = mapEntity.map.width;
       const height = mapEntity.map.height;
+      const cameraViewportSize = this.getCameraViewportSize();
+      // this.moveCameraTo(new Vector3(cameraViewportSize.width / 2, cameraViewportSize.height / 2, this.camera.position.z));
       this.updateCameraPosition(cameraAt[0].position, width, height);
     }
     this.renderer.render(this.scene, this.camera);
@@ -266,7 +270,7 @@ export class WebGL3DRendererSystem implements System {
   }
 
   private updateCameraPosition(position: PositionComponent, width: number, height: number) {
-    const {width: cameraWidth, height: cameraHeight} = this.getCameraViewportSize();
+    const { width: cameraWidth, height: cameraHeight } = this.getCameraViewportSize();
 
     const lookAtPosition = new Vector3(position.x, position.y, 0);
     const cameraPosition = new Vector3().copy(lookAtPosition);
@@ -299,17 +303,16 @@ export class WebGL3DRendererSystem implements System {
     // pointLightPosition.add(cameraPosition).multiplyScalar(0.4);
     // this.pointLight.position.copy(pointLightPosition);
 
-    this.camera.lookAt(cameraPosition)
-    this.camera.position.set(cameraPosition.x, cameraPosition.y, this.camera.position.z);
+    this.moveCameraTo(cameraPosition);
     const pointLightPosition = new Vector3().copy(this.camera.position);
     pointLightPosition.add(cameraPosition).multiplyScalar(0.4);
     this.pointLight.position.copy(pointLightPosition);
   }
 
   private createPerspectiveCamera() {
-    const camera = new PerspectiveCamera(CAMERA_FOV, this.width / this.height);
-    camera.near = 0;
-    camera.far = CAMERA_HEIGHT;
+    const camera = new PerspectiveCamera(CAMERA_FOV, this.width / this.height, 1, 1.1 * CAMERA_HEIGHT);
+    // camera.near = 0;
+    // camera.far = 0;
     return camera;
   }
 
@@ -341,7 +344,7 @@ export class WebGL3DRendererSystem implements System {
     this.renderer.setSize(width, height);
   }
 
-  private renderEffects(entities: (Entity & Pick<ComponentsRegistry, 'effects' | 'position'>)[], dt: number){
+  private renderEffects(entities: (Entity & Pick<ComponentsRegistry, 'effects' | 'position'>)[], dt: number) {
     for (const entity of entities) {
       for (const effect of entity.effects) {
         const effectId = effect.id;
@@ -367,6 +370,7 @@ export class WebGL3DRendererSystem implements System {
       }
     }
   }
+
   private createExplosionShader(): ShaderMaterial {
     return new ShaderMaterial({
       uniforms: {
@@ -404,7 +408,7 @@ export class WebGL3DRendererSystem implements System {
 
   private getCameraViewportSize() {
     if (this.camera instanceof PerspectiveCamera) {
-      const h = Math.tan(CAMERA_FOV * Math.PI / 360) * this.camera.position.z;
+      const h = 2 * Math.tan(CAMERA_FOV * Math.PI / 360) * this.camera.position.z;
       const w = this.aspect * h;
       return {
         width: w,
@@ -425,7 +429,7 @@ export class WebGL3DRendererSystem implements System {
       uniforms: {
         u_time: { type: 'f', value: 1.0 } as IUniform,
         u_resolution: { type: 'v2', value: new Vector2(0, 0) } as IUniform,
-        u_push: {type: 'f', value: 0.0} as IUniform
+        u_push: { type: 'f', value: 0.0 } as IUniform
       },
       fragmentShader: gravityForceFragmentShader,
       vertexShader: defaultVertexShader,
@@ -464,5 +468,10 @@ export class WebGL3DRendererSystem implements System {
         return material;
       }
     }
+  }
+
+  private moveCameraTo(cameraPosition: Vector3) {
+    this.camera.lookAt(cameraPosition)
+    this.camera.position.set(cameraPosition.x, cameraPosition.y, this.camera.position.z);
   }
 }
