@@ -7,7 +7,6 @@ import { EntityBuilder } from '../entities/EntityBuilder';
 import { TurretComponent } from '../components/TurretComponent';
 import { GravityGunTrigger } from '../components/GravityGunComponent';
 import { addEffectIfNotExist, createEffect, Effect, EffectName, removeEffect } from '../components/EffectsComponent';
-import { mulByScalar } from '@shared/types/Point2D';
 
 const STEP = Math.PI / 50;
 const FIRE_SIZE = 200;

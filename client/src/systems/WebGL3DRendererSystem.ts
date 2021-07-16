@@ -45,6 +45,19 @@ import gravityForceFragmentShader from '../shaders/gravity_force.fragment.glsl';
 import fireFragmentShader from '../shaders/fire.fragment.glsl';
 import defaultVertexShader from '../shaders/vertex.glsl';
 import { EffectZIndexManager } from '../services/EffectZIndexManager';
+import { InputFilterSystem } from './Tutorial/InputFilterSystem';
+import { Key } from '../services/key';
+import { CompositorSystem } from './CompositorSystem';
+import { WorldBoundarySystem } from './WorldBoundarySystem';
+import { ClockSystem } from './ClockSystem';
+import { InputSystem } from './InputSystem';
+import { PlayerSystem } from './PlayerSystem';
+import { GravitySystem } from './GravitySystem';
+import { AccelerationSystem } from './AccelerationSystem';
+import { MovementSystem } from './MovementSystem';
+import { MaxSpeedSystem } from './MaxSpeedSystem';
+import { ChildrenSystem } from './ChildrenSystem';
+import { StepResolutionSystem } from './Tutorial/StepResolutionSystem';
 
 
 type RendererEntity = Entity & { model: Model, position: PositionComponent };
@@ -61,31 +74,33 @@ class EntityId {
  * Renders entities with model
  */
 export class WebGL3DRendererSystem implements System {
-  private scene: Scene;
-  private renderer: WebGLRenderer;
+  private scene!: Scene;
+  private renderer!: WebGLRenderer;
   // private camera: PerspectiveCamera;
-  private camera: Camera;
+  private camera!: Camera;
   // private controls: OrbitControls;
-  private models: Object3D;
-  private pointLight: PointLight;
+  private models!: Object3D;
+  private pointLight!: PointLight;
   private isBondariesVisible = false;
   private isAccelerationVisible = false;
   private isAxesVisible = false;
   private dynamicCamera = true;
   private aspect = 1;
-  private width: number;
-  private height: number;
-  private explosionShaderMaterial: ShaderMaterial;
-  private gravityForceShaderMaterial: ShaderMaterial;
-  private fireShaderMaterial: ShaderMaterial;
-  private longLivingObjects: Object3D;
+  private width!: number;
+  private height!: number;
+  private explosionShaderMaterial!: ShaderMaterial;
+  private gravityForceShaderMaterial!: ShaderMaterial;
+  private fireShaderMaterial!: ShaderMaterial;
+  private longLivingObjects!: Object3D;
   private longLivingObjectsMapping = new Map<EntityId, Mesh>();
-  private effectObjects: Object3D;
+  private effectObjects!: Object3D;
   private effectsMapping = new Map<number, Mesh>();
   private effectZIndexManager = new EffectZIndexManager();
 
-
   constructor(private canvas: HTMLCanvasElement) {
+  }
+
+  init(registry: EntityRegistry) {
     this.initFlags();
     this.scene = new Scene();
     this.models = new Object3D();
@@ -97,7 +112,7 @@ export class WebGL3DRendererSystem implements System {
     this.scene.add(this.effectObjects);
 
     this.renderer = new WebGLRenderer({
-      canvas,
+      canvas: this.canvas,
       precision: Settings.renderingQuality === RenderQuality.Low ? 'lowp' : 'highp',
       antialias: Settings.renderingQuality !== RenderQuality.Low
     });
@@ -107,8 +122,8 @@ export class WebGL3DRendererSystem implements System {
     const pixelRation = window.devicePixelRatio;
     this.renderer.setPixelRatio(pixelRation)
 
-    this.width = canvas.width;
-    this.height = canvas.height;
+    this.width = this.canvas.width;
+    this.height = this.canvas.height;
     this.aspect = this.width / this.height;
     // this.camera = this.createPerspectiveCamera();
     this.camera = this.createOrthoCamera();
@@ -132,9 +147,6 @@ export class WebGL3DRendererSystem implements System {
     if (Settings.renderingQuality === RenderQuality.High) {
       this.scene.add(this.pointLight);
     }
-  }
-
-  init(registry: EntityRegistry) {
     const map = registry.findSingle(['map']).map;
     const spaceTexture = assetsManager.getTexture('space');
     const plane = new PlaneBufferGeometry(map.width, map.height, 2, 2);

@@ -18,7 +18,7 @@ export interface QuestManager {
 
   questFailed(): void;
 
-  updateGoals(goals: QuestGoal[]): void;
+  updateGoals(goals: string[]): void;
 }
 
 export class QuestStore implements QuestManager {
@@ -55,8 +55,9 @@ export class QuestStore implements QuestManager {
     makeObservable(this);
   }
 
-  updateGoals(goals: QuestGoal[]): void {
-    this.currentGoals = goals.map(goal => goal.text);
+  @action.bound updateGoals(goals: string[]): void {
+    // this.currentGoals = goals.map(goal => goal.text);
+    this.currentGoals = goals;
   }
 
   async questCompleted() {

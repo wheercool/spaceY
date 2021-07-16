@@ -13,7 +13,7 @@ export class UiNotificationSystem implements System {
   constructor(
     private miniMap: MinimapStore,
     private spaceshipPanel: SpaceshipPanelStore,
-    private questManager: QuestManager
+    readonly questManager: QuestManager
   ) {
 
   }
@@ -79,8 +79,6 @@ export class UiNotificationSystem implements System {
 
     // Check quest
     const questEntities = registry.findEntitiesByComponents(['quest']);
-    const goals = questEntities.map(quest => quest.quest.goal);
-    this.questManager.updateGoals(goals);
     if (questEntities.length > 0 && questEntities.every(questEntity => questEntity.quest.status === QuestStatus.Completed)) {
       UiNotificationSystem.removeQuest(questEntities, registry);
       this.questManager.questCompleted();

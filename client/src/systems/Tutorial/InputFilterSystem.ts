@@ -19,6 +19,12 @@ export class InputFilterSystem implements System {
         inputEntity.input = keysToInput(filtered);
       })
   }
+
+  addAllowedKey(key: Key) {
+    if (!this.allowedKeys.includes(key)) {
+      this.allowedKeys.push(key);
+    }
+  }
 }
 
 function pressedKeys(input: InputComponent): Key[] {
