@@ -2,13 +2,13 @@ import React, { createRef, useEffect } from 'react';
 import { WebGL3DRendererSystem } from '../../../systems/WebGL3DRendererSystem';
 import { SpaceshipPanel } from '../../components/SpaceshipPanel/SpaceshipPanel';
 import { Game } from '../../../systems/Game';
-// import { assetsManager } from '../services/AssetsManager';
 import style from './GamePage.css';
 import { MiniMap } from '../../components/MiniMap/MiniMap';
 import { useStore } from 'src/stores/store';
 import { UiNotificationSystem } from '../../../systems/UiNotificationSystem';
 import { observer } from 'mobx-react';
 import { CurrentQuestInfo } from '../../components/CurrentQuestInfo/CurrentQuestInfo';
+import { Tutorial } from '../../../systems/Tutorial/Tutorial';
 
 export const GamePage = observer(() => {
   const miniMap = useStore('Minimap');
@@ -26,9 +26,13 @@ export const GamePage = observer(() => {
     }
     const renderer = new WebGL3DRendererSystem(canvasRef.current)
     const uiNotificator = new UiNotificationSystem(miniMap, spaceshipPanel, quest);
+    const registry = space.getEntityRegistry()
+    const isTutorial = registry.findEntitiesByComponents(['tutorial']).length > 0;
 
-    const game = new Game(renderer, uiNotificator)
-      .init(space.getEntityRegistry())
+    const runner = isTutorial ? new Tutorial(renderer, uiNotificator) : new Game(renderer, uiNotificator);
+
+    runner
+      .init(registry)
       .startGame();
 
     const resizeHandler = () => {
@@ -43,9 +47,8 @@ export const GamePage = observer(() => {
     };
     window.addEventListener('resize', resizeHandler)
     return () => {
-      console.log('dispose');
       window.removeEventListener('resize', resizeHandler);
-      game.dispose();
+      runner.dispose();
     }
   }, []);
 

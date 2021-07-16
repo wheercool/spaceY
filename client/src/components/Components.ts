@@ -30,6 +30,7 @@ import { BulletComponent } from './BulletComponent';
 import { ChildComponent } from './ChildComponent';
 import { EffectsComponent } from './EffectsComponent';
 import { ZComponent } from './ZComponent';
+import { TutorialComponent } from './TutorialComponent';
 
 export interface ComponentsRegistry {
   rotation: RotationComponent;
@@ -64,6 +65,7 @@ export interface ComponentsRegistry {
   child: ChildComponent;
   effects: EffectsComponent;
   z: ZComponent;
+  tutorial: TutorialComponent;
 }
 
 export type ComponentValue<Cmp extends keyof CmpRegistry, CmpRegistry> = CmpRegistry[Cmp];

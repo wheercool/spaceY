@@ -301,43 +301,12 @@ export class QuestStore implements QuestManager {
 
   private tutorialQuestEntities(playerId: EntityId) {
     const result: Entity[] = [];
-    const mapWidth = 2000;
-    const mapHeight = 2000;
-
-    const map = new EntityBuilder()
-      .applyComponent('map', { width: mapWidth, height: mapHeight })
-      .build();
-
-    result.push(map);
 
     const quest = new EntityBuilder()
-      .applyComponents({
-        quest: {
-          status: QuestStatus.InProgress,
-          goal: {
-            type: 'presskey',
-            key: Controller.ARROW_UP,
-            text: 'Use arrow up key to push your spaceship'
-          }
-        }
-      })
-      .build()
-
-    const quest2 = new EntityBuilder()
-      .applyComponents({
-        quest: {
-          status: QuestStatus.InProgress,
-          goal: {
-            type: 'presskey',
-            key: Controller.ARROW_DOWN,
-            text: 'Use arrow down key to move in reversed direction'
-          }
-        }
-      })
-      .build()
+      .applyComponent('tutorial', true)
+      .build();
 
     result.push(quest);
-    result.push(quest2);
     return result;
   }
 }

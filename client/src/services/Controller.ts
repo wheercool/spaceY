@@ -1,3 +1,5 @@
+import { Key } from './key';
+
 export class Controller {
   top = false;
   bottom = false;
@@ -6,8 +8,6 @@ export class Controller {
   space = false;
   g = false;
   f = false;
-  static readonly ARROW_UP = 'arrowup';
-  static readonly ARROW_DOWN = 'arrowdown';
 
   private pressedKeys = new Set<string>();
 
@@ -27,16 +27,16 @@ export class Controller {
   private onKeyDown = (event: KeyboardEvent) => {
     const key = event.key.toLowerCase();
     this.pressedKeys.add(key);
-    if (key == 'arrowleft') {
+    if (key == Key.ARROW_LEFT) {
       this.left = true;
     }
-    if (key == 'arrowright') {
+    if (key == Key.ARROW_RIGHT) {
       this.right = true;
     }
-    if (key == Controller.ARROW_UP) {
+    if (key == Key.ARROW_UP) {
       this.top = true;
     }
-    if (key === Controller.ARROW_DOWN) {
+    if (key === Key.ARROW_DOWN) {
       this.bottom = true;
     }
     if (key === ' ') {
@@ -59,10 +59,10 @@ export class Controller {
     if (key == 'arrowright') {
       this.right = false;
     }
-    if (key == Controller.ARROW_UP) {
+    if (key == Key.ARROW_UP) {
       this.top = false;
     }
-    if (key === Controller.ARROW_DOWN) {
+    if (key === Key.ARROW_DOWN) {
       this.bottom = false;
     }
     if (key === ' ') {

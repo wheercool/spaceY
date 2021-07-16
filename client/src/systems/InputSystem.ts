@@ -2,6 +2,7 @@ import { System } from './System';
 import { EntityRegistry } from '../entities/EntityRegistry';
 import { EntityBuilder } from '../entities/EntityBuilder';
 import { InputComponent } from '../components/InputComponent';
+import { Key } from '../services/key';
 
 /***
  * Updates inputs based on the user interaction
@@ -54,63 +55,63 @@ export class InputSystem implements System {
 
   private onKeyDown = (event: KeyboardEvent) => {
     const key = event.key.toLowerCase();
-    if (key == 'arrowleft') {
+    if (key == Key.ARROW_LEFT) {
       this.left = true;
     }
-    if (key == 'arrowright') {
+    if (key == Key.ARROW_RIGHT) {
       this.right = true;
     }
-    if (key == 'arrowup') {
+    if (key == Key.ARROW_UP) {
       this.top = true;
     }
-    if (key === 'arrowdown') {
+    if (key === Key.ARROW_DOWN) {
       this.bottom = true;
     }
-    if (key === 'q') {
+    if (key === Key.Q) {
       this.q = true;
     }
-    if (key === 'w') {
+    if (key === Key.W) {
       this.w = true;
     }
-    if (key == 'e') {
+    if (key == Key.E) {
       this.e = true;
     }
-    if (key == 'r') {
+    if (key == Key.R) {
       this.r = true;
     }
-    if (key == 't') {
+    if (key == Key.T) {
       this.r = true;
     }
   }
 
   private onKeyUp = (event: KeyboardEvent) => {
     const key = event.key.toLowerCase();
-    if (key == 'arrowleft') {
+    if (key == Key.ARROW_LEFT) {
       this.left = false;
     }
-    if (key == 'arrowright') {
+    if (key == Key.ARROW_RIGHT) {
       this.right = false;
     }
-    if (key == 'arrowup') {
+    if (key == Key.ARROW_UP) {
       this.top = false;
     }
-    if (key === 'arrowdown') {
+    if (key === Key.ARROW_DOWN) {
       this.bottom = false;
     }
-    if (key === 'q') {
+    if (key === Key.Q) {
       this.q = false;
     }
-    if (key === 'w') {
+    if (key === Key.W) {
       this.w = false;
     }
-    if (key == 'e') {
+    if (key == Key.E) {
       this.e = false;
     }
-    if (key == 'r') {
+    if (key == Key.R) {
       this.r = false;
     }
-    if (key == 't') {
-      this.r = false;
+    if (key == Key.T) {
+      this.t = false;
     }
   }
 }

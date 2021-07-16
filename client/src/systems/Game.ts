@@ -17,7 +17,6 @@ import { GravityGunSystem } from './GravityGunSystem';
 import { CollisionCleaningSystem } from './CollisionCleaningSystem';
 import { CollisionQuestSystem } from './CollisionQuestSystem';
 import { DebuggerSystem } from './DebuggerSystem';
-import { EntityBuilder } from '../entities/EntityBuilder';
 import { ChildrenSystem } from './ChildrenSystem';
 
 
@@ -54,21 +53,8 @@ export class Game implements System {
   }
 
   init(registry: EntityRegistry) {
+    
     this.registry = registry;
-    this.registry.addEntity(
-      new EntityBuilder()
-        .applyComponents({
-          position: {
-            x: 200,
-            y: 200
-          },
-          gravityForce: {
-            x: 200,
-            y: 200
-          }
-        })
-        .build()
-    )
     return this;
   }
 

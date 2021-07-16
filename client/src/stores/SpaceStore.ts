@@ -119,7 +119,7 @@ export class SpaceStore {
     }
   }
 
-  private static createGravityGun(weapon: Weapon): { gravityGun: GravityGunComponent } {
+  static createGravityGun(weapon: Weapon): { gravityGun: GravityGunComponent } {
     const consumption = parseFloatFact(weapon.facts, 'consumption', 0.1);
     const power = parseFloatFact(weapon.facts, 'power', 100000);
     return {
@@ -214,7 +214,7 @@ function createEmptyValkiria(speed: number): EntityBuilder {
     )
 }
 
-function createEmptyRabbit(speed: number): EntityBuilder {
+export function createEmptyRabbit(speed: number): EntityBuilder {
   return new EntityBuilder()
     .applyComponents({
         player: true,
