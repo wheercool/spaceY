@@ -11,6 +11,7 @@ import { WalletStore } from './WalletStore';
 import { PlayerAchievementsStore } from './PlayerAchievementsStore';
 import { DialogStyle, ModalDialog } from './DialogStore';
 import { createAsteroid, createEarth, createPlanet } from '../entities/templates';
+import { soundManager } from '../services/SoundManager';
 
 export interface QuestManager {
   questCompleted(): void;
@@ -65,12 +66,16 @@ export class QuestStore implements QuestManager {
   }
 
   async questCompleted() {
+    soundManager.stopAmbient();
+    soundManager.play('completed');
     await this.modalDialog.show('Mission completed', `Reward 100$. Back to station`, DialogStyle.Successful);
     this.wallet.money += this.currentQuest.reward;
     this.router.gotoStation();
   }
 
   async questFailed() {
+    soundManager.stopAmbient();
+    soundManager.play('failed');
     await this.modalDialog.show('Mission failed', 'Back to station', DialogStyle.Dangerous);
     this.router.gotoStation();
   }

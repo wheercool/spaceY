@@ -7,6 +7,7 @@ import { EntityBuilder } from '../entities/EntityBuilder';
 import { TurretComponent } from '../components/TurretComponent';
 import { GravityGunTrigger } from '../components/GravityGunComponent';
 import { addEffectIfNotExist, createEffect, Effect, EffectName, removeEffect } from '../components/EffectsComponent';
+import { soundManager } from '../services/SoundManager';
 
 const STEP = Math.PI / 50;
 const FIRE_SIZE = 200;
@@ -51,12 +52,14 @@ export class PlayerSystem implements System {
     playerBuilder.applyComponent('effects', effects);
 
     if (input.top) {
+      soundManager.play('engine', {loop: true});
       const angle = player.rotation + Math.PI / 2;
       player.pullingForce.x = Math.cos(angle) * speed;
       player.pullingForce.y = Math.sin(angle) * speed;
       addEffectIfNotExist(effects, createEffect(EffectName.Fire, engineSize, { relativePosition: enginePosition }));
     }
     if (input.bottom) {
+      soundManager.play('engine', {loop: true});
       const angle = player.rotation + Math.PI / 2 + Math.PI;
       player.pullingForce.x = Math.cos(angle) * speed;
       player.pullingForce.y = Math.sin(angle) * speed;
@@ -72,6 +75,7 @@ export class PlayerSystem implements System {
         }));
     }
     if (!input.top && !input.bottom) {
+      soundManager.stop('engine');
       player.pullingForce.x = 0;
       player.pullingForce.y = 0;
       removeEffect(effects, EffectName.Fire);

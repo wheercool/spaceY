@@ -7,6 +7,7 @@ import { ComponentsRegistry } from '../components/Components';
 import { startTimer } from '../components/TimerComponent';
 import { makeEntityId, makeSeconds } from '../types';
 import { createGravityBehaviour, GravityTagName } from '../components/GravityBehaviourComponent';
+import { soundManager } from '../services/SoundManager';
 
 export class TurretSystem implements System {
   init(registry: EntityRegistry): void {
@@ -77,6 +78,7 @@ export class TurretSystem implements System {
       })
       .build();
     registry.addEntity(laser);
+    soundManager.play('laser');
   }
 
   private createCooldown(turret: Entity & Pick<ComponentsRegistry, 'turret'>) {

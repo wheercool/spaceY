@@ -252,8 +252,6 @@ export class AssetsManager {
       texture: new Texture()
     }
   }
-  private progressHandler: (progress: number) => void = noop;
-  private doneHandler: () => void = noop;
 
   getModel(model: Model): Object3D {
     if (model === 'asteroid') {
@@ -263,37 +261,20 @@ export class AssetsManager {
     }
     return this.models[model].mesh.clone();
   }
-
-  private manager: LoadingManager;
-
-  private loader: GLTFLoader;
-
   constructor() {
-    this.manager = new LoadingManager();
-
-    this.manager.onProgress = (url, itemsLoaded, itemsTotal) => {
-      runInAction(() => this.progressHandler(Math.round(itemsLoaded / itemsTotal * 100)));
-    };
-
-    this.manager.onLoad = () => {
-      runInAction(() => this.doneHandler());
-    };
-
-    this.loader = new GLTFLoader(this.manager);
   }
 
-  async load(progress: (progress: number) => void, doneHandler: () => void) {
-    this.progressHandler = progress;
-    this.doneHandler = doneHandler;
-    await this.loadModels();
-    this.loadImages();
-    this.loadTextures();
+  load(manager: LoadingManager) {
+    this.loadModels(manager);
+    this.loadImages(manager);
+    this.loadTextures(manager);
   }
 
-  private async loadModels() {
+  private async loadModels(manager: LoadingManager) {
+    const loader = new GLTFLoader(manager);
     for (const [name, config] of Object.entries(this.models)) {
       if (config.kind === 'external') {
-        this.loader.load(config.url, (gltf) => {
+        loader.load(config.url, (gltf) => {
           (config as any).mesh = config.postProcess(gltf.scene);
         })
       } else {
@@ -302,8 +283,8 @@ export class AssetsManager {
     }
   }
 
-  private loadImages() {
-    const imageLoader = new ImageLoader(this.manager);
+  private loadImages(manager: LoadingManager) {
+    const imageLoader = new ImageLoader(manager);
     this.imagesToPrefetch.forEach(img => imageLoader.load(`assets/images/${img}`));
   }
 
@@ -311,8 +292,8 @@ export class AssetsManager {
     return this.textures[textureName].texture;
   }
 
-  private loadTextures() {
-    const textureLoader = new TextureLoader(this.manager)
+  private loadTextures(manager: LoadingManager) {
+    const textureLoader = new TextureLoader(manager)
     for (const config of Object.values(this.textures)) {
       textureLoader.load(`assets/images/${config.url}`, (texture) => {
         config.texture = texture;

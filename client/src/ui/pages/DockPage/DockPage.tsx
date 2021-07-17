@@ -63,8 +63,14 @@ export const DockPage = observer(() => {
             <Button fixed onClick={router.gotoStation}>Back</Button>
             {
               dock.isCurrentSpaceshipBought
-                ? <Button fixed onClick={dock.useCurrentSpaceship} disabled={dock.isCurrentSpaceshipInUse}>Use</Button>
-                : <Button fixed onClick={dock.buyCurrentSpaceship} disabled={!dock.hasMoneyToBuyCurrentSpaceship}>Buy</Button>
+                ? <Button fixed
+                          play="use"
+                          onClick={dock.useCurrentSpaceship}
+                          disabled={dock.isCurrentSpaceshipInUse}>Use</Button>
+                : <Button fixed
+                          play="buy"
+                          onClick={dock.buyCurrentSpaceship}
+                          disabled={!dock.hasMoneyToBuyCurrentSpaceship}>Buy</Button>
             }
           </div>
         </VerticalStack.Content>

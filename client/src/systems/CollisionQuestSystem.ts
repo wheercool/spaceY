@@ -5,6 +5,7 @@ import { Entity } from '../entities/Entity';
 import { ComponentsRegistry } from '../components/Components';
 import { CollisionComponent, collisionEquals } from '../components/CollisionComponent';
 import { Controller } from '../services/Controller';
+import { soundManager } from '../services/SoundManager';
 
 export class CollisionQuestSystem implements System {
   controller = new Controller();

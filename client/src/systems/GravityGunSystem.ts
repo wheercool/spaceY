@@ -5,6 +5,7 @@ import { GravityGunTrigger } from '../components/GravityGunComponent';
 import { createGravityBehaviour, GravityTagName } from '../components/GravityBehaviourComponent';
 import { makeEntityId } from '../types';
 import { createEffect, EffectName } from '../components/EffectsComponent';
+import { soundManager } from '../services/SoundManager';
 
 export class GravityGunSystem implements System {
   init(registry: EntityRegistry): void {
@@ -17,6 +18,7 @@ export class GravityGunSystem implements System {
       const gun = entity.gravityGun;
       if (gun.trigger === GravityGunTrigger.Off) {
         registry.removeEntity(makeEntityId(1111));
+        soundManager.stop('gravity');
         gun.active = false;
         continue;
       }
@@ -24,6 +26,7 @@ export class GravityGunSystem implements System {
       const playerId = registry.findSingle(['player']).id;
 
       if (!registry.existEntityWithId(makeEntityId(1111))) {
+        soundManager.play('gravity', {loop: true});
         const gravityGunEnergy = new EntityBuilder(1111)
           .applyComponents({
             child: {

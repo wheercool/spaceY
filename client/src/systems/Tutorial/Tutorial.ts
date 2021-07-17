@@ -26,6 +26,7 @@ import { GravityGunSystem } from '../GravityGunSystem';
 import { DisableSystemDecorator } from './DisableSystemDecorator';
 import { Clock } from '@shared/utils';
 import { SIMULATION_UPDATE_RATE } from '@shared/constants';
+import { soundManager } from '../../services/SoundManager';
 
 export class Tutorial implements System {
   private simulation: CompositorSystem;
@@ -192,6 +193,7 @@ export class Tutorial implements System {
 
       const collisions = registry.findEntitiesByComponents(['collision']);
       if (collisions.length > 0) {
+        soundManager.play('failed');
         if (this.currentStep === 8) {
           this.startStep9();
         } else {
@@ -208,6 +210,7 @@ export class Tutorial implements System {
     if (this.currentStep === this.steps.length) {
       this.finisTutorial();
     } else {
+      soundManager.play('step_done');
       this.startStep(this.currentStep);
     }
   }

@@ -14,6 +14,7 @@ import { observer } from 'mobx-react';
 import { useStore } from '../../../stores/store';
 import { Weapon } from '../../../stores/Weapon';
 import { useCallback } from 'react';
+import { soundManager } from '../../../services/SoundManager';
 
 const equipmentImages: Record<EquipmentName, string> = {
   [EquipmentName.Rocket]: rocket,
@@ -21,8 +22,6 @@ const equipmentImages: Record<EquipmentName, string> = {
   [EquipmentName.GravityGun]: gravityGun,
   [EquipmentName.Turret]: turret
 }
-
-export type EquipmentImage = keyof typeof equipmentImages;
 
 interface SpaceshipEquipmentItem {
   equipment: Weapon;
@@ -43,7 +42,7 @@ export const SpaceshipFacts: React.FC<SpaceshipFacts> = observer((
   }) => {
   return <div className={style.facts}>
     {facts.map(fact =>
-      <div className={style.fact}>
+      <div className={style.fact} key={fact.name}>
         <div className={style.factName}>{fact.name}</div>
         <div className={style.factValue}>{fact.displayValue}</div>
       </div>)}
@@ -72,7 +71,10 @@ export const SpaceshipEquipmentItem: React.FC<SpaceshipEquipmentItem> = observer
   }
 ) => {
   const dock = useStore('Dock');
-  const upgradeWeapon = useCallback(() => dock.upgradeWeapon(equipment), [dock, equipment]);
+  const upgradeWeapon = useCallback(() => {
+    dock.upgradeWeapon(equipment);
+    soundManager.play('upgrade')
+  }, [dock, equipment]);
   return <div className={style.spaceshipEquipmentItem}>
     <header>
       <p className={style.equipmentName}>{equipment.name}</p>
@@ -99,7 +101,7 @@ export const SpaceshipEquipmentItem: React.FC<SpaceshipEquipmentItem> = observer
           </div>
           {equipment.canBuy && <div className={style.buttonWrapper}>
             <Button onClick={() => {
-            }} fixed small>Buy</Button>
+            }} fixed small play="buy">Buy</Button>
           </div>
           }
         </Grid.SecondColumn>
