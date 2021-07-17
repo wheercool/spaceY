@@ -20,10 +20,10 @@ import { StepResolutionSystem } from './StepResolutionSystem';
 import { add, length, mulByScalar, sub } from '@shared/types/Point2D';
 import { CollisionDetectionSystem } from '../CollisionDetectionSystem';
 import { CollisionCleaningSystem } from '../CollisionCleaningSystem';
-import { createEffect, EffectName } from '../../components/EffectsComponent';
 import { createAsteroid, createEmptyRabbit, createPlanet } from '../../entities/templates';
 import { createGravityGun } from '../../components/GravityGunComponent';
 import { GravityGunSystem } from '../GravityGunSystem';
+import { DisableSystemDecorator } from './DisableSystemDecorator';
 
 
 export class Tutorial implements System {
@@ -40,10 +40,41 @@ export class Tutorial implements System {
   private player: Entity;
   private planet: Entity;
   private asteroid: Entity;
+  private gravityGunSystem: DisableSystemDecorator;
+  private collisionSystem: DisableSystemDecorator;
+  private map: Entity;
 
   constructor(
     private readonly renderer: System,
     private readonly uiNotificator: UiNotificationSystem) {
+    this.inputFilterSystem = new InputFilterSystem([Key.ARROW_UP]);
+    this.gravityGunSystem = new DisableSystemDecorator(new GravityGunSystem());
+    this.collisionSystem = new DisableSystemDecorator(new CollisionDetectionSystem());
+
+    this.compositor = new CompositorSystem([
+      new WorldBoundarySystem(),
+      new ClockSystem(),
+      new InputSystem(),
+      this.inputFilterSystem,
+      new PlayerSystem(),
+      this.gravityGunSystem,
+      new GravitySystem(),
+      new AccelerationSystem(),
+      new MovementSystem(),
+      new MaxSpeedSystem(),
+      new ChildrenSystem(),
+      this.collisionSystem,
+      this.stepResolutionSystem,
+      this.renderer,
+      this.uiNotificator,
+      new CollisionCleaningSystem()
+    ])
+
+    const mapWidth = 2000;
+    const mapHeight = 200000;
+    this.map = new EntityBuilder()
+      .applyComponent('map', { width: mapWidth, height: mapHeight })
+      .build();
     this.target = this.createTarget();
     this.player = this.createPlayer();
     this.planet = createPlanet({ x: 500, y: 500 });
@@ -83,23 +114,21 @@ export class Tutorial implements System {
     const input = registry.findEntitiesByComponents(['input']);
 
     if (this.currentStep === 0) {
-      const pressedTop = input.some(inputEntity => inputEntity.input.top);
-      return pressedTop;
+      return input.some(inputEntity => inputEntity.input.top);
     }
     if (this.currentStep === 1) {
       const pressedTop = input.some(inputEntity => inputEntity.input.top);
       return !pressedTop;
     }
     if (this.currentStep === 2) {
-      const pressedBottom = input.some(inputEntity => inputEntity.input.bottom);
-      return pressedBottom;
+      return input.some(inputEntity => inputEntity.input.bottom);
     }
     if (this.currentStep === 3) {
       const position = playerBuilder.getOrDefault('position', { x: 0, y: 0 });
       const prevPosition = playerBuilder.getOrDefault('prevPosition', { x: 0, y: 0 });
       const speed = add(position, mulByScalar(prevPosition, -1));
       const speedValue = length(speed);
-      return speedValue < 0.5;
+      return speedValue < 1;
     }
     if (this.currentStep === 4) {
       const rotation = playerBuilder.getOrDefault('rotation', 0) * 360 / (2 * Math.PI);
@@ -187,33 +216,12 @@ export class Tutorial implements System {
   }
 
   private startStep1() {
-    this.inputFilterSystem = new InputFilterSystem([Key.ARROW_UP]);
-    this.compositor = new CompositorSystem([
-      new WorldBoundarySystem(),
-      new ClockSystem(),
-      new InputSystem(),
-      this.inputFilterSystem,
-      new PlayerSystem(),
-      new GravitySystem(),
-      new AccelerationSystem(),
-      new MovementSystem(),
-      new MaxSpeedSystem(),
-      new ChildrenSystem(),
-      this.stepResolutionSystem,
-      this.renderer,
-    ])
-    const mapWidth = 2000;
-    const mapHeight = 200000;
+    this.gravityGunSystem.disable();
+    this.collisionSystem.disable();
 
     this.registry = new EntityRegistry()
-
-    const map = new EntityBuilder()
-      .applyComponent('map', { width: mapWidth, height: mapHeight })
-      .build();
-
-    this.registry.addEntity(map);
+    this.registry.addEntity(this.map);
     this.registry.addEntity(this.player);
-
     this.compositor.init(this.registry);
   }
 
@@ -228,35 +236,14 @@ export class Tutorial implements System {
 
   private startStep6() {
     this.uiNotificator.miniMap.show();
-    this.compositor.dispose();
-    this.compositor = new CompositorSystem([
-      new WorldBoundarySystem(),
-      new ClockSystem(),
-      new InputSystem(),
-      this.inputFilterSystem,
-      new PlayerSystem(),
-      new GravityGunSystem(),
-      new GravitySystem(),
-      new AccelerationSystem(),
-      new MovementSystem(),
-      new MaxSpeedSystem(),
-      new ChildrenSystem(),
-      new CollisionDetectionSystem(),
-      this.stepResolutionSystem,
-      this.renderer,
-      this.uiNotificator,
-      new CollisionCleaningSystem()
-    ])
+    this.gravityGunSystem.enable();
+    this.collisionSystem.enable();
 
-    const
-      mapWidth = 2000;
-    const
-      mapHeight = 2000;
-
-    this.registry = new EntityRegistry()
-    const map = new EntityBuilder()
-      .applyComponent('map', { width: mapWidth, height: mapHeight })
-      .build();
+    EntityBuilder.fromEntity(this.map)
+      .applyComponent('map', {
+        width: 2000,
+        height: 2000
+      });
 
     EntityBuilder.fromEntity(this.player)
       .applyComponents({
@@ -265,13 +252,7 @@ export class Tutorial implements System {
         rotation: 0
       });
 
-    this.registry.addEntity(map);
-
-    this.registry.addEntity(this.player);
-
     this.registry.addEntity(this.target);
-
-    this.compositor.init(this.registry);
   }
 
   private startStep7() {
