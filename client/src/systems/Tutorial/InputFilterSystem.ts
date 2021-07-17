@@ -25,6 +25,13 @@ export class InputFilterSystem implements System {
       this.allowedKeys.push(key);
     }
   }
+
+  removeAllowedKey(key: Key) {
+    const index = this.allowedKeys.findIndex(allowedKey => key === allowedKey);
+    if (index !== -1) {
+      this.allowedKeys.splice(index, 1);
+    }
+  }
 }
 
 function pressedKeys(input: InputComponent): Key[] {

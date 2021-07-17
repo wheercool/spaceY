@@ -17,11 +17,13 @@ import { steps } from './Step';
 import { EntityBuilder } from '../../entities/EntityBuilder';
 import { Entity } from '../../entities/Entity';
 import { StepResolutionSystem } from './StepResolutionSystem';
-import { add, length, mulByScalar } from '@shared/types/Point2D';
+import { add, length, mulByScalar, sub } from '@shared/types/Point2D';
 import { CollisionDetectionSystem } from '../CollisionDetectionSystem';
 import { CollisionCleaningSystem } from '../CollisionCleaningSystem';
 import { createEffect, EffectName } from '../../components/EffectsComponent';
-import { createEmptyRabbit, createPlanet } from '../../entities/templates';
+import { createAsteroid, createEmptyRabbit, createPlanet } from '../../entities/templates';
+import { createGravityGun } from '../../components/GravityGunComponent';
+import { GravityGunSystem } from '../GravityGunSystem';
 
 
 export class Tutorial implements System {
@@ -37,13 +39,15 @@ export class Tutorial implements System {
   private target: Entity;
   private player: Entity;
   private planet: Entity;
+  private asteroid: Entity;
 
   constructor(
     private readonly renderer: System,
     private readonly uiNotificator: UiNotificationSystem) {
     this.target = this.createTarget();
     this.player = this.createPlayer();
-    this.planet = createPlanet({x: 500, y: 500})
+    this.planet = createPlanet({ x: 500, y: 500 });
+    this.asteroid = createAsteroid({ x: 500, y: 500 });
   }
 
   init(registry: EntityRegistry) {
@@ -86,7 +90,6 @@ export class Tutorial implements System {
       const pressedTop = input.some(inputEntity => inputEntity.input.top);
       return !pressedTop;
     }
-
     if (this.currentStep === 2) {
       const pressedBottom = input.some(inputEntity => inputEntity.input.bottom);
       return pressedBottom;
@@ -107,12 +110,46 @@ export class Tutorial implements System {
       const collisions = registry.findEntitiesByComponents(['collision']);
       return collisions.length > 0;
     }
+    if (this.currentStep === 6) {
+      const planetPosition = EntityBuilder.fromEntity(this.planet).getOrDefault('position', { x: 0, y: 0 });
+      const playerPosition = playerBuilder.getOrDefault('position', { x: 0, y: 0 });
+      const distance = length(sub(playerPosition, planetPosition));
+      return distance < 100;
+    }
+    if (this.currentStep === 7) {
+      const collisions = registry.findEntitiesByComponents(['collision']);
+      return collisions.length > 0;
+    }
+    if (this.currentStep === 8 || this.currentStep === 9) {
+      const asteroidBuilder = EntityBuilder.fromEntity(this.asteroid);
+      const position = asteroidBuilder.getOrDefault('position', { x: 0, y: 0 });
+      const prevPosition = asteroidBuilder.getOrDefault('prevPosition', { x: 0, y: 0 });
+      const speed = length(sub(position, prevPosition));
+
+      const collisions = registry.findEntitiesByComponents(['collision']);
+      if (collisions.length > 0) {
+        if (this.currentStep === 8) {
+          this.startStep9();
+        } else {
+          this.startStep10();
+        }
+      }
+      return speed > 0.1;
+    }
     return false;
   }
 
   private goToNextStep() {
     this.currentStep++;
-    this.startStep(this.currentStep);
+    if (this.currentStep === this.steps.length) {
+      this.finisTutorial();
+    } else {
+      this.startStep(this.currentStep);
+    }
+  }
+
+  private finisTutorial() {
+    this.uiNotificator.questManager.questCompleted();
   }
 
   private startStep(currentStep: number) {
@@ -131,6 +168,15 @@ export class Tutorial implements System {
         break;
       case 6:
         this.startStep7();
+        break;
+      case 7:
+        this.startStep8();
+        break;
+      case 8:
+        this.startStep9();
+        break;
+      case 9:
+        this.startStep10();
         break;
     }
     const step = this.steps[this.currentStep];
@@ -189,6 +235,7 @@ export class Tutorial implements System {
       new InputSystem(),
       this.inputFilterSystem,
       new PlayerSystem(),
+      new GravityGunSystem(),
       new GravitySystem(),
       new AccelerationSystem(),
       new MovementSystem(),
@@ -235,6 +282,56 @@ export class Tutorial implements System {
         position: { x: 200, y: 200 },
         prevPosition: { x: 200, y: 200 },
         rotation: 0
+      });
+  }
+
+  private startStep8() {
+    this.registry.removeEntity(this.planet.id);
+    EntityBuilder.fromEntity(this.player)
+      .applyComponents({
+        position: { x: 200, y: 200 },
+        prevPosition: { x: 200, y: 200 },
+        rotation: 0
+      });
+    this.registry.addEntity(this.asteroid);
+  }
+
+
+  private startStep9() {
+    this.uiNotificator.spaceshipPanel.show();
+    this.inputFilterSystem.addAllowedKey(Key.Q);
+    EntityBuilder.fromEntity(this.player)
+      .applyComponents({
+        position: { x: 200, y: 200 },
+        prevPosition: { x: 200, y: 200 },
+        rotation: 0,
+        gravityGun: createGravityGun({
+          consumption: 0,
+          power: 100000
+        })
+      });
+  }
+
+
+  private startStep10() {
+    this.inputFilterSystem.removeAllowedKey(Key.Q);
+    this.inputFilterSystem.addAllowedKey(Key.W);
+
+    EntityBuilder.fromEntity(this.asteroid)
+      .applyComponents({
+        position: { x: 500, y: 500 },
+        prevPosition: { x: 500, y: 500 }
+      });
+
+    EntityBuilder.fromEntity(this.player)
+      .applyComponents({
+        position: { x: 200, y: 200 },
+        prevPosition: { x: 200, y: 200 },
+        rotation: 0,
+        gravityGun: createGravityGun({
+          consumption: 0,
+          power: 100000
+        })
       });
   }
 

@@ -16,6 +16,7 @@ const DISTANCE_TO_CHANGE_FORCE_DIRECTION = 250;
  */
 export class GravitySystem implements System {
   private inverseGravityWhenClose: boolean;
+  private minDistance = 300;
 
   constructor() {
     const params = new URLSearchParams(window.location.search);
@@ -39,7 +40,7 @@ export class GravitySystem implements System {
         if (distance === 0) {
           distance = EPS;
         }
-        let F = Math.abs(distance) > EPS
+        let F = Math.abs(distance) > EPS && distance < this.minDistance
           ? G * e1.mass * e2.mass / (distance * distance)
           : 0;
 
