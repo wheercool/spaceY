@@ -1,6 +1,7 @@
 export class Clock {
   private startedAt: number = -1;
   private started = false;
+  private dt = 0;
 
   constructor(private updateRate: number) {
   }
@@ -15,7 +16,7 @@ export class Clock {
       return -1;
     }
     const now = Date.now();
-    const dt = now - this.startedAt;
-    return Math.floor(dt * this.updateRate / 1000);
+    this.dt = now - this.startedAt;
+    return Math.floor(this.dt * this.updateRate / 1000);
   }
 }

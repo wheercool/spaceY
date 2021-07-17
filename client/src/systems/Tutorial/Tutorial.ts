@@ -27,7 +27,6 @@ import { DisableSystemDecorator } from './DisableSystemDecorator';
 import { Clock } from '@shared/utils';
 import { SIMULATION_UPDATE_RATE } from '@shared/constants';
 
-
 export class Tutorial implements System {
   private simulation: CompositorSystem;
   private registry: EntityRegistry = new EntityRegistry();
@@ -92,8 +91,8 @@ export class Tutorial implements System {
   }
 
   startGame() {
-    this.clock.start();
     this.currentStep = 0;
+    this.clock.start();
     this.startStep(this.currentStep);
     return this;
   }

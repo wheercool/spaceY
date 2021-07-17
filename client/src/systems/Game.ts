@@ -18,17 +18,21 @@ import { CollisionCleaningSystem } from './CollisionCleaningSystem';
 import { CollisionQuestSystem } from './CollisionQuestSystem';
 import { DebuggerSystem } from './DebuggerSystem';
 import { ChildrenSystem } from './ChildrenSystem';
-
+import { Clock } from '@shared/utils';
+import { SIMULATION_UPDATE_RATE } from '@shared/constants';
 
 export class Game implements System {
-  private compositor!: CompositorSystem;
+  private simulation: CompositorSystem;
   private registry: EntityRegistry = new EntityRegistry();
   private rafHandle: number = -1;
+  private clock: Clock;
+  private currentCF = 0;
 
   constructor(
     private readonly renderer: System,
     private readonly uiNotificator: UiNotificationSystem) {
-    this.compositor = new CompositorSystem([
+    this.clock = new Clock(SIMULATION_UPDATE_RATE);
+    this.simulation = new CompositorSystem([
       new WorldBoundarySystem(),
       new ClockSystem(),
       new InputSystem(),
@@ -47,19 +51,19 @@ export class Game implements System {
       new DebuggerSystem()
       // .log('Cooldown: ', ['model'], e => e.find((en: any) => en.model === 'laser'))
       ,
-      this.renderer,
       this.uiNotificator
     ]);
   }
 
   init(registry: EntityRegistry) {
-    
     this.registry = registry;
     return this;
   }
 
   startGame() {
-    this.compositor.init(this.registry);
+    this.simulation.init(this.registry);
+    this.renderer.init(this.registry);
+    this.clock.start();
     this.update();
     return this;
   }
@@ -69,12 +73,17 @@ export class Game implements System {
   }
 
   update() {
-    this.compositor.update(this.registry);
+    const commandFrame = this.clock.currentFrame();
+    while (this.currentCF < commandFrame) {
+      this.currentCF++;
+      this.simulation.update(this.registry);
+    }
+    this.renderer.update(this.registry);
     this.rafHandle = requestAnimationFrame(() => this.update());
   }
 
   dispose() {
-    this.compositor.dispose();
+    this.simulation.dispose();
     this.stopGame();
   }
 }

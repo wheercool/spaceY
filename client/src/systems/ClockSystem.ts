@@ -2,7 +2,8 @@ import { System } from './System';
 import { EntityRegistry } from '../entities/EntityRegistry';
 import { EntityBuilder } from '../entities/EntityBuilder';
 import { OnTimerFinished, startTimer } from '../components/TimerComponent';
-import { makeTicks } from '../types';
+import { makeSeconds, makeTicks } from '../types';
+import { SIMULATION_UPDATE_RATE } from '@shared/constants';
 
 /***
  * Counts game time
@@ -11,8 +12,8 @@ export class ClockSystem implements System {
   init(registry: EntityRegistry): void {
     const clock = new EntityBuilder()
       .applyComponent('time', {
-        current: Date.now(),
-        dt: makeTicks(0.1)
+        current: 0,
+        dt: makeSeconds(1 / SIMULATION_UPDATE_RATE)
       })
       .build();
     registry.addEntity(clock);
@@ -20,8 +21,8 @@ export class ClockSystem implements System {
 
   update(registry: EntityRegistry): void {
     const time = registry.findSingle(['time']).time;
-    time.dt = makeTicks((Date.now() - time.current) / 100);
-    time.current = Date.now();
+    time.dt = makeSeconds(1 / SIMULATION_UPDATE_RATE);
+    time.current += time.dt;
     this.handleTimers(registry, time.dt);
   }
 
