@@ -77,8 +77,9 @@ export const SpaceshipEquipmentItem: React.FC<SpaceshipEquipmentItem> = observer
     <header>
       <p className={style.equipmentName}>{equipment.name}</p>
       <p className={style.equipmentLevel}>level {equipment.level}</p>
-      {equipment.hasUpgrade && <div className={style.upgradeContainer}>
-        <UpgradeButton onClick={upgradeWeapon}/>
+      {equipment.hasUpgrade && dock.isCurrentSpaceshipBought && <div className={style.upgradeContainer}>
+        <UpgradeButton onClick={upgradeWeapon}
+                       disabled={!dock.hasMoney(equipment.cost)}/>
         +{equipment.cost}$
       </div>}
     </header>
@@ -91,7 +92,7 @@ export const SpaceshipEquipmentItem: React.FC<SpaceshipEquipmentItem> = observer
         </Grid.MainColumn>
         <Grid.SecondColumn size={'auto'}>
           <div className={style.columnWrapper}>
-            {equipment.upgradedFacts.length > 0
+            {equipment.upgradedFacts.length > 0 && dock.isCurrentSpaceshipBought
               ? <SpaceshipFactsWithUpgrades facts={equipment.facts} upgradedFacts={equipment.upgradedFacts}/>
               : <SpaceshipFacts facts={equipment.facts}/>
             }

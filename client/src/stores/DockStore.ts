@@ -55,8 +55,7 @@ const createTurret = () => new Weapon(EquipmentName.Turret)
   });
 
 rabbit.weapons = [
-  createGravityGun(),
-  createEnergyShield()
+  createGravityGun()
 ]
 
 const storm = new Spaceship(SpaceshipName.Storm, [
@@ -65,8 +64,7 @@ const storm = new Spaceship(SpaceshipName.Storm, [
 ]);
 storm.cost = 1000;
 storm.weapons = [
-  createTurret(),
-  createEnergyShield()
+  createTurret()
 ]
 
 const valkiria = new Spaceship(SpaceshipName.Valkiria, [
@@ -77,21 +75,7 @@ valkiria.cost = 10000;
 
 valkiria.weapons = [
   createTurret(),
-  createGravityGun(),
-  new Weapon(EquipmentName.Rocket).update({
-    cost: 1000,
-    allFacts: [
-      [
-        { name: 'speed', displayValue: '1', value: 1 },
-        { name: 'power', displayValue: '1', value: 1 },
-        { name: 'cooldown', displayValue: '1', value: 1 }
-      ], [
-        { name: 'speed', displayValue: '2', value: 2 },
-        { name: 'power', displayValue: '3', value: 3 },
-        { name: 'cooldown', displayValue: '4', value: 4 },
-      ]]
-  }),
-  createEnergyShield()
+  createGravityGun()
 ]
 
 export class DockStore {
@@ -131,6 +115,9 @@ export class DockStore {
     makeObservable(this);
   }
 
+  hasMoney(money: number): boolean {
+    return this.walletStore.money >= money;
+  }
   @action.bound nextSpaceship() {
     this.currentSpaceshipIndex++;
   }

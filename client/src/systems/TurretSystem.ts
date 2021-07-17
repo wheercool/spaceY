@@ -1,7 +1,7 @@
 import { System } from './System';
 import { EntityRegistry } from '../entities/EntityRegistry';
 import { EntityBuilder } from '../entities/EntityBuilder';
-import { add, mulByScalar, rotate } from '@shared/types/Point2D';
+import { add, mulByScalar, rotate, sub } from '@shared/types/Point2D';
 import { Entity } from '../entities/Entity';
 import { ComponentsRegistry } from '../components/Components';
 import { startTimer } from '../components/TimerComponent';
@@ -33,27 +33,14 @@ export class TurretSystem implements System {
     const entityBuilder = EntityBuilder.fromEntity(entity);
     const angle = entity.turret.direction + entityBuilder.getOrDefault('rotation', 0);
 
-    const forceAngle = angle + Math.PI / 2
-    const pullingForce = rotate({x: 0, y: 10}, angle);
-    // Use mass for rockets
-    // const laser = new EntityBuilder()
-    //   .applyComponents({
-    //     model: 'laser',
-    //     rotation: angle,
-    //     position: add(entity.position, rotate(entity.turret.position, angle)),
-    //     mass: 1,
-    //     pullingForce: pullingForce,
-    //     timer: startTimer(makeEntityId(-1), makeSeconds(3), { name: 'lifeTime' }),
-    //     gravityBehaviour: createGravityBehaviour(GravityTagName.Free)
-    //   })
-    //   .build();
+    const pullingForce = rotate({x: 0, y: 40}, angle);
     const laserPosition = add(entity.position, rotate(entity.turret.position, angle));
     const laser = new EntityBuilder()
       .applyComponents({
         model: 'laser',
         rotation: angle,
-        prevPosition: laserPosition,
-        position: add(laserPosition, pullingForce),
+        prevPosition: sub(laserPosition, pullingForce),
+        position: laserPosition,
         maxSpeed: 300,
         bullet: true,
         boundaries: [
@@ -86,10 +73,7 @@ export class TurretSystem implements System {
             radius: 3,
           },
         ],
-        // mass: 1,
-        // pullingForce: pullingForce,
         timer: startTimer(makeEntityId(-1), makeSeconds(3), { name: 'lifeTime' }),
-        gravityBehaviour: createGravityBehaviour(GravityTagName.Free)
       })
       .build();
     registry.addEntity(laser);

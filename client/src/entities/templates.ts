@@ -133,7 +133,7 @@ export function createPlanet(position: Point2D) {
     .applyComponents({
       position,
       model: 'planet',
-      mass: 100000,
+      mass: 50000,
       static: true,
       effects: [
         createEffect(EffectName.GravityWavePull, { x: 400, y: 400 }, { z: 0 })

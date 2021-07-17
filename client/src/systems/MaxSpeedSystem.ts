@@ -2,6 +2,7 @@ import { System } from './System';
 import { EntityRegistry } from '../entities/EntityRegistry';
 import { add, distanceBetween, mulByScalar, normalize, sub } from '@shared/types/Point2D';
 import { EntityBuilder } from '../entities/EntityBuilder';
+import { hasEntityComponent } from '../entities/Entity';
 
 
 const MAX_SPEED = 20;
@@ -22,7 +23,6 @@ export class MaxSpeedSystem implements System {
       let speed = distanceBetween(newPosition, prevPosition);
       const speedVector = sub(newPosition, prevPosition);
       if (speed > maxSpeed) {
-        // console.log('MAX_SPEED', speed)
         newPosition = add(prevPosition, mulByScalar(normalize(speedVector), maxSpeed));
         EntityBuilder.fromEntity(element)
           .applyComponent('position', newPosition)
