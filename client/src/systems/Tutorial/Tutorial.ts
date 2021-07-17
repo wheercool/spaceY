@@ -24,10 +24,12 @@ import { createAsteroid, createEmptyRabbit, createPlanet } from '../../entities/
 import { createGravityGun } from '../../components/GravityGunComponent';
 import { GravityGunSystem } from '../GravityGunSystem';
 import { DisableSystemDecorator } from './DisableSystemDecorator';
+import { Clock } from '@shared/utils';
+import { SIMULATION_UPDATE_RATE } from '@shared/constants';
 
 
 export class Tutorial implements System {
-  private compositor!: CompositorSystem;
+  private simulation: CompositorSystem;
   private registry: EntityRegistry = new EntityRegistry();
   private rafHandle: number = -1;
   private currentStep = 0;
@@ -43,15 +45,18 @@ export class Tutorial implements System {
   private gravityGunSystem: DisableSystemDecorator;
   private collisionSystem: DisableSystemDecorator;
   private map: Entity;
+  private clock: Clock;
+  private currentCF = 0;
 
   constructor(
     private readonly renderer: System,
     private readonly uiNotificator: UiNotificationSystem) {
+    this.clock = new Clock(SIMULATION_UPDATE_RATE);
     this.inputFilterSystem = new InputFilterSystem([Key.ARROW_UP]);
     this.gravityGunSystem = new DisableSystemDecorator(new GravityGunSystem());
     this.collisionSystem = new DisableSystemDecorator(new CollisionDetectionSystem());
 
-    this.compositor = new CompositorSystem([
+    this.simulation = new CompositorSystem([
       new WorldBoundarySystem(),
       new ClockSystem(),
       new InputSystem(),
@@ -65,7 +70,6 @@ export class Tutorial implements System {
       new ChildrenSystem(),
       this.collisionSystem,
       this.stepResolutionSystem,
-      this.renderer,
       this.uiNotificator,
       new CollisionCleaningSystem()
     ])
@@ -88,6 +92,7 @@ export class Tutorial implements System {
   }
 
   startGame() {
+    this.clock.start();
     this.currentStep = 0;
     this.startStep(this.currentStep);
     return this;
@@ -98,12 +103,17 @@ export class Tutorial implements System {
   }
 
   update() {
-    this.compositor.update(this.registry);
+    const commandFrame = this.clock.currentFrame();
+    while (this.currentCF < commandFrame) {
+      this.currentCF++;
+      this.simulation.update(this.registry);
+    }
+    this.renderer.update(this.registry);
     this.rafHandle = requestAnimationFrame(() => this.update());
   }
 
   dispose() {
-    this.compositor.dispose();
+    this.simulation.dispose();
     this.stopGame();
   }
 
@@ -222,7 +232,8 @@ export class Tutorial implements System {
     this.registry = new EntityRegistry()
     this.registry.addEntity(this.map);
     this.registry.addEntity(this.player);
-    this.compositor.init(this.registry);
+    this.simulation.init(this.registry);
+    this.renderer.init(this.registry);
   }
 
   private startStep2() {
