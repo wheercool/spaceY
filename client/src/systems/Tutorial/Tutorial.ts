@@ -80,8 +80,28 @@ export class Tutorial implements System {
       .build();
     this.target = this.createTarget();
     this.player = this.createPlayer();
-    this.planet = createPlanet({ x: 500, y: 500 });
-    this.asteroid = createAsteroid({ x: 500, y: 500 });
+    this.planet = EntityBuilder.fromEntity(createPlanet({ x: 500, y: 500 }))
+      .applyComponents({
+        onMinimap: {
+          shape: {
+            type: 'circle',
+            radius: 8,
+            color: 'white'
+          }
+        }
+      })
+      .build();
+    this.asteroid = EntityBuilder.fromEntity(createAsteroid({ x: 500, y: 500 }))
+      .applyComponents({
+        onMinimap: {
+          shape: {
+            type: 'circle',
+            radius: 0.1,
+            color: 'red'
+          }
+        }
+      })
+      .build();
   }
 
   init(registry: EntityRegistry) {
@@ -103,11 +123,25 @@ export class Tutorial implements System {
 
   update() {
     const commandFrame = this.clock.currentFrame();
+    let needRedraw = false;
+    const position = (this.player as any).position.y;
+    let time = Date.now();
+    console.time('test')
     while (this.currentCF < commandFrame) {
       this.currentCF++;
+      needRedraw = true;
       this.simulation.update(this.registry);
+      // const newPosition = (this.player as any).position.y;
+      // if (newPosition < position) {
+      //   alert('WTF');
+      // }
     }
-    this.renderer.update(this.registry);
+    if (needRedraw) {
+      this.renderer.update(this.registry);
+    }
+
+    const dt = Date.now() - time;
+    console.timeEnd('test')
     this.rafHandle = requestAnimationFrame(() => this.update());
   }
 
@@ -137,7 +171,7 @@ export class Tutorial implements System {
       const prevPosition = playerBuilder.getOrDefault('prevPosition', { x: 0, y: 0 });
       const speed = add(position, mulByScalar(prevPosition, -1));
       const speedValue = length(speed);
-      return speedValue < 1;
+      return speedValue < 0.1;
     }
     if (this.currentStep === 4) {
       const rotation = playerBuilder.getOrDefault('rotation', 0) * 360 / (2 * Math.PI);
@@ -172,7 +206,7 @@ export class Tutorial implements System {
           this.startStep10();
         }
       }
-      return speed > 0.1;
+      return speed > 1;
     }
     return false;
   }

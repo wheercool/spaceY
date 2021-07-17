@@ -73,12 +73,16 @@ export class Game implements System {
   }
 
   update() {
+    let needRedraw = false;
     const commandFrame = this.clock.currentFrame();
     while (this.currentCF < commandFrame) {
+      needRedraw = true;
       this.currentCF++;
       this.simulation.update(this.registry);
     }
-    this.renderer.update(this.registry);
+    if (needRedraw) {
+      this.renderer.update(this.registry);
+    }
     this.rafHandle = requestAnimationFrame(() => this.update());
   }
 

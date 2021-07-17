@@ -39,8 +39,7 @@
 .body {
   flex: 1;
   display: flex;
-  color: #2d2d2d;
-  font-weight: bold;
+  color: white;
   font-size: 21px;
   align-items: center;
   justify-content: center;
