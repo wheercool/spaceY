@@ -20,6 +20,7 @@ import { DebuggerSystem } from './DebuggerSystem';
 import { ChildrenSystem } from './ChildrenSystem';
 import { Clock } from '@shared/utils';
 import { SIMULATION_UPDATE_RATE } from '@shared/constants';
+import { InitialSpeedSystem } from './InitialSpeedSystem';
 
 export class Game implements System {
   private simulation: CompositorSystem;
@@ -38,6 +39,7 @@ export class Game implements System {
       new InputSystem(),
       new PlayerSystem(),
       new TurretSystem(),
+      new InitialSpeedSystem(),
       new GravityGunSystem(),
       new GravitySystem(),
       new AccelerationSystem(),

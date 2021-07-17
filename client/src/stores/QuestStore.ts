@@ -171,7 +171,16 @@ export class QuestStore implements QuestManager {
       .build();
 
     for (let i = 0; i < asteroidsNumber; i++) {
-      result.push(createAsteroid(QuestStore.randomPosition(mapWidth, mapHeight)));
+      const asteroid = createAsteroid(QuestStore.randomPosition(mapWidth, mapHeight));
+      const movingAsteroid = EntityBuilder.fromEntity(asteroid)
+        .applyComponents({
+          initialSpeed: {
+            x: 10 - Math.floor(Math.random() * 20),
+            y: 10 - Math.floor(Math.random() * 20)
+          }
+        })
+        .build();
+      result.push(movingAsteroid);
     }
 
     for (let i = 0; i < planetsNumber; i++) {

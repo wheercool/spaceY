@@ -62,7 +62,7 @@ export class Tutorial implements System {
       this.inputFilterSystem,
       new PlayerSystem(),
       this.gravityGunSystem,
-      new GravitySystem(),
+      new GravitySystem(300),
       new AccelerationSystem(),
       new MovementSystem(),
       new MaxSpeedSystem(),
