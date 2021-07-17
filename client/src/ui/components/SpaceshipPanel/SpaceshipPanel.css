@@ -1,5 +1,17 @@
 .spaceshipPanel {
   position: relative;
+  opacity: 0;
+  animation: fadein 1s ease-in forwards;
+  animation-delay: 0.5s;
+}
+
+@keyframes fadein {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 100%;
+  }
 }
 
 .equipmentButtons {
