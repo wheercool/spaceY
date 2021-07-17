@@ -119,6 +119,7 @@ export class Tutorial implements System {
 
   stopGame() {
     cancelAnimationFrame(this.rafHandle);
+    this.rafHandle = 0;
   }
 
   update() {
@@ -128,7 +129,9 @@ export class Tutorial implements System {
       this.simulation.update(this.registry);
       this.renderer.update(this.registry);
     }
-    this.rafHandle = requestAnimationFrame(() => this.update());
+    if (this.rafHandle !== 0) {
+      this.rafHandle = requestAnimationFrame(() => this.update());
+    }
   }
 
   dispose() {
