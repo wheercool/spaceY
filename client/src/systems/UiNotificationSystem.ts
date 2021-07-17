@@ -11,8 +11,8 @@ import { QuestManager } from '../stores/QuestStore';
 
 export class UiNotificationSystem implements System {
   constructor(
-    private miniMap: MinimapStore,
-    private spaceshipPanel: SpaceshipPanelStore,
+    readonly miniMap: MinimapStore,
+    readonly spaceshipPanel: SpaceshipPanelStore,
     readonly questManager: QuestManager
   ) {
 

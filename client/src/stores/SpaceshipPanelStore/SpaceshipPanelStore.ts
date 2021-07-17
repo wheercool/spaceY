@@ -12,6 +12,8 @@ import { SpaceshipName } from '../../types';
 
 
 export class SpaceshipPanelStore {
+  @observable visible = true;
+
   @observable gravityGun: EquipmentButtonModel = {
     title: 'Gravity gun',
     button: 'Q | W',
@@ -76,6 +78,12 @@ export class SpaceshipPanelStore {
     makeObservable(this);
   }
 
+  @action.bound hide() {
+    this.visible = false;
+  }
+  @action.bound show() {
+    this.visible = true;
+  }
   @action.bound updateGravityGunCooldown(percent: number) {
     this.gravityGun.cooldownPercent = percent;
   }

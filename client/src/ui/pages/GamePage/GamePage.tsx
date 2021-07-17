@@ -56,7 +56,7 @@ export const GamePage = observer(() => {
     <canvas width={WIDTH} height={HEIGHT} ref={canvasRef} style={{ width: WIDTH, height: HEIGHT }}/>
     <div className={style.overlay}>
       <div className={style.miniMapWrapper}>
-        <MiniMap entities={miniMap.entities}/>
+        {miniMap.visible ? <MiniMap entities={miniMap.entities}/> : null}
       </div>
       <div className={style.spaceShipPanelWrapper}>
         <SpaceshipPanel/>

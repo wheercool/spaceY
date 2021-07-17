@@ -10,7 +10,7 @@ import { RouterStore } from './RouterStore';
 import { WalletStore } from './WalletStore';
 import { PlayerAchievementsStore } from './PlayerAchievementsStore';
 import { DialogStyle, ModalDialog } from './DialogStore';
-import { createEffect, EffectName } from '../components/EffectsComponent';
+import { createAsteroid, createEarth, createPlanet } from '../entities/templates';
 
 export interface QuestManager {
   questCompleted(): void;
@@ -317,63 +317,3 @@ export class QuestStore implements QuestManager {
 }
 
 
-function createAsteroid(position: Point2D) {
-  return new EntityBuilder()
-    .applyComponents({
-      position,
-      model: 'asteroid',
-      mass: 100,
-      maxSpeed: 10,
-      asteroid: true,
-      boundaries: [
-        {
-          position: { x: 0, y: 2 },
-          radius: 19
-        }
-      ],
-      mapDependent: true,
-      gravityBehaviour: createGravityBehaviour(GravityTagName.Enemy)
-    })
-    .build();
-}
-
-function createPlanet(position: Point2D) {
-  return new EntityBuilder()
-    .applyComponents({
-      position,
-      model: 'planet',
-      mass: 100000,
-      static: true,
-      effects: [
-        createEffect(EffectName.GravityWavePull, { x: 400, y: 400 }, { z: 0 })
-      ],
-      boundaries: [{
-        radius: 100,
-        position: {
-          x: 0,
-          y: 0
-        }
-      }],
-      z: {
-        index: -80
-      },
-      gravityBehaviour: createGravityBehaviour(GravityTagName.Big),
-    })
-    .build()
-}
-
-function createEarth(position: Point2D) {
-  return new EntityBuilder()
-    .applyComponents({
-      position,
-      model: 'earth',
-      boundaries: [
-        {
-          position: { x: 0, y: 0 },
-          radius: 110
-        }
-      ],
-      mapDependent: true,
-    })
-    .build()
-}

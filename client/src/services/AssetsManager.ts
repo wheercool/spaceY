@@ -209,18 +209,6 @@ export class AssetsManager {
         return wrapper;
       }
     },
-    // 'earth': {
-    //   kind: 'external',
-    //   url: 'assets/models/earth/earth.glb',
-    //   mesh: new Object3D(),
-    //   postProcess: (scene: Group) => {
-    //     let result: Object3D = scene;
-    //     const wrapper = new Object3D();
-    //     result.scale.multiplyScalar(100);
-    //     wrapper.add(result);
-    //     return wrapper;
-    //   }
-    // },
     'laser': {
       kind: 'internal',
       mesh: new Object3D(),
@@ -232,6 +220,25 @@ export class AssetsManager {
           color: 'red'
         }))
         return mesh;
+      }
+    },
+    'target': {
+      kind: 'internal',
+      mesh: new Object3D(),
+      create: () => {
+        const radius = 200;
+        const height = 1;
+        const geometry = new CylinderGeometry(radius, radius, height, 20);
+        const mesh = new Mesh(geometry, new MeshStandardMaterial({
+          color: '#53cd50',
+          metalness: 0.8,
+          emissive: '#50cdba',
+          roughness: 0.7
+        }));
+        const wrapper = new Object3D();
+        wrapper.add(mesh)
+        mesh.rotation.set(Math.PI / 2, 0, 0);
+        return wrapper;
       }
     }
   } as const;

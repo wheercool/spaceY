@@ -3,22 +3,21 @@ import { Point2D } from '@shared/types/Point2D';
 import { MinimapComponent } from '../components/MinimapComponent';
 
 export class MinimapStore {
+  @observable visible = true;
   @observable entities: MinimapEntity[] = []
-  // @observable player: Point2D = {
-  //   x: 0,
-  //   y: 0
-  // }
-
-  // @observable rotation: number = 0;
 
   constructor() {
     makeObservable(this);
   }
 
+  @action.bound show() {
+    this.visible = true;
+  }
+  @action.bound hide() {
+    this.visible = false;
+  }
   @action.bound updateMinimap(mapEntities: MinimapEntity[]) {
     this.entities = mapEntities;
-    // this.player = player;
-    // this.rotation = rotation;
   }
 }
 

@@ -10,6 +10,9 @@ import { SpaceshipCard } from '../SpaceshipCard/SpaceshipCard';
 export const SpaceshipPanel: React.FC = observer(() => {
   const spaceshipPanel = useStore('SpaceshipPanel');
 
+  if (!spaceshipPanel.visible) {
+    return null;
+  }
   return <div className={style.spaceshipPanel}>
     <img src={panelImg} alt="spaceship panel"/>
     <div className={style.equipmentButtons}>

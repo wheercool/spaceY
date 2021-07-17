@@ -1,7 +1,6 @@
 import { action, makeObservable } from 'mobx';
 import { EntityRegistry } from '../entities/EntityRegistry';
 import { EntityBuilder } from '../entities/EntityBuilder';
-import { createGravityBehaviour, GravityTagName } from '../components/GravityBehaviourComponent';
 import { Entity } from '../entities/Entity';
 import { EquipmentName, Fact, makeSeconds, SpaceshipName } from '../types';
 import { createGravityGun, GravityGunComponent } from '../components/GravityGunComponent';
@@ -11,6 +10,7 @@ import { ComponentsRegistry } from '../components/Components';
 import { Weapon } from './Weapon';
 import { TurretComponent } from '../components/TurretComponent';
 import { QuestStore } from './QuestStore';
+import { createEmptyRabbit, createEmptyStorm, createEmptyValkiria } from '../entities/templates';
 
 interface SpaceshipProvider {
   spaceshipInUse: Spaceship;
@@ -131,130 +131,6 @@ export class SpaceStore {
   }
 }
 
-
-function createEmptyStorm(speed: number): EntityBuilder {
-  return new EntityBuilder()
-    .applyComponents({
-        player: true,
-        cameraAt: true,
-        rotation: 0,
-        position: { x: 0, y: 0 },
-        pullingForce: { x: 0, y: 0 },
-        model: 'storm',
-        mass: 1,
-        boundaries: [
-          {
-            radius: 20,
-            position: { x: 0, y: 20 }
-          },
-          {
-            radius: 20,
-            position: { x: 18, y: -14 }
-          },
-          {
-            radius: 20,
-            position: { x: -18, y: -14 }
-          },
-        ],
-        gravityBehaviour: createGravityBehaviour(GravityTagName.Small),
-        mapDependent: true,
-        spaceship: {
-          name: SpaceshipName.Storm,
-          speed,
-          engineSize: { x: 8, y: 40 },
-          enginePosition: {
-            x: 0,
-            y: -60
-          }
-        }
-      },
-    )
-}
-
-function createEmptyValkiria(speed: number): EntityBuilder {
-  return new EntityBuilder()
-    .applyComponents({
-        player: true,
-        cameraAt: true,
-        rotation: 0,
-        position: { x: 0, y: 0 },
-        pullingForce: { x: 0, y: 0 },
-        model: 'valkiria',
-        mass: 1,
-        boundaries: [
-          {
-            radius: 20,
-            position: { x: 0, y: 20 }
-          },
-          {
-            radius: 30,
-            position: { x: 18, y: -21 }
-          },
-          {
-            radius: 30,
-            position: { x: -18, y: -21 }
-          },
-        ],
-        gravityBehaviour: createGravityBehaviour(GravityTagName.Small),
-        mapDependent: true,
-        // gravityGun: createGravityGun({
-        //   consumption: 0.1,
-        //   power: 100000,
-        // }),
-        spaceship: {
-          name: SpaceshipName.Valkiria,
-          speed,
-          engineSize: { x: 20, y: 60 },
-          enginePosition: {
-            x: 0,
-            y: -70
-          }
-        }
-      },
-    )
-}
-
-export function createEmptyRabbit(speed: number): EntityBuilder {
-  return new EntityBuilder()
-    .applyComponents({
-        player: true,
-        cameraAt: true,
-        rotation: 0,
-        position: { x: 300, y: 300 },
-        pullingForce: { x: 0, y: 0 },
-        model: 'rabbit',
-        mass: 1,
-        boundaries: [
-          {
-            radius: 20,
-            position: { x: 0, y: 20 }
-          },
-          {
-            radius: 20,
-            position: { x: 15, y: -22 }
-          },
-          {
-            radius: 20,
-            position: { x: -15, y: -22 }
-          }
-        ],
-        gravityBehaviour: createGravityBehaviour(GravityTagName.Small),
-        mapDependent: true,
-        spaceship: {
-          name: SpaceshipName.Rabbit,
-          speed,
-          engineSize: { x: 12, y: 60 },
-          enginePosition: {
-            x: 0,
-            y: -69
-          }
-        },
-        z: {
-          index: 100
-        }
-      }
-    )
-}
 
 function parseFloatFact(facts: Fact[], name: Fact['name'], defaultValue: number): number {
   const fact = facts.find(fact => fact.name === name);

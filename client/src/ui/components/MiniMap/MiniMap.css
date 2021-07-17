@@ -3,8 +3,19 @@
   border: 1px solid white;
   width: 200px;
   height: 200px;
+  opacity: 0;
+  animation: fadein 1s ease-in forwards;
+  animation-delay: 0.5s;
 }
 
+@keyframes fadein {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 100%;
+  }
+}
 .playerMarker {
   position: absolute;
   width: 24px;
