@@ -1,7 +1,6 @@
 import { System } from './System';
 import { EntityRegistry } from '../entities/EntityRegistry';
 import { EntityBuilder } from '../entities/EntityBuilder';
-import { JumpComponent } from '../components/JumpComponent';
 import { QuestStatus } from '../components/QuestComponent';
 import { startTimer } from '../components/TimerComponent';
 import { makeEntityId, makeSeconds } from '../types';
@@ -52,10 +51,6 @@ export class CollisionResolutionSystem implements System {
 
           registry.findEntitiesByComponents(['quest'])
             .forEach(questEntity => questEntity.quest.status = QuestStatus.Failed)
-        } else {
-          if (player) {
-            player.applyComponent('jump', JumpComponent.Up);
-          }
         }
         if (asteroid && bullet
         ) {
@@ -77,10 +72,6 @@ export class CollisionResolutionSystem implements System {
               .build()
           )
         }
-        //TODO: Sometimes causes visual glitches
-        // if (!player) {
-        //   first.applyComponent('jump', JumpComponent.Down);
-        // }
       } catch
         (e) {
         console.error(e);

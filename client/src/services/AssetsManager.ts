@@ -122,21 +122,17 @@ export class AssetsManager {
         result.rotation.x = -Math.PI;
         result.rotation.z = Math.PI;
         result.rotation.y = Math.PI;
-        let meshes = 0;
         let mesh: Mesh;
         result.traverse(o => {
           if (o instanceof Mesh) {
             mesh = o;
-            meshes++;
             if (Settings.renderingQuality === RenderQuality.High) {
               o.receiveShadow = true;
               o.castShadow = true;
             }
           }
         })
-        console.log('Meshes', meshes)
         wrapper.add(result);
-        // return mesh!;
         return wrapper;
       }
     },

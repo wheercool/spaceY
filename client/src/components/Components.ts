@@ -15,7 +15,6 @@ import { BoundariesComponent } from './BoundariesComponent';
 import { CollisionComponent } from './CollisionComponent';
 import { StaticComponent } from './StaticComponent';
 import { AsteroidComponent } from './AsteroidComponent';
-import { JumpComponent } from './JumpComponent';
 import { TurretComponent } from './TurretComponent';
 import { TimerComponent } from './TimerComponent';
 import { GravityBehaviourComponent } from './GravityBehaviourComponent';
@@ -50,7 +49,6 @@ export interface ComponentsRegistry {
   collision: CollisionComponent;
   static: StaticComponent;
   asteroid: AsteroidComponent;
-  jump: JumpComponent;
   turret: TurretComponent;
   timer: TimerComponent;
   gravityBehaviour: GravityBehaviourComponent;

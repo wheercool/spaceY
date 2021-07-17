@@ -22,7 +22,7 @@ export class MaxSpeedSystem implements System {
       let speed = distanceBetween(newPosition, prevPosition);
       const speedVector = sub(newPosition, prevPosition);
       if (speed > maxSpeed) {
-        console.log('MAX_SPEED', speed)
+        // console.log('MAX_SPEED', speed)
         newPosition = add(prevPosition, mulByScalar(normalize(speedVector), maxSpeed));
         EntityBuilder.fromEntity(element)
           .applyComponent('position', newPosition)

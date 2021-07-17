@@ -34,7 +34,6 @@ import { System } from './System';
 import { add, length, normalize, Point2D, rotate } from '@shared/types/Point2D';
 import { RotationComponent } from '../components/RotationComponent';
 import { AccelerationComponent } from '../components/AccelerationComponent';
-import { JumpComponent } from '../components/JumpComponent';
 import { ComponentsRegistry } from '../components/Components';
 
 import { RenderQuality, Settings } from '../Settings';
@@ -152,16 +151,12 @@ export class WebGL3DRendererSystem implements System {
     const models = registry.findEntitiesByComponents(['model', 'position']);
     models.forEach(model => {
       const builder = EntityBuilder.fromEntity(model);
-      const jump = builder.getOrDefault('jump', false);
       this.renderEntity(model, {
         acceleration: builder.getOrDefault('acceleration', null),
         rotation: builder.getOrDefault('rotation', 0),
         boundaries: builder.getOrDefault('boundaries', []),
-        z: builder.getOrDefault('z', { index: 0 }).index,
-        jump
+        z: builder.getOrDefault('z', { index: 0 }).index
       });
-      //TODO: Put in separate system
-      builder.removeComponent('jump');
     });
 
     const dt = registry.findSingle(['time']).time.dt;
@@ -203,7 +198,6 @@ export class WebGL3DRendererSystem implements System {
     rotation: RotationComponent,
     boundaries: BoundariesComponent,
     acceleration: AccelerationComponent | null,
-    jump: JumpComponent | false,
     z: number
   }) {
     const { model, position } = entity;
@@ -217,11 +211,6 @@ export class WebGL3DRendererSystem implements System {
     object.position.setX(position.x);
     object.position.setY(position.y)
     object.position.setZ(options.z);
-    // if (options.jump === false) {
-    //   object.position.setZ(0);
-    // } else {
-    //   object.position.setZ(options.jump === JumpComponent.Up ? UP_JUMP : DOWN_JUMP);
-    // }
 
     if (this.isBondariesVisible) {
       const circles = positionAbsolute(options.boundaries, entity.position, options.rotation)
