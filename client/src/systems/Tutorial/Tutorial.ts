@@ -123,30 +123,19 @@ export class Tutorial implements System {
 
   update() {
     const commandFrame = this.clock.currentFrame();
-    let needRedraw = false;
-    const position = (this.player as any).position.y;
-    let time = Date.now();
-    console.time('test')
     while (this.currentCF < commandFrame) {
       this.currentCF++;
-      needRedraw = true;
       this.simulation.update(this.registry);
-      // const newPosition = (this.player as any).position.y;
-      // if (newPosition < position) {
-      //   alert('WTF');
-      // }
-    }
-    if (needRedraw) {
       this.renderer.update(this.registry);
     }
-
-    const dt = Date.now() - time;
-    console.timeEnd('test')
     this.rafHandle = requestAnimationFrame(() => this.update());
   }
 
   dispose() {
     this.simulation.dispose();
+    if (this.renderer.dispose) {
+      this.renderer.dispose();
+    }
     this.stopGame();
   }
 

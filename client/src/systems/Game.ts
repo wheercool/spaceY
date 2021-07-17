@@ -73,14 +73,10 @@ export class Game implements System {
   }
 
   update() {
-    let needRedraw = false;
     const commandFrame = this.clock.currentFrame();
     while (this.currentCF < commandFrame) {
-      needRedraw = true;
       this.currentCF++;
       this.simulation.update(this.registry);
-    }
-    if (needRedraw) {
       this.renderer.update(this.registry);
     }
     this.rafHandle = requestAnimationFrame(() => this.update());
@@ -88,6 +84,9 @@ export class Game implements System {
 
   dispose() {
     this.simulation.dispose();
+    if (this.renderer.dispose) {
+      this.renderer.dispose()
+    }
     this.stopGame();
   }
 }

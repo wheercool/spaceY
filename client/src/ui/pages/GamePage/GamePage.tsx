@@ -20,15 +20,17 @@ export const GamePage = observer(() => {
   const WIDTH = window.innerWidth;
   const HEIGHT = window.innerHeight;
 
+  const registry = space.getEntityRegistry()
+  const isTutorial = registry.findEntitiesByComponents(['tutorial']).length > 0;
+
   useEffect(() => {
     if (!canvasRef.current) {
       return;
     }
     const renderer = new WebGL3DRendererSystem(canvasRef.current)
+    miniMap.show();
+    spaceshipPanel.show();
     const uiNotificator = new UiNotificationSystem(miniMap, spaceshipPanel, quest);
-    const registry = space.getEntityRegistry()
-    const isTutorial = registry.findEntitiesByComponents(['tutorial']).length > 0;
-
     const runner = isTutorial ? new Tutorial(renderer, uiNotificator) : new Game(renderer, uiNotificator);
 
     runner
@@ -64,7 +66,7 @@ export const GamePage = observer(() => {
     </div>
     <div className={style.questOverlay}>
       <div className={style.questStatusWrapper}>
-        <CurrentQuestInfo/>
+        {isTutorial && <CurrentQuestInfo/>}
       </div>
     </div>
   </div>

@@ -3,7 +3,8 @@
   padding: 15px;
   border: 1px solid rgba(149, 171, 224, 0.6797);
   border-radius: 4px;
-  background-color: rgba(149, 171, 224, 0.6797);
+  /*background-color: rgba(149, 171, 224, 0.6797);*/
+  background-color: rgba(76, 88, 140, 0.41);
   line-height: 1.4;
 }
 .header {
