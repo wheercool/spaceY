@@ -45,25 +45,10 @@ import gravityForceFragmentShader from '../shaders/gravity_force.fragment.glsl';
 import fireFragmentShader from '../shaders/fire.fragment.glsl';
 import defaultVertexShader from '../shaders/vertex.glsl';
 import { EffectZIndexManager } from '../services/EffectZIndexManager';
-import { InputFilterSystem } from './Tutorial/InputFilterSystem';
-import { Key } from '../services/key';
-import { CompositorSystem } from './CompositorSystem';
-import { WorldBoundarySystem } from './WorldBoundarySystem';
-import { ClockSystem } from './ClockSystem';
-import { InputSystem } from './InputSystem';
-import { PlayerSystem } from './PlayerSystem';
-import { GravitySystem } from './GravitySystem';
-import { AccelerationSystem } from './AccelerationSystem';
-import { MovementSystem } from './MovementSystem';
-import { MaxSpeedSystem } from './MaxSpeedSystem';
-import { ChildrenSystem } from './ChildrenSystem';
-import { StepResolutionSystem } from './Tutorial/StepResolutionSystem';
 
 
 type RendererEntity = Entity & { model: Model, position: PositionComponent };
 const CAMERA_HEIGHT = 600;
-const UP_JUMP = 100;
-const DOWN_JUMP = -100;
 const CAMERA_FOV = 50;
 const MAP_Z_INDEX = -10;
 

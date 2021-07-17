@@ -5,11 +5,15 @@ import { observer } from 'mobx-react';
 
 export const CurrentQuestInfo = observer(() => {
   const questStore = useStore('Quest');
-  return questStore.currentGoals.length > 0
+  const currentQuestInfo = questStore.currentQuestInfo;
+  return currentQuestInfo
     ? (<div className={style.currentQuest}>
-      <div className={style.header}>Quest</div>
+      <div className={style.header}>{currentQuestInfo.title}</div>
       <div className={style.body}>
-        {questStore.currentGoals.map((goal, index) => <div key={index}>{goal}</div>)}
+        {currentQuestInfo.hint}
+      </div>
+      <div className={style.footer}>
+        {currentQuestInfo.goal}
       </div>
     </div>)
     : null

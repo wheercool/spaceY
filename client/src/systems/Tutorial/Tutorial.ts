@@ -75,7 +75,7 @@ export class Tutorial implements System {
     }
     const step = this.steps[this.currentStep];
     if (step) {
-      this.uiNotificator.questManager.updateGoals([step.hint]);
+      this.uiNotificator.questManager.setCurrentQuestInfo(step);
     }
     this.update();
   }

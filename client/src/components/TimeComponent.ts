@@ -7,6 +7,6 @@ import { TimeSpan } from '../types';
 
 export interface TimeComponent {
   dt: TimeSpan;
-  current: TimeSpan;
+  current: number;
 }
 

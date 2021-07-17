@@ -11,7 +11,7 @@ export class ClockSystem implements System {
   init(registry: EntityRegistry): void {
     const clock = new EntityBuilder()
       .applyComponent('time', {
-        current: makeTicks(0),
+        current: Date.now(),
         dt: makeTicks(0.1)
       })
       .build();
@@ -20,7 +20,8 @@ export class ClockSystem implements System {
 
   update(registry: EntityRegistry): void {
     const time = registry.findSingle(['time']).time;
-    time.current = makeTicks(time.current + time.dt);
+    time.dt = makeTicks((Date.now() - time.current) / 100);
+    time.current = Date.now();
     this.handleTimers(registry, time.dt);
   }
 

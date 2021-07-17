@@ -4,27 +4,32 @@ import { Entity } from '../entities/Entity';
 import { EntityBuilder } from '../entities/EntityBuilder';
 import { Point2D } from '@shared/types/Point2D';
 import { createGravityBehaviour, GravityTagName } from '../components/GravityBehaviourComponent';
-import { QuestGoal, QuestStatus } from '../components/QuestComponent';
+import { QuestStatus } from '../components/QuestComponent';
 import { Achievement, EntityId, QuestRequirement } from '../types';
 import { RouterStore } from './RouterStore';
 import { WalletStore } from './WalletStore';
 import { PlayerAchievementsStore } from './PlayerAchievementsStore';
 import { DialogStyle, ModalDialog } from './DialogStore';
 import { createEffect, EffectName } from '../components/EffectsComponent';
-import { Controller } from '../services/Controller';
 
 export interface QuestManager {
   questCompleted(): void;
 
   questFailed(): void;
 
-  updateGoals(goals: string[]): void;
+  setCurrentQuestInfo(questInfo: QuestInfo): void;
+}
+
+export interface QuestInfo {
+  title: string;
+  hint: string;
+  goal: string;
 }
 
 export class QuestStore implements QuestManager {
   private quests: Quest[] = QuestStore.createQuests();
   @observable currentQuestIndex = 0;
-  @observable currentGoals: string[] = [];
+  @observable currentQuestInfo: QuestInfo | null = null;
 
   @computed get currentQuest(): Quest {
     return this.quests[this.currentQuestIndex];
@@ -55,9 +60,8 @@ export class QuestStore implements QuestManager {
     makeObservable(this);
   }
 
-  @action.bound updateGoals(goals: string[]): void {
-    // this.currentGoals = goals.map(goal => goal.text);
-    this.currentGoals = goals;
+  @action.bound setCurrentQuestInfo(questInfo: QuestInfo): void {
+    this.currentQuestInfo = questInfo;
   }
 
   async questCompleted() {
