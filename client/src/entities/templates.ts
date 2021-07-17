@@ -135,6 +135,10 @@ export function createPlanet(position: Point2D) {
       model: 'planet',
       mass: 50000,
       static: true,
+      flip: {
+        y: Math.random() * Math.PI / 80,
+        x: 0
+      },
       effects: [
         createEffect(EffectName.GravityWavePull, { x: 400, y: 400 }, { z: 0 })
       ],
@@ -184,6 +188,10 @@ export function createAsteroid(position: Point2D) {
         }
       ],
       mapDependent: true,
+      flip: {
+        x: Math.random() * Math.PI / 30,
+        y: 0
+      },
       gravityBehaviour: createGravityBehaviour(GravityTagName.Enemy)
     })
     .build();

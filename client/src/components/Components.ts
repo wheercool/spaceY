@@ -31,6 +31,7 @@ import { EffectsComponent } from './EffectsComponent';
 import { ZComponent } from './ZComponent';
 import { TutorialComponent } from './TutorialComponent';
 import { InitialSpeedComponent } from './InitialSpeedComponent';
+import { FlipComponent } from './FlipComponent';
 
 export interface ComponentsRegistry {
   rotation: RotationComponent;
@@ -66,6 +67,7 @@ export interface ComponentsRegistry {
   z: ZComponent;
   tutorial: TutorialComponent;
   initialSpeed: InitialSpeedComponent;
+  flip: FlipComponent;
 }
 
 export type ComponentValue<Cmp extends keyof CmpRegistry, CmpRegistry> = CmpRegistry[Cmp];

@@ -49,7 +49,7 @@ import { EffectZIndexManager } from '../services/EffectZIndexManager';
 type RendererEntity = Entity & { model: Model, position: PositionComponent };
 const CAMERA_HEIGHT = 600;
 const CAMERA_FOV = 50;
-const MAP_Z_INDEX = -10;
+const MAP_Z_INDEX = -20;
 
 class EntityId {
 }
@@ -154,6 +154,7 @@ export class WebGL3DRendererSystem implements System {
       this.renderEntity(model, {
         acceleration: builder.getOrDefault('acceleration', null),
         rotation: builder.getOrDefault('rotation', 0),
+        flip: builder.getOrDefault('flip', {x: 0, y: 0}),
         boundaries: builder.getOrDefault('boundaries', []),
         z: builder.getOrDefault('z', { index: 0 }).index
       });
@@ -214,7 +215,8 @@ export class WebGL3DRendererSystem implements System {
     rotation: RotationComponent,
     boundaries: BoundariesComponent,
     acceleration: AccelerationComponent | null,
-    z: number
+    z: number,
+    flip: Point2D
   }) {
     const { model, position } = entity;
     let object: Mesh | undefined = this.longLivingObjectsMapping.get(entity.id);
@@ -232,7 +234,7 @@ export class WebGL3DRendererSystem implements System {
       const circles = positionAbsolute(options.boundaries, entity.position, options.rotation)
       this.renderBoundaries(circles);
     }
-    object.rotation.set(0, 0, options.rotation);
+    object.rotation.set(object.rotation.x + options.flip.x, object.rotation.y + options.flip.y, options.rotation);
 
     if (this.isAccelerationVisible) {
       if (options.acceleration) {
