@@ -304,7 +304,7 @@ export class QuestStore implements QuestManager {
 
       do {
         position = QuestStore.randomPosition(width, height);
-      } while (position.x <= 180 && position.y <= 180);
+      } while (position.x <= 350 && position.y <= 350);
 
       asteroids.push(createAsteroid(position));
     }
