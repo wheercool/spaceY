@@ -1,4 +1,3 @@
-import { runInAction } from 'mobx';
 import { CylinderGeometry, Group, ImageLoader, LoadingManager, Mesh, MeshStandardMaterial, Object3D, Texture, TextureLoader } from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { RenderQuality, Settings } from '../Settings';

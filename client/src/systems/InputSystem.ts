@@ -2,7 +2,7 @@ import { System } from './System';
 import { EntityRegistry } from '../entities/EntityRegistry';
 import { EntityBuilder } from '../entities/EntityBuilder';
 import { InputComponent } from '../components/InputComponent';
-import { Key } from '../services/key';
+import { Key } from '../utils';
 
 /***
  * Updates inputs based on the user interaction

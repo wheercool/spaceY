@@ -1,7 +1,7 @@
 import { System } from '../System';
 import { EntityRegistry } from '../../entities/EntityRegistry';
-import { Key } from '../../services/key';
 import { InputComponent } from '../../components/InputComponent';
+import { Key } from '../../utils';
 
 export class InputFilterSystem implements System {
   constructor(private allowedKeys: Key[]) {

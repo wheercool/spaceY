@@ -12,7 +12,6 @@ import { MaxSpeedSystem } from '../MaxSpeedSystem';
 import { ChildrenSystem } from '../ChildrenSystem';
 import { WorldBoundarySystem } from '../WorldBoundarySystem';
 import { InputFilterSystem } from './InputFilterSystem';
-import { Key } from '../../services/key';
 import { steps } from './Step';
 import { EntityBuilder } from '../../entities/EntityBuilder';
 import { Entity } from '../../entities/Entity';
@@ -27,6 +26,7 @@ import { DisableSystemDecorator } from './DisableSystemDecorator';
 import { Clock } from '@shared/utils';
 import { SIMULATION_UPDATE_RATE } from '@shared/constants';
 import { soundManager } from '../../services/SoundManager';
+import { Key } from '../../utils';
 
 export class Tutorial implements System {
   private simulation: CompositorSystem;
