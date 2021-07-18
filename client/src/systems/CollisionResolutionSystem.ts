@@ -6,9 +6,10 @@ import { startTimer } from '../components/TimerComponent';
 import { makeEntityId, makeSeconds } from '../types';
 import { Point2D } from '@shared/types/Point2D';
 import { createEffect, EffectName } from '../components/EffectsComponent';
+import { soundManager } from '../services/SoundManager';
 
 const FIRE_DURATION = makeSeconds(1.5);
-const EXPLOSION_SIZE = {x: 100, y: 100};
+const EXPLOSION_SIZE = { x: 100, y: 100 };
 
 export class CollisionResolutionSystem implements System {
   init(registry: EntityRegistry): void {
@@ -23,7 +24,7 @@ export class CollisionResolutionSystem implements System {
         const second = EntityBuilder.fromEntity(registry.findById(collision.entity2));
         const collided = [first, second];
         let explosion = false;
-        let explosionPosition: Point2D = {x: 0, y: 0};
+        let explosionPosition: Point2D = { x: 0, y: 0 };
 
         let player: EntityBuilder | undefined,
             asteroid: EntityBuilder | undefined,
@@ -60,6 +61,7 @@ export class CollisionResolutionSystem implements System {
           explosionPosition = asteroid.getOrDefault('position', explosionPosition);
         }
         if (explosion) {
+          soundManager.play('explosion', { independent: true })
           registry.addEntity(
             new EntityBuilder()
               .applyComponents({

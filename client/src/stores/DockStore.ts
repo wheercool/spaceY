@@ -20,7 +20,7 @@ const createEnergyShield = () => {
 
 const rabbit = new Spaceship(SpaceshipName.Rabbit, [
   { name: 'speed', displayValue: 'very fast', value: 4 },
-  { name: 'weight', displayValue: 'light', value: 0.5 },
+  { name: 'weight', displayValue: 'light', value: 1.5 },
 ]);
 
 rabbit.cost = 0;
@@ -37,7 +37,7 @@ const createGravityGun = () => new Weapon(EquipmentName.GravityGun)
 
 const createTurret = () => new Weapon(EquipmentName.Turret)
   .update({
-    cost: 400,
+    cost: 100,
     allFacts: [
       [
         { name: 'power', displayValue: '1', value: 1 },
@@ -62,7 +62,7 @@ const storm = new Spaceship(SpaceshipName.Storm, [
   { name: 'speed', displayValue: 'fast', value: 4 },
   { name: 'weight', displayValue: 'medium', value: 1 },
 ]);
-storm.cost = 1000;
+storm.cost = 400;
 storm.weapons = [
   createTurret()
 ]
@@ -71,7 +71,7 @@ const valkiria = new Spaceship(SpaceshipName.Valkiria, [
   { name: 'speed', displayValue: 'medium', value: 3 },
   { name: 'weight', displayValue: 'heavy', value: 1.5 },
 ]);
-valkiria.cost = 10000;
+valkiria.cost = 600;
 
 valkiria.weapons = [
   createTurret(),

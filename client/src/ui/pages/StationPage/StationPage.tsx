@@ -19,14 +19,15 @@ export function StationPage() {
         <p>Dock - a place where you can buy, or improve your equipment. </p>
         <p>Collect money to buy stronger spaceships.
           Spend money to improve your weapons</p>
+        <p>You can have multiple spaceships</p>
+        <p>To switch to another spaceship click "Use" button</p>
       </Card>
       <Card title="Tavern" image={tavernScreen} onEnter={router.goToTavern}>
         <p>Here you can pick a quest.</p>
-        <p>There are 3 different types of quests:</p>
         <ul>
-          <li> You need to deliver someting from point A to pointB</li>
-          <li>You need to guard someone traveling from point A to point B</li>
-          <li>You need to kill enemies</li>
+          <li>Make sure to pass a tutorial before you start real quests</li>
+          <li>Each quest will give you reward</li>
+          <li>Some quests require items to be present in order to take it</li>
         </ul>
 
       </Card>

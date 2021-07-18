@@ -1,4 +1,4 @@
-import { AudioListener, LoadingManager } from 'three';
+import { LoadingManager } from 'three';
 
 export interface AudioAsset {
   url: string;
@@ -8,11 +8,10 @@ export interface AudioAsset {
 
 interface PlayOptions {
   loop: boolean;
+  independent: boolean;
 }
 
 export class SoundManager {
-  private audioListener: AudioListener;
-  listener = new AudioListener();
   assets: Record<string, AudioAsset> = {
     spaceAmbient: {
       url: 'space_ambient.wav',
@@ -87,12 +86,17 @@ export class SoundManager {
       url: 'engine.wav',
       audio: undefined,
       speed: 1
+    },
+
+    explosion: {
+      url: 'explosion.mp3',
+      audio: undefined,
+      speed: 1
     }
   }
   private ambient: HTMLAudioElement | undefined;
 
   constructor() {
-    this.audioListener = new AudioListener();
   }
 
   load(manager: LoadingManager) {
@@ -141,8 +145,11 @@ export class SoundManager {
   }
 
   play(sound: keyof SoundManager['assets'], options: Partial<PlayOptions> | undefined = undefined) {
-    const audio = this.assets[sound].audio;
+    let audio = this.assets[sound].audio;
     if (audio) {
+      if (options?.independent) {
+        audio = audio.cloneNode() as HTMLAudioElement;
+      }
       audio.loop = options?.loop ?? false;
       if (!audio.loop) {
         audio.pause();
