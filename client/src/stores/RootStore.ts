@@ -19,15 +19,14 @@ export class RootStore {
 
     manager.onProgress = (url, itemsLoaded, itemsTotal) => {
       console.log(url);
-      console.log(itemsLoaded);
-      console.log(itemsTotal);
       runInAction(() => this.assetsProgress = (Math.round(itemsLoaded / itemsTotal * 100)));
     };
 
+    manager.onStart = ((url) => console.log('Started: ', url));
     manager.onLoad = () => this.router.gotoStation();
 
     manager.itemStart('token');
-    soundManager.load(manager)
+    await soundManager.load(manager)
     assetsManager.load(manager)
     manager.itemEnd('token');
   }

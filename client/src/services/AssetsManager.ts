@@ -154,7 +154,7 @@ export class AssetsManager {
     },
     'asteroid': {
       kind: 'external',
-      url: 'assets/models/asteroid/asteroid2.glb',
+      url: 'assets/models/asteroid/asteroid.glb',
       mesh: new Object3D(),
       postProcess: (scene: Group) => {
         let result: Object3D = scene;

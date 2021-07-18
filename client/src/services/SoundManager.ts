@@ -96,18 +96,26 @@ export class SoundManager {
   }
 
   load(manager: LoadingManager) {
-    for (const config of Object.values(this.assets)) {
-      const url = config.url;
-      const fullUrl = `assets/audio/${url}`
-      const audio = new Audio(fullUrl);
-      audio.addEventListener('loadeddata', () => {
-        config.audio = audio;
-        config.audio.playbackRate = config.speed;
-        manager.itemEnd(fullUrl);
-      })
-      manager.itemStart(fullUrl);
-      audio.load();
-    }
+    return Promise.all(Object.values(this.assets).map(config => this.loadItem(config, manager)));
+  }
+
+  private loadItem(config: AudioAsset, manager: LoadingManager): Promise<void> {
+    return new Promise((resolve, reject) => {
+      try {
+        const url = config.url;
+        const fullUrl = `assets/audio/${url}`
+        const audio = new Audio(fullUrl);
+        audio.addEventListener('loadeddata', () => {
+          config.audio = audio;
+          config.audio.playbackRate = config.speed;
+          resolve();
+          manager.itemEnd(fullUrl);
+        })
+        manager.itemStart(fullUrl);
+      } catch (e) {
+        reject(e);
+      }
+    })
   }
 
   stopAmbient() {
@@ -116,6 +124,7 @@ export class SoundManager {
       this.ambient.currentTime = 0;
     }
   }
+
   playAmbient(sound: keyof SoundManager['assets']) {
     if (this.ambient) {
       if (this.ambient === this.assets[sound].audio) {
@@ -130,6 +139,7 @@ export class SoundManager {
       this.ambient.play();
     }
   }
+
   play(sound: keyof SoundManager['assets'], options: Partial<PlayOptions> | undefined = undefined) {
     const audio = this.assets[sound].audio;
     if (audio) {
