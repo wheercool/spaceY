@@ -93,37 +93,33 @@ export class SoundManager {
       audio: undefined,
       speed: 1
     }
-  }
+  };
   private ambient: HTMLAudioElement | undefined;
 
   constructor() {
   }
 
-  load(manager: LoadingManager) {
-    return Promise.all(Object.values(this.assets).map(config => this.loadItem(config, manager)));
+  load(manager: LoadingManager): void {
+    Object.values(this.assets).forEach(config => this.loadItem(config, manager));
   }
 
-  private loadItem(config: AudioAsset, manager: LoadingManager): Promise<void> {
-    return new Promise((resolve, reject) => {
-      const url = config.url;
-      const fullUrl = `assets/audio/${url}`
-      try {
-        const audio = new Audio(fullUrl);
-        audio.addEventListener('loadeddata', () => {
-          config.audio = audio;
-          config.audio.playbackRate = config.speed;
-          resolve();
-          manager.itemEnd(fullUrl);
-        })
-        audio.addEventListener('error', (e) => {
-          manager.itemError(fullUrl);
-        })
-        manager.itemStart(fullUrl);
-      } catch (e) {
+  private loadItem(config: AudioAsset, manager: LoadingManager): void {
+    const url = config.url;
+    const fullUrl = `assets/audio/${url}`;
+    try {
+      const audio = new Audio(fullUrl);
+      audio.addEventListener('loadeddata', () => {
+        config.audio = audio;
+        config.audio.playbackRate = config.speed;
+        manager.itemEnd(fullUrl);
+      });
+      audio.addEventListener('error', (e) => {
         manager.itemError(fullUrl);
-        reject(e);
-      }
-    })
+      });
+      manager.itemStart(fullUrl);
+    } catch (e) {
+      manager.itemError(fullUrl);
+    }
   }
 
   stopAmbient() {

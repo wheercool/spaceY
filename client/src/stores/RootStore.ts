@@ -14,7 +14,7 @@ export class RootStore {
   }
 
   @action.bound
-  async loadAssets() {
+  loadAssets() {
     const manager = new LoadingManager();
 
     manager.onProgress = (url, itemsLoaded, itemsTotal) => {
@@ -27,7 +27,7 @@ export class RootStore {
     manager.onError = ((url) => console.error('Error loading: ', url));
 
     manager.itemStart('token');
-    await soundManager.load(manager)
+    soundManager.load(manager)
     assetsManager.load(manager)
     manager.itemEnd('token');
   }
