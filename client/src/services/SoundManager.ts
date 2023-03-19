@@ -68,7 +68,7 @@ export class SoundManager {
       speed: 1
     },
     quest: {
-      url: 'quest.ogg',
+      url: 'quest.mp3',
       audio: undefined,
       speed: 1
     },
@@ -105,9 +105,9 @@ export class SoundManager {
 
   private loadItem(config: AudioAsset, manager: LoadingManager): Promise<void> {
     return new Promise((resolve, reject) => {
+      const url = config.url;
+      const fullUrl = `assets/audio/${url}`
       try {
-        const url = config.url;
-        const fullUrl = `assets/audio/${url}`
         const audio = new Audio(fullUrl);
         audio.addEventListener('loadeddata', () => {
           config.audio = audio;
@@ -115,8 +115,12 @@ export class SoundManager {
           resolve();
           manager.itemEnd(fullUrl);
         })
+        audio.addEventListener('error', (e) => {
+          manager.itemError(fullUrl);
+        })
         manager.itemStart(fullUrl);
       } catch (e) {
+        manager.itemError(fullUrl);
         reject(e);
       }
     })

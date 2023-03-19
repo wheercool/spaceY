@@ -24,6 +24,7 @@ export class RootStore {
 
     manager.onStart = ((url) => console.log('Started: ', url));
     manager.onLoad = () => this.router.gotoStation();
+    manager.onError = ((url) => console.error('Error loading: ', url));
 
     manager.itemStart('token');
     await soundManager.load(manager)
